@@ -120,7 +120,7 @@ function GraficoBarras({
   return (
     <div className="bg-gray-800 p-4 rounded-xl shadow-md">
       <h2 className="text-lg font-bold mb-2 text-white">{titulo}</h2>
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={500}>
         <BarChart data={dados}>
           <XAxis dataKey="nome" stroke="#fff" />
           <YAxis stroke="#fff" />
@@ -143,7 +143,7 @@ function GraficoPizza({
   return (
     <div className="bg-gray-800 p-4 rounded-xl shadow-md col-span-1 md:col-span-2">
       <h2 className="text-lg font-bold mb-2 text-white">{titulo}</h2>
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={500}>
         <PieChart>
           <Pie
             data={dados}

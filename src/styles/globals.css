@@ -15,21 +15,22 @@ body {
 main {
   display: flex;
   flex-direction: column;
+  
   gap: 2rem;
   padding: 20px;
-  max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
 }
 
 /* Header */
 header {
-  background-color: #8a8a8a;
+  background-color: #383636;
   padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  position: sticky;
+  position: relative;
   top: 0;
   z-index: 100;
   color: #020202;
@@ -42,7 +43,7 @@ header {
 
 .MDW_TITU {
   font-size: 54px;
-  font-weight: 600;
+  font-weight: 900;
   color: #000000;
   margin-left: 1rem;
 }
@@ -65,12 +66,15 @@ header {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  margin: 10px;
 }
 
 .direita p {
+  font-weight: 700;
+  margin: 10px;
   font-size: 14px;
-  color: #333;
-  margin-bottom: 0.5rem;
+  color: #000000;
+  margin-bottom: 1rem;
 }
 
 /* Container de Filtros e Botões */
@@ -94,6 +98,7 @@ select {
   font-size: 14px;
   background-color: #f9fafb;
   transition: all 0.3s ease;
+  margin: 10px;
 }
 
 select:focus {
@@ -111,6 +116,7 @@ button, main option {
   font-size: 14px;
   transition: all 0.3s ease;
   cursor: pointer;
+  margin: 10px
 }
 
 button:hover {
@@ -130,7 +136,7 @@ button:hover {
 
 .btn-primary {
   background-color: #3b82f6;
-  color: #fff;
+  color: #000000;
 }
 
 .btn-primary:hover {
@@ -139,7 +145,7 @@ button:hover {
 
 .btn-secondary {
   background-color: #e5e7eb;
-  color: #1f2937;
+  color: #000000;
 }
 
 .btn-secondary:hover {
@@ -148,7 +154,7 @@ button:hover {
 
 .btn-danger {
   background-color: #ef4444;
-  color: white;
+  color: rgb(0, 0, 0);
 }
 
 .btn-danger:hover {
@@ -254,7 +260,7 @@ button:hover {
 .chamados-section {
   background-color: #111;
   padding: 3rem 1rem;
-  color: #fff;
+  color: #000000;
 }
 
 .chamados-filtros {
@@ -267,7 +273,7 @@ button:hover {
 
 .chamados-filtros select {
   background-color: #222;
-  color: #fff;
+  color: #000000;
   padding: 0.5rem 1rem;
   border: 1px solid #555;
   border-radius: 6px;

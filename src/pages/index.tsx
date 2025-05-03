@@ -25,7 +25,7 @@ export default function Home() {
   const [filtroZona, setFiltroZona] = useState('');
   const [filtroStatus, setFiltroStatus] = useState('');
   const [filtroLoja, setFiltroLoja] = useState('');
-  const [filtroTipo, setFiltroTipo] = useState(''); // NOVO
+  const [filtroTipo, setFiltroTipo] = useState('');
 
   const fetchChamados = async () => {
     setLoading(true);
@@ -48,14 +48,14 @@ export default function Home() {
   const zonasUnicas = Array.from(new Set(chamados.map((c) => c.zona).filter(Boolean)));
   const statusUnicos = Array.from(new Set(chamados.map((c) => c.status).filter(Boolean)));
   const lojasUnicas = Array.from(new Set(chamados.map((c) => c.loja).filter(Boolean)));
-  const tiposUnicos = Array.from(new Set(chamados.map((c) => c.tipo).filter(Boolean))); // NOVO
+  const tiposUnicos = Array.from(new Set(chamados.map((c) => c.tipo).filter(Boolean)));
 
   const chamadosFiltrados = useMemo(() => {
     return chamados.filter((c) =>
       (!filtroZona || c.zona === filtroZona) &&
       (!filtroStatus || c.status === filtroStatus) &&
       (!filtroLoja || c.loja === filtroLoja) &&
-      (!filtroTipo || c.tipo === filtroTipo) // NOVO
+      (!filtroTipo || c.tipo === filtroTipo)
     );
   }, [chamados, filtroZona, filtroStatus, filtroLoja, filtroTipo]);
 
@@ -63,10 +63,10 @@ export default function Home() {
 
   if (!session) {
     return (
-      <main className="começo">
-        <h1 className="text-2xl font-bold mb-4">Acesso Restrito</h1>
-        <button onClick={() => signIn("google")} className="butoentrar">
-          ENTRE COM SUA CONTA
+      <main className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+        <h1 className="text-3xl font-bold mb-6">Acesso Restrito</h1>
+        <button onClick={() => signIn("google")} className="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition">
+          Entrar com Google
         </button>
       </main>
     );
@@ -75,10 +75,10 @@ export default function Home() {
   return (
     <main className="p-8 bg-gray-100 min-h-screen">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="centroTitulo">Painel de Chamados 🚨</h1>
+        <h1 className="text-3xl font-bold text-center w-full">Painel de Chamados 🚨</h1>
       </div>
 
-      <div className="flex flex-wrap gap-4 mb-6 items-center">
+      <div className="flex flex-wrap gap-4 mb-6 items-center justify-center">
         <select className="px-4 py-2 rounded border" value={filtroZona} onChange={(e) => setFiltroZona(e.target.value)}>
           <option value="">Todas as Zonas</option>
           {zonasUnicas.map((z) => <option key={z} value={z}>{z}</option>)}

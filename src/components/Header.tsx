@@ -23,7 +23,7 @@ export default function Header() {
             />
           )}
           <div className="direita">
-            <p className="text-sm text-gray-600">
+            <p className="bemvinde">
               Bem-vindo, {session.user?.name} ({session.user?.role || 'Sem permissão'})
               <button
   onClick={() => signOut({ callbackUrl: '/' })}
