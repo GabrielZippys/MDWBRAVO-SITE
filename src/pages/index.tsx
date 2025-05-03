@@ -42,7 +42,14 @@ export default function Home() {
   };
 
   useEffect(() => {
-    fetchChamados();
+    const sincronizar = async () => {
+      setSincronizando(true);
+      await fetch('/api/sync-notion', { method: 'POST' });
+      await fetchChamados();
+      setSincronizando(false);
+    };
+  
+    sincronizar();
   }, []);
 
   const zonasUnicas = Array.from(new Set(chamados.map((c) => c.zona).filter(Boolean)));
@@ -98,14 +105,6 @@ export default function Home() {
             </button>
           </Link>
         )}
-
-        <button
-          onClick={sincronizarComNotion}
-          disabled={sincronizando}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition disabled:opacity-50"
-        >
-          {sincronizando ? 'Sincronizando...' : '🔁 Sincronizar com Notion'}
-        </button>
 
         <select className="px-4 py-2 rounded border" value={filtroZona} onChange={(e) => setFiltroZona(e.target.value)}>
           <option value="">Todas as Zonas</option>
