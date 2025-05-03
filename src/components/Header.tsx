@@ -14,7 +14,7 @@ export default function Header() {
     
 
       {session && (
-        <div className="flex items-center gap-4">
+        <div className="foto">
           {session.user?.image && (
             <img
               src={session.user.image}
