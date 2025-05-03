@@ -58,7 +58,6 @@ export default function Dashboard({ chamados }: DashboardProps) {
         <Filtro label="Zona" valor={filtroZona} opcoes={opcoesUnicas('zona')} onChange={setFiltroZona} />
         <Filtro label="Status" valor={filtroStatus} opcoes={opcoesUnicas('status')} onChange={setFiltroStatus} />
         <Filtro label="Tipo" valor={filtroTipo} opcoes={opcoesUnicas('tipo')} onChange={setFiltroTipo} />
-
         <button
           onClick={() => {
             setFiltroZona(null);
@@ -90,7 +89,7 @@ function Filtro({
   onChange: (val: string | null) => void;
 }) {
   return (
-    <div>
+    <div className="min-w-[150px]">
       <label className="block text-sm font-medium text-white mb-1">{label}</label>
       <select
         value={valor || ''}
@@ -118,7 +117,7 @@ function GraficoBarras({
   cor: string;
 }) {
   return (
-    <div className="bg-gray-800 p-4 rounded-xl shadow-md">
+    <div className="bg-gray-800 p-4 rounded-xl shadow-md transition hover:shadow-lg">
       <h2 className="text-lg font-bold mb-2 text-white">{titulo}</h2>
       <ResponsiveContainer width="100%" height={500}>
         <BarChart data={dados}>
@@ -141,7 +140,7 @@ function GraficoPizza({
   dados: { nome: string; valor: number }[];
 }) {
   return (
-    <div className="bg-gray-800 p-4 rounded-xl shadow-md col-span-1 md:col-span-2">
+    <div className="bg-gray-800 p-4 rounded-xl shadow-md transition hover:shadow-lg col-span-1 md:col-span-2">
       <h2 className="text-lg font-bold mb-2 text-white">{titulo}</h2>
       <ResponsiveContainer width="100%" height={500}>
         <PieChart>

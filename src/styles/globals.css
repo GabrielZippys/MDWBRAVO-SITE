@@ -311,3 +311,10 @@ button:hover {
 .status-resolvido {
   opacity: 0.5;
 }
+
+.mapa-container {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}

@@ -3,10 +3,14 @@ import dynamic from 'next/dynamic';
 import Dashboard from '@/components/Dashboard';
 import { signIn, signOut, useSession } from "next-auth/react";
 import 'leaflet/dist/leaflet.css';
+import React from 'react';
+import { GetServerSideProps } from 'next';
+import { connectDB } from '@/lib/mongodb';
+import Chamado from '@/models/chamado';
 
 const MapaDeChamados = dynamic(() => import('@/components/MapaDeChamados'), { ssr: false });
 
-type Chamado = {
+type ChamadoType = {
   _id: string;
   titulo: string;
   loja: string;
@@ -16,34 +20,17 @@ type Chamado = {
   zona: string;
 };
 
-export default function Home() {
-  const { data: session, status } = useSession();
-  const [chamados, setChamados] = useState<Chamado[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [sincronizando, setSincronizando] = useState(false);
+type HomeProps = {
+  chamadosIniciais: ChamadoType[];
+};
 
+export default function Home({ chamadosIniciais }: HomeProps) {
+  const { data: session, status } = useSession();
+  const [chamados, setChamados] = useState<ChamadoType[]>(chamadosIniciais);
   const [filtroZona, setFiltroZona] = useState('');
   const [filtroStatus, setFiltroStatus] = useState('');
   const [filtroLoja, setFiltroLoja] = useState('');
   const [filtroTipo, setFiltroTipo] = useState('');
-
-  const fetchChamados = async () => {
-    setLoading(true);
-    const res = await fetch('/api/chamados');
-    const data = await res.json();
-    setChamados(data);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    const sincronizar = async () => {
-      setSincronizando(true);
-      await fetch('/api/sync-notion', { method: 'POST' });
-      await fetchChamados();
-      setSincronizando(false);
-    };
-    sincronizar();
-  }, []);
 
   const zonasUnicas = Array.from(new Set(chamados.map((c) => c.zona).filter(Boolean)));
   const statusUnicos = Array.from(new Set(chamados.map((c) => c.status).filter(Boolean)));
@@ -51,12 +38,13 @@ export default function Home() {
   const tiposUnicos = Array.from(new Set(chamados.map((c) => c.tipo).filter(Boolean)));
 
   const chamadosFiltrados = useMemo(() => {
-    return chamados.filter((c) =>
-      (!filtroZona || c.zona === filtroZona) &&
-      (!filtroStatus || c.status === filtroStatus) &&
-      (!filtroLoja || c.loja === filtroLoja) &&
-      (!filtroTipo || c.tipo === filtroTipo)
-    );
+    return chamados.filter((c) => {
+      const zonaOk = !filtroZona || c.zona === filtroZona;
+      const statusOk = !filtroStatus || c.status === filtroStatus;
+      const lojaOk = !filtroLoja || c.loja === filtroLoja;
+      const tipoOk = !filtroTipo || c.tipo === filtroTipo;
+      return zonaOk && statusOk && lojaOk && tipoOk;
+    });
   }, [chamados, filtroZona, filtroStatus, filtroLoja, filtroTipo]);
 
   if (status === "loading") return <p className="p-8">Carregando autenticação...</p>;
@@ -100,8 +88,38 @@ export default function Home() {
         </select>
       </div>
 
-      <Dashboard chamados={chamadosFiltrados} />
-      <MapaDeChamados chamados={chamadosFiltrados} />
+      {/* TABELA DE CHAMADOS */}
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold mb-2">Lista de Chamados</h2>
+        <Dashboard chamados={chamadosFiltrados} />
+      </div>
+
+      {/* MAPA */}
+      <div className="mapa">
+        <h2 className="text-xl font-semibold mb-2">Mapa Interativo</h2>
+        <MapaDeChamados chamados={chamadosFiltrados} />
+      </div>
     </main>
   );
 }
+
+// 👉 BUSCA OS CHAMADOS DO MONGODB NO LADO DO SERVIDOR
+export const getServerSideProps: GetServerSideProps = async () => {
+  await connectDB();
+  const chamadosMongo = await Chamado.find().sort({ dataCriacao: -1 });
+  const chamados = chamadosMongo.map((c) => ({
+    _id: c._id.toString(),
+    titulo: c.titulo,
+    loja: c.loja,
+    status: c.status,
+    tipo: c.tipo,
+    dataCriacao: c.dataCriacao.toISOString(),
+    zona: c.zona,
+  }));
+
+  return {
+    props: {
+      chamadosIniciais: chamados,
+    },
+  };
+};

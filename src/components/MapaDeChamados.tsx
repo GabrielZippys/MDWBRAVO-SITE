@@ -59,7 +59,6 @@ export default function MapaDeChamados({ chamados }: { chamados: Chamado[] }) {
 
   return (
     <div className="map-container">
-      <h2 className="text-xl font-bold mb-2">Mapa Interativo</h2>
       <MapContainer
         center={[-23.55, -46.64]}
         zoom={11}
