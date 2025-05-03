@@ -10,16 +10,12 @@ export const metadata = {
   description: 'Sistema de Chamados',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }) {
   return (
     <html lang="pt-br">
-      <body className={`${inter.className} bg-gray-100`}>
+      <body>
         <Header />
-        <main className="p-4">{children}</main>
+        {children}
       </body>
     </html>
   );

@@ -1,3 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+header {
+    background-color: #cccccc; /* cinza claro */
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: center; /* centraliza horizontalmente */
+    align-items: center;      /* centraliza verticalmente */
+    gap: 1.5rem;              /* espaço entre os botões */
+  }
+  
+  header a {
+    text-decoration: none;
+    color: #000000;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    background-color: white;
+    transition: background-color 0.3s;
+  }
+  
+  header a:hover {
+    background-color: #e0e0e0;
+  }
+  
