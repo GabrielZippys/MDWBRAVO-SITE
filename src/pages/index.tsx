@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Dashboard from '@/components/Dashboard';
 import { signIn, signOut, useSession } from "next-auth/react";
+import 'leaflet/dist/leaflet.css';
+import { useMemo } from 'react';
 
 const MapaDeChamados = dynamic(() => import('@/components/MapaDeChamados'), { ssr: false });
 
@@ -55,11 +57,13 @@ export default function Home() {
   const statusUnicos = Array.from(new Set(chamados.map((c) => c.status).filter(Boolean)));
   const lojasUnicas = Array.from(new Set(chamados.map((c) => c.loja).filter(Boolean)));
 
-  const chamadosFiltrados = chamados.filter((c) =>
-    (!filtroZona || c.zona === filtroZona) &&
-    (!filtroStatus || c.status === filtroStatus) &&
-    (!filtroLoja || c.loja === filtroLoja)
-  );
+  const chamadosFiltrados = useMemo(() => {
+    return chamados.filter((c) =>
+      (!filtroZona || c.zona === filtroZona) &&
+      (!filtroStatus || c.status === filtroStatus) &&
+      (!filtroLoja || c.loja === filtroLoja)
+    );
+  }, [chamados, filtroZona, filtroStatus, filtroLoja]);
 
   if (status === "loading") return <p className="p-8">Carregando autenticação...</p>;
 
@@ -102,11 +106,6 @@ export default function Home() {
         </select>
       </div>
 
-      {loading ? (
-        <p className="text-gray-600">🔄 Carregando chamados...</p>
-      ) : chamadosFiltrados.length === 0 ? (
-        <p className="text-gray-500">Nenhum chamado encontrado.</p>
-      ) : (
         <>
           <Dashboard chamados={chamadosFiltrados} />
           <MapaDeChamados chamados={chamadosFiltrados} />
@@ -138,7 +137,7 @@ export default function Home() {
             </table>
           </div>
         </>
-      )}
+      
     </main>
   );
 }
