@@ -89,13 +89,14 @@ export default function Home({ chamadosIniciais }: HomeProps) {
       </div>
 
       {/* TABELA DE CHAMADOS */}
-      <div className="mb-8">
+      <div className="mapa-cointainer">
         <h2 className="text-xl font-semibold mb-2">Lista de Chamados</h2>
         <Dashboard chamados={chamadosFiltrados} />
-      </div>
+      
 
       {/* MAPA */}
-      <div className="mapa">
+      <br /><br />
+      
         <h2 className="text-xl font-semibold mb-2">Mapa Interativo</h2>
         <MapaDeChamados chamados={chamadosFiltrados} />
       </div>
