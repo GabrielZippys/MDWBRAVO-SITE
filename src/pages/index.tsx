@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import Dashboard from '@/components/Dashboard';
 import { signIn, signOut, useSession } from "next-auth/react";
 import 'leaflet/dist/leaflet.css';
-import { useMemo } from 'react';
 
 const MapaDeChamados = dynamic(() => import('@/components/MapaDeChamados'), { ssr: false });
 
@@ -26,6 +25,7 @@ export default function Home() {
   const [filtroZona, setFiltroZona] = useState('');
   const [filtroStatus, setFiltroStatus] = useState('');
   const [filtroLoja, setFiltroLoja] = useState('');
+  const [filtroTipo, setFiltroTipo] = useState(''); // NOVO
 
   const fetchChamados = async () => {
     setLoading(true);
@@ -35,13 +35,6 @@ export default function Home() {
     setLoading(false);
   };
 
-  const sincronizarComNotion = async () => {
-    setSincronizando(true);
-    await fetch('/api/sync-notion', { method: 'POST' });
-    await fetchChamados();
-    setSincronizando(false);
-  };
-
   useEffect(() => {
     const sincronizar = async () => {
       setSincronizando(true);
@@ -49,21 +42,22 @@ export default function Home() {
       await fetchChamados();
       setSincronizando(false);
     };
-  
     sincronizar();
   }, []);
 
   const zonasUnicas = Array.from(new Set(chamados.map((c) => c.zona).filter(Boolean)));
   const statusUnicos = Array.from(new Set(chamados.map((c) => c.status).filter(Boolean)));
   const lojasUnicas = Array.from(new Set(chamados.map((c) => c.loja).filter(Boolean)));
+  const tiposUnicos = Array.from(new Set(chamados.map((c) => c.tipo).filter(Boolean))); // NOVO
 
   const chamadosFiltrados = useMemo(() => {
     return chamados.filter((c) =>
       (!filtroZona || c.zona === filtroZona) &&
       (!filtroStatus || c.status === filtroStatus) &&
-      (!filtroLoja || c.loja === filtroLoja)
+      (!filtroLoja || c.loja === filtroLoja) &&
+      (!filtroTipo || c.tipo === filtroTipo) // NOVO
     );
-  }, [chamados, filtroZona, filtroStatus, filtroLoja]);
+  }, [chamados, filtroZona, filtroStatus, filtroLoja, filtroTipo]);
 
   if (status === "loading") return <p className="p-8">Carregando autenticação...</p>;
 
@@ -71,14 +65,9 @@ export default function Home() {
     return (
       <main className="começo">
         <h1 className="text-2xl font-bold mb-4">Acesso Restrito</h1>
-       
-        <button
-          onClick={() => signIn("google")}
-          className="butoentrar"
-        >
-          ENTRE  COM  SUA  CONTA
+        <button onClick={() => signIn("google")} className="butoentrar">
+          ENTRE COM SUA CONTA
         </button>
-      
       </main>
     );
   }
@@ -88,8 +77,8 @@ export default function Home() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="centroTitulo">Painel de Chamados 🚨</h1>
       </div>
-      <div className="flex flex-wrap gap-4 mb-6 items-center">
 
+      <div className="flex flex-wrap gap-4 mb-6 items-center">
         <select className="px-4 py-2 rounded border" value={filtroZona} onChange={(e) => setFiltroZona(e.target.value)}>
           <option value="">Todas as Zonas</option>
           {zonasUnicas.map((z) => <option key={z} value={z}>{z}</option>)}
@@ -104,40 +93,15 @@ export default function Home() {
           <option value="">Todas as Lojas</option>
           {lojasUnicas.map((l) => <option key={l} value={l}>{l}</option>)}
         </select>
+
+        <select className="px-4 py-2 rounded border" value={filtroTipo} onChange={(e) => setFiltroTipo(e.target.value)}>
+          <option value="">Todos os Tipos</option>
+          {tiposUnicos.map((t) => <option key={t} value={t}>{t}</option>)}
+        </select>
       </div>
 
-        <>
-          <Dashboard chamados={chamadosFiltrados} />
-          <MapaDeChamados chamados={chamadosFiltrados} />
-
-          <div className="overflow-x-auto mt-6">
-            <table className="min-w-full bg-white rounded shadow">
-              <thead className="bg-blue-100 text-left">
-                <tr>
-                  <th className="p-3">Título</th>
-                  <th className="p-3">Loja</th>
-                  <th className="p-3">Status</th>
-                  <th className="p-3">Tipo</th>
-                  <th className="p-3">Data</th>
-                  <th className="p-3">Zona</th>
-                </tr>
-              </thead>
-              <tbody>
-                {chamadosFiltrados.map((c) => (
-                  <tr key={c._id} className="border-t hover:bg-gray-50">
-                    <td className="p-3">{c.titulo}</td>
-                    <td className="p-3">{c.loja}</td>
-                    <td className="p-3">{c.status}</td>
-                    <td className="p-3">{c.tipo}</td>
-                    <td className="p-3">{new Date(c.dataCriacao).toLocaleDateString('pt-BR')}</td>
-                    <td className="p-3">{c.zona}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </>
-      
+      <Dashboard chamados={chamadosFiltrados} />
+      <MapaDeChamados chamados={chamadosFiltrados} />
     </main>
   );
 }

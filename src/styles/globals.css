@@ -8,23 +8,22 @@
 
 body {
   font-family: 'Inter', sans-serif;
-  background-color: #f4f4f4;
-  color: #333;
-  line-height: 1.6;
+  background-color: #8b8888;
+  width: 100%;
 }
 
 main {
-  max-width: 1200px;
-  margin: 40px auto;
-  padding: 0 20px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  gap: 2rem;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 /* Header */
 header {
-  background-color: #ffffff;
+  background-color: #8a8a8a;
   padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
@@ -33,6 +32,7 @@ header {
   position: sticky;
   top: 0;
   z-index: 100;
+  color: #020202;
 }
 
 .bravo {
@@ -43,10 +43,8 @@ header {
 .MDW_TITU {
   font-size: 54px;
   font-weight: 600;
-  color: #333;
+  color: #000000;
   margin-left: 1rem;
-  text-align: center;
-  width: 100%;
 }
 
 /* Usuário */
@@ -75,8 +73,37 @@ header {
   margin-bottom: 0.5rem;
 }
 
+/* Container de Filtros e Botões */
+.filtro-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  background-color: #ffffff;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  justify-content: flex-start;
+}
+
+/* Estilo de Select */
+select {
+  padding: 0.5rem 1.2rem;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-weight: 500;
+  font-size: 14px;
+  background-color: #f9fafb;
+  transition: all 0.3s ease;
+}
+
+select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  background-color: #fff;
+}
+
 /* Botões Genéricos */
-button, select {
+button, main option {
   padding: 0.5rem 1.2rem;
   border-radius: 8px;
   border: none;
@@ -128,13 +155,21 @@ button:hover {
   background-color: #dc2626;
 }
 
+/* Botão ADA existente */
+.ada {
+  background-color: #3b82f6;
+}
+
+.ada:hover {
+  background-color: #2563eb;
+}
+
 /* Estilo dos cards de gráfico */
 .chart-card {
   background-color: #ffffff;
   padding: 1.5rem;
   border-radius: 12px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-  width: 100%;
 }
 
 /* Layout Responsivo dos Gráficos */
@@ -143,7 +178,6 @@ button:hover {
   grid-template-columns: 1fr;
   gap: 1.5rem;
   margin-bottom: 2rem;
-  width: 100%;
 }
 
 @media (min-width: 768px) {
@@ -158,6 +192,7 @@ button:hover {
   }
 }
 
+
 .full-span {
   grid-column: span 2;
 }
@@ -168,8 +203,15 @@ button:hover {
   }
 }
 
-/* Filtros */
-.filtros {
+.centroTitulo{
+
+  text-align: center;
+  font-size: 42px;
+  font-weight: 700;
+  margin: 2rem 0 1rem;
+  color: #1f2937;
+}
+.dashboard-filters {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
@@ -177,23 +219,89 @@ button:hover {
   justify-content: center;
 }
 
-.filtros label {
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  display: block;
-}
-
-.filtros select {
-  padding: 0.5rem;
-  border-radius: 6px;
+.dashboard-filters select,
+.dashboard-filters button {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
   border: 1px solid #ccc;
   font-size: 14px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-/* Título Centralizado */
-.titulo-centralizado {
-  text-align: center;
-  font-size: 2rem;
-  font-weight: 600;
+.dashboard-filters button:hover {
+  background-color: #f0f0f0;
+}
+
+.chart-card {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
   margin-bottom: 2rem;
+}
+
+.map-container {
+  width: 100%;
+  height: 500px;
+  margin: 2rem 0;
+  position: relative;
+  z-index: 0;
+}
+
+
+.chamados-section {
+  background-color: #111;
+  padding: 3rem 1rem;
+  color: #fff;
+}
+
+.chamados-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.chamados-filtros select {
+  background-color: #222;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border: 1px solid #555;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.chamado {
+  border-left: 8px solid #444;
+  background-color: #1c1c1c;
+  margin: 1rem auto;
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  max-width: 800px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.6);
+}
+
+/* Cores por tipo */
+.tipo-urgente {
+  border-left-color: #e74c3c;
+}
+.tipo-manutencao {
+  border-left-color: #f39c12;
+}
+.tipo-ti {
+  border-left-color: #3498db;
+}
+
+/* Opacidade por status */
+.status-aberto {
+  opacity: 1;
+}
+.status-em_andamento {
+  opacity: 0.8;
+}
+.status-resolvido {
+  opacity: 0.5;
 }
