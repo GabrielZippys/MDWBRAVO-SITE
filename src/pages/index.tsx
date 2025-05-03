@@ -76,13 +76,6 @@ export default function Home() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-blue-700">Painel de Chamados 🚨</h1>
         <div className="flex items-center gap-4 text-right">
-          {session.user?.image && (
-            <img
-              src={session.user.image}
-              alt="Foto de perfil"
-              className="w-10 h-10 rounded-full border-2 border-gray-300"
-            />
-          )}
           <div>
             <p className="text-sm text-gray-600">
               Bem-vindo, {session.user?.name} ({session.user?.role || "Sem permissão"})

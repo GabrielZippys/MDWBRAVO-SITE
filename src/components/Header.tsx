@@ -1,36 +1,40 @@
+// app/components/Header.tsx
 'use client';
 
-import Link from 'next/link';
-import Image from 'next/image';
+import { useSession, signOut } from 'next-auth/react';
 
 export default function Header() {
+  const { data: session } = useSession();
+
   return (
-    <header className="bg-gray-700 text-white shadow-md">
-      <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold">MDW Bravo</h1>
+    <header className="flex justify-between items-center p-4 bg-white shadow w-full">
+      
+        <img src="/bravo.png" alt="Logo Bravo" className="bravo" />
+        <h1 className="text-xl font-bold text-gray-800">MDW-BRAVO</h1>
+    
 
-        <nav className="flex items-center space-x-6">
-          <Link href="/" className="hover:bg-gray-600 px-4 py-2 rounded transition">
-            Início
-          </Link>
-          <Link href="/chamados" className="hover:bg-gray-600 px-4 py-2 rounded transition">
-            Chamados
-          </Link>
-          <Link href="/perfil" className="hover:bg-gray-600 px-4 py-2 rounded transition">
-            Perfil
-          </Link>
-        </nav>
-
-        <div className="ml-6">
-          <Image
-            src="/perfil.jpg" // Substitua por sua imagem real em /public
-            alt="Foto de perfil"
-            width={40}
-            height={40}
-            className="rounded-full border border-white"
-          />
+      {session && (
+        <div className="flex items-center gap-4">
+          {session.user?.image && (
+            <img
+              src={session.user.image}
+              alt="Foto de perfil"
+              className="w-10 h-10 rounded-full border-2 border-gray-300"
+            />
+          )}
+          <div className="text-right">
+            <p className="text-sm text-gray-600">
+              Bem-vindo, {session.user?.name} ({session.user?.role || 'Sem permissão'})
+            <button
+              onClick={() => signOut()}
+              className="butodesair"
+            >
+              Sair
+            </button>
+            </p>
+          </div>
         </div>
-      </div>
+      )}
     </header>
   );
 }
