@@ -1,112 +1,35 @@
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-
-interface Permissao {
-  _id?: string;
-  email: string;
-  role: 'Gestor' | 'TI' | 'Loja';
-}
+'use client';
+import { useSession, signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function GestaoPage() {
-  const [permissoes, setPermissoes] = useState<Permissao[]>([]);
-  const [email, setEmail] = useState('');
-  const [role, setRole] = useState<'Gestor' | 'TI' | 'Loja'>('TI');
+  const { data: session, status } = useSession();
   const router = useRouter();
 
-  const fetchPermissoes = async () => {
-    const res = await fetch('/api/permissoes');
-    const data = await res.json();
-    setPermissoes(data);
-  };
-
   useEffect(() => {
-    fetchPermissoes();
-  }, []);
+    if (status === 'unauthenticated') {
+      router.push('/login');
+    }
+  }, [status, router]);
 
-  const salvarPermissao = async () => {
-    if (!email) return;
-    await fetch('/api/permissoes', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, role })
-    });
-    setEmail('');
-    setRole('TI');
-    fetchPermissoes();
-  };
+  if (status === 'loading') {
+    return <p>Carregando...</p>;
+  }
 
-  const removerPermissao = async (email: string) => {
-    await fetch('/api/permissoes', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
-    });
-    fetchPermissoes();
-  };
+  if (!session) {
+    return null; // já será redirecionado
+  }
+
+  const user = session.user;
 
   return (
     <main className="p-8 min-h-screen bg-gray-100">
-      {/* Cabeçalho com botão voltar */}
-      <div className="flex items-center justify-between mb-6">
-  <h1 className="text-2xl font-bold text-blue-700">Gestão de Acessos 🔐</h1>
-</div>
-
-
-      {/* Formulário de permissão */}
-      <div className="bg-white p-4 rounded shadow mb-6">
-        <h2 className="font-semibold mb-2">Adicionar ou Atualizar Permissão</h2>
-        <input
-          type="email"
-          placeholder="Email"
-          className="border px-3 py-2 rounded w-full mb-2"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <select
-          className="border px-3 py-2 rounded w-full mb-4"
-          value={role}
-          onChange={(e) => setRole(e.target.value as Permissao['role'])}
-        >
-          <option value="TI">TI</option>
-          <option value="Gestor">Gestor</option>
-          <option value="Loja">Loja</option>
-        </select>
-        <button
-          onClick={salvarPermissao}
-          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
-        >
-          Salvar Permissão
-        </button>
-      </div>
-
-      {/* Tabela de permissões */}
-      <div className="bg-white p-4 rounded shadow">
-        <h2 className="font-semibold mb-2">Usuários Autorizados</h2>
-        <table className="w-full text-left">
-          <thead>
-            <tr className="bg-blue-100">
-              <th className="p-2">Email</th>
-              <th className="p-2">Papel</th>
-              <th className="p-2">Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {permissoes.map((p) => (
-              <tr key={p.email} className="border-t">
-                <td className="p-2">{p.email}</td>
-                <td className="p-2">{p.role}</td>
-                <td className="p-2">
-                  <button
-                    onClick={() => removerPermissao(p.email)}
-                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
-                  >
-                    Remover
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="bg-white p-6 rounded shadow">
+        <h1 className="text-2xl font-bold text-blue-700 mb-4">Bem-vindo à Gestão 🔐</h1>
+        <p className="mb-2"><strong>Nome:</strong> {user?.name}</p>
+        <p className="mb-2"><strong>Email:</strong> {user?.email}</p>
+        <p className="mb-4"><strong>Papel:</strong> {user?.role || 'Sem permissão atribuída'}</p>
       </div>
     </main>
   );
