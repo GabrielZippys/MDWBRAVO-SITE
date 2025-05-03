@@ -1,10 +1,10 @@
 header {
-  background-color: #cccccc;
+  background-color: #727272;
   padding: 1rem 2rem;
   display: flex;
   justify-content: space-around;
-  gap: 1.5rem;
-  width: 100%;
+  align-items:center;
+  
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
@@ -21,6 +21,10 @@ align-items: end;
 justify-content: center;
 }
 
+.MDW_TITU {
+  font-size: 50px;
+}
+
 .foto img {
   width: 50px;
   height: 50px;
@@ -29,10 +33,13 @@ justify-content: center;
   margin: 10px;
 }
 
-.butodesair{
-  border-radius: 100%;
+button{
+  background-color: #000000;
+  color: azure;
   font-size: large;
   margin: 10px;
+  cursor: pointer;
+  transition: font-size 0.5s ease;
 }
 
 .bravo {
@@ -45,10 +52,33 @@ header a {
   font-weight: bold;
   padding: 0.5rem 1rem;
   border-radius: 8px;
-  background-color: white;
   transition: background-color 0.3s;
 }
 
-header a:hover {
-  background-color: #e0e0e0;
+button:hover {
+  
+  font-size: larger;
+}
+
+.direita {
+  display: flex;
+  flex-direction:column;
+  align-items: center;
+  justify-content:right;
+}
+
+.começo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+}
+
+.butoentrar {
+  font-size: 50px;
+}
+
+body{
+  background-color: rgba(74, 78, 78, 0.336);
 }

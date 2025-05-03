@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
-import { signIn } from 'next-auth/react';
-import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 interface Permissao {
   _id?: string;
@@ -10,11 +8,10 @@ interface Permissao {
 }
 
 export default function GestaoPage() {
-  const { data: session, status } = useSession();
   const [permissoes, setPermissoes] = useState<Permissao[]>([]);
   const [email, setEmail] = useState('');
   const [role, setRole] = useState<'Gestor' | 'TI' | 'Loja'>('TI');
-  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const fetchPermissoes = async () => {
     const res = await fetch('/api/permissoes');
@@ -23,24 +20,8 @@ export default function GestaoPage() {
   };
 
   useEffect(() => {
-    if (status === 'authenticated') fetchPermissoes();
-  }, [status]);
-
-  if (status === 'loading') return <p className="p-8">Carregando autenticação...</p>;
-
-  if (!session || session.user?.role !== 'Gestor') {
-    return (
-      <main className="p-8 text-center">
-        <h1 className="text-2xl font-bold mb-4">Acesso Restrito</h1>
-        <button
-          onClick={() => signIn("google")}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-        >
-          Entrar com Google
-        </button>
-      </main>
-    );
-  }
+    fetchPermissoes();
+  }, []);
 
   const salvarPermissao = async () => {
     if (!email) return;
@@ -65,11 +46,13 @@ export default function GestaoPage() {
 
   return (
     <main className="p-8 min-h-screen bg-gray-100">
-      <div className="flex items-center gap-4 mb-6">
-        <Image src="/bravo.png" alt="Logo Bravo" width={40} height={40} />
-        <h1 className="text-2xl font-bold text-blue-700">Gestão de Acessos 🔐</h1>
-      </div>
+      {/* Cabeçalho com botão voltar */}
+      <div className="flex items-center justify-between mb-6">
+  <h1 className="text-2xl font-bold text-blue-700">Gestão de Acessos 🔐</h1>
+</div>
 
+
+      {/* Formulário de permissão */}
       <div className="bg-white p-4 rounded shadow mb-6">
         <h2 className="font-semibold mb-2">Adicionar ou Atualizar Permissão</h2>
         <input
@@ -96,6 +79,7 @@ export default function GestaoPage() {
         </button>
       </div>
 
+      {/* Tabela de permissões */}
       <div className="bg-white p-4 rounded shadow">
         <h2 className="font-semibold mb-2">Usuários Autorizados</h2>
         <table className="w-full text-left">

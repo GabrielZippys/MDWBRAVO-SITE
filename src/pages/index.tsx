@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Dashboard from '@/components/Dashboard';
 import { signIn, signOut, useSession } from "next-auth/react";
-import Link from 'next/link';
 
 const MapaDeChamados = dynamic(() => import('@/components/MapaDeChamados'), { ssr: false });
 
@@ -66,14 +65,16 @@ export default function Home() {
 
   if (!session) {
     return (
-      <main className="p-8 text-center">
+      <main className="começo">
         <h1 className="text-2xl font-bold mb-4">Acesso Restrito</h1>
+       
         <button
           onClick={() => signIn("google")}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+          className="butoentrar"
         >
-          Entrar com Google
+          ENTRE  COM  SUA  CONTA
         </button>
+      
       </main>
     );
   }
@@ -82,29 +83,8 @@ export default function Home() {
     <main className="p-8 bg-gray-100 min-h-screen">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-blue-700">Painel de Chamados 🚨</h1>
-        <div className="flex items-center gap-4 text-right">
-          <div>
-            <p className="text-sm text-gray-600">
-              Bem-vindo, {session.user?.name} ({session.user?.role || "Sem permissão"})
-            </p>
-            <button
-              onClick={() => signOut()}
-              className="bg-red-600 hover:bg-red-700 text-white px-4 py-1 rounded mt-1"
-            >
-              Sair
-            </button>
-          </div>
-        </div>
       </div>
-
       <div className="flex flex-wrap gap-4 mb-6 items-center">
-        {session?.user?.role === 'Gestor' && (
-          <Link href="/gestao">
-            <button className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded">
-              ⚙️ Acessar Administração
-            </button>
-          </Link>
-        )}
 
         <select className="px-4 py-2 rounded border" value={filtroZona} onChange={(e) => setFiltroZona(e.target.value)}>
           <option value="">Todas as Zonas</option>
