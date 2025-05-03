@@ -12,9 +12,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4">
           <Image src="/bravo.png" alt="Logo Bravo" width={40} height={40} />
-            <h1 className="text-white text-lg sm:text-xl font-bold tracking-wide animate-fade-in">
-              Painel de Chamados
-            </h1>
           </div>
 
           {session && (
