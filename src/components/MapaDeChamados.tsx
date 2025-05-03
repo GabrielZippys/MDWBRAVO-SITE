@@ -1,11 +1,8 @@
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import MarkerClusterGroup from 'react-leaflet-markercluster';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import 'leaflet.markercluster/dist/MarkerCluster.css';
-import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 
-// Corrige o ícone padrão do Leaflet
+// Corrige ícone padrão do Leaflet
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -30,7 +27,6 @@ const coordenadasPorSigla: Record<string, [number, number]> = {
   NS: [-23.5105, -46.7291],
   BU: [-23.5405, -46.6333],
   FC: [-23.5300, -46.6350],
-  // Adicione mais siglas conforme necessário
 };
 
 type Chamado = {
@@ -48,8 +44,8 @@ export default function MapaDeChamados({ chamados }: { chamados: Chamado[] }) {
     let color = 'blue';
 
     if (status.toLowerCase() === 'em aberto') color = 'red';
-    else if (status.toLowerCase() === 'realizando' || status.toLowerCase() === 'designado') color = 'orange';
-    else if (status.toLowerCase() === 'resolvido' || status.toLowerCase() === 'feito') color = 'green';
+    else if (['realizando', 'designado'].includes(status.toLowerCase())) color = 'orange';
+    else if (['resolvido', 'feito'].includes(status.toLowerCase())) color = 'green';
 
     return new L.Icon({
       iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
@@ -67,39 +63,39 @@ export default function MapaDeChamados({ chamados }: { chamados: Chamado[] }) {
       <MapContainer
         center={[-23.55, -46.64]}
         zoom={11}
-        scrollWheelZoom={true}
+        scrollWheelZoom={false}
         style={{ height: '500px', width: '1000px' }}
       >
         <TileLayer
           attribution='&copy; OpenStreetMap'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        {chamados.map((chamado) => {
+          const sigla = chamado.loja?.match(/[A-Z]{2,}/)?.[0]?.toUpperCase();
+          const coordenadas = coordenadasPorSigla[sigla || ''];
 
-        <MarkerClusterGroup>
-          {chamados.map((chamado) => {
-            const sigla = chamado.loja?.match(/[A-Z]{2,}/)?.[0]?.toUpperCase();
-            const coordenadas = coordenadasPorSigla[sigla || ''];
+          if (!coordenadas) return null;
 
-            if (!coordenadas) return null;
+          return (
+            <Marker
+              key={chamado._id}
+              position={coordenadas}
+              icon={getIconByStatus(chamado.status)}
+            >
+             <Popup>
+  <div>
+    <strong>{chamado?.titulo || 'Sem título'}</strong><br />
+    🏪 Loja: {chamado?.loja || 'Desconhecida'}<br />
+    🧭 Zona: {chamado?.zona || '---'}<br />
+    📅 {chamado?.dataCriacao ? new Date(chamado.dataCriacao).toLocaleDateString('pt-BR') : 'Sem data'}<br />
+    📌 Status: {chamado?.status || '---'}<br />
+    📂 Tipo: {chamado?.tipo || '---'}
+  </div>
+</Popup>
 
-            return (
-              <Marker
-                key={chamado._id}
-                position={coordenadas}
-                icon={getIconByStatus(chamado.status)}
-              >
-                <Popup>
-                  <strong>{chamado.titulo}</strong><br />
-                  🏪 Loja: {chamado.loja}<br />
-                  🧭 Zona: {chamado.zona}<br />
-                  📅 {new Date(chamado.dataCriacao).toLocaleDateString('pt-BR')}<br />
-                  📌 Status: {chamado.status}<br />
-                  📂 Tipo: {chamado.tipo}
-                </Popup>
-              </Marker>
-            );
-          })}
-        </MarkerClusterGroup>
+            </Marker>
+          );
+        })}
       </MapContainer>
     </div>
   );

@@ -6,7 +6,13 @@
   padding: 0;
 }
 
-main{
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+main {
   display: flex;
   flex-direction: column;
   margin: 20px;
@@ -14,11 +20,7 @@ main{
   align-items: center;
 }
 
-body {
-  font-family: 'Inter', sans-serif;
-  background-color: #f4f4f4;
-}
-
+/* Header */
 header {
   background-color: #ffffff;
   padding: 1rem 2rem;
@@ -43,6 +45,7 @@ header {
   margin-left: 1rem;
 }
 
+/* Usuário */
 .foto {
   display: flex;
   align-items: center;
@@ -68,27 +71,102 @@ header {
   margin-bottom: 0.5rem;
 }
 
+/* Botões Genéricos */
 button, main option {
-  background-color: #1f2937;
-  color: #fff;
+  padding: 0.5rem 1.2rem;
+  border-radius: 8px;
   border: none;
-  padding: 0.4rem 1rem;
-  margin: 0.2rem 0;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  font-weight: 600;
   font-size: 14px;
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 button:hover {
-  background-color: #111827;
   transform: scale(1.05);
 }
 
+/* Botões com Estilo */
+.btn {
+  padding: 0.5rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background-color: #3b82f6;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: #2563eb;
+}
+
+.btn-secondary {
+  background-color: #e5e7eb;
+  color: #1f2937;
+}
+
+.btn-secondary:hover {
+  background-color: #d1d5db;
+}
+
+.btn-danger {
+  background-color: #ef4444;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #dc2626;
+}
+
+/* Botão ADA existente */
 .ada {
   background-color: #3b82f6;
 }
 
 .ada:hover {
   background-color: #2563eb;
+}
+
+/* Estilo dos cards de gráfico */
+.chart-card {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* Layout Responsivo dos Gráficos */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.full-span {
+  grid-column: span 2;
+}
+
+@media (max-width: 767px) {
+  .full-span {
+    grid-column: span 1;
+  }
 }
