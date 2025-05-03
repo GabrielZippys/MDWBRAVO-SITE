@@ -1,4 +1,5 @@
-import './globals.css';
+// src/app/layout.tsx
+import '@/styles/globals.css';
 import { Inter } from 'next/font/google';
 import SessionProviderWrapper from '@/components/SessionProviderWrapper';
 
