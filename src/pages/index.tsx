@@ -86,7 +86,7 @@ export default function Home() {
   return (
     <main className="p-8 bg-gray-100 min-h-screen">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-blue-700">Painel de Chamados 🚨</h1>
+        <h1 className="centroTitulo">Painel de Chamados 🚨</h1>
       </div>
       <div className="flex flex-wrap gap-4 mb-6 items-center">
 

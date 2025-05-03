@@ -10,13 +10,15 @@ body {
   font-family: 'Inter', sans-serif;
   background-color: #f4f4f4;
   color: #333;
+  line-height: 1.6;
 }
 
 main {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
   display: flex;
   flex-direction: column;
-  margin: 20px;
-  justify-content: center;
   align-items: center;
 }
 
@@ -43,6 +45,8 @@ header {
   font-weight: 600;
   color: #333;
   margin-left: 1rem;
+  text-align: center;
+  width: 100%;
 }
 
 /* Usuário */
@@ -72,7 +76,7 @@ header {
 }
 
 /* Botões Genéricos */
-button, main option {
+button, select {
   padding: 0.5rem 1.2rem;
   border-radius: 8px;
   border: none;
@@ -124,21 +128,13 @@ button:hover {
   background-color: #dc2626;
 }
 
-/* Botão ADA existente */
-.ada {
-  background-color: #3b82f6;
-}
-
-.ada:hover {
-  background-color: #2563eb;
-}
-
 /* Estilo dos cards de gráfico */
 .chart-card {
   background-color: #ffffff;
   padding: 1.5rem;
   border-radius: 12px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  width: 100%;
 }
 
 /* Layout Responsivo dos Gráficos */
@@ -147,6 +143,7 @@ button:hover {
   grid-template-columns: 1fr;
   gap: 1.5rem;
   margin-bottom: 2rem;
+  width: 100%;
 }
 
 @media (min-width: 768px) {
@@ -169,4 +166,34 @@ button:hover {
   .full-span {
     grid-column: span 1;
   }
+}
+
+/* Filtros */
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  justify-content: center;
+}
+
+.filtros label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.filtros select {
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+/* Título Centralizado */
+.titulo-centralizado {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
 }
