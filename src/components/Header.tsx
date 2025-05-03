@@ -25,18 +25,19 @@ export default function Header() {
           <div className="direita">
             <p className="text-sm text-gray-600">
               Bem-vindo, {session.user?.name} ({session.user?.role || 'Sem permissão'})
-            <button
-              onClick={() => signOut()}
-              className="butodesair"
-            >
-              Sair
-            </button>
+              <button
+  onClick={() => signOut({ callbackUrl: '/' })}
+  className="butodesair"
+>
+  Sair
+</button>
+
             </p>
 
             {session?.user?.role === 'Gestor' && (
           <Link href="/gestao">
             <button className="ada">
-              ⚙️ Acessar Administração
+              ⚙️ Acessar Administração (Em breve)
             </button>
           </Link>
         )}

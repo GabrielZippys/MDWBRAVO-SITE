@@ -1,7 +1,7 @@
 'use client';
-import { useSession, signOut } from 'next-auth/react';
+import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function GestaoPage() {
   const { data: session, status } = useSession();
