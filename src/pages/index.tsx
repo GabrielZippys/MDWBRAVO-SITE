@@ -75,36 +75,45 @@ export default function Home() {
     <main className="p-8 bg-gray-100 min-h-screen">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-blue-700">Painel de Chamados 🚨</h1>
-        <div>
-        <p className="text-sm text-gray-600 mb-1">
-  Bem-vindo, {session.user?.name} ({session.user?.role || "Sem permissão"})
-</p>
-          <button
-            onClick={() => signOut()}
-            className="bg-red-600 hover:bg-red-700 text-white px-4 py-1 rounded"
-          >
-            Sair
-          </button>
+        <div className="flex items-center gap-4 text-right">
+          {session.user?.image && (
+            <img
+              src={session.user.image}
+              alt="Foto de perfil"
+              className="w-10 h-10 rounded-full border-2 border-gray-300"
+            />
+          )}
+          <div>
+            <p className="text-sm text-gray-600">
+              Bem-vindo, {session.user?.name} ({session.user?.role || "Sem permissão"})
+            </p>
+            <button
+              onClick={() => signOut()}
+              className="bg-red-600 hover:bg-red-700 text-white px-4 py-1 rounded mt-1"
+            >
+              Sair
+            </button>
+          </div>
         </div>
       </div>
 
-      {session?.user?.role === 'Gestor' && (
-  <Link href="/gestao">
-    <button className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded mb-6 ml-2">
-      ⚙️ Acessar Administração
-    </button>
-  </Link>
-)}
+      <div className="flex flex-wrap gap-4 mb-6 items-center">
+        {session?.user?.role === 'Gestor' && (
+          <Link href="/gestao">
+            <button className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded">
+              ⚙️ Acessar Administração
+            </button>
+          </Link>
+        )}
 
-      <button
-        onClick={sincronizarComNotion}
-        disabled={sincronizando}
-        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mb-6 transition disabled:opacity-50"
-      >
-        {sincronizando ? 'Sincronizando...' : '🔁 Sincronizar com Notion'}
-      </button>
+        <button
+          onClick={sincronizarComNotion}
+          disabled={sincronizando}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition disabled:opacity-50"
+        >
+          {sincronizando ? 'Sincronizando...' : '🔁 Sincronizar com Notion'}
+        </button>
 
-      <div className="flex flex-wrap gap-4 mb-6">
         <select className="px-4 py-2 rounded border" value={filtroZona} onChange={(e) => setFiltroZona(e.target.value)}>
           <option value="">Todas as Zonas</option>
           {zonasUnicas.map((z) => <option key={z} value={z}>{z}</option>)}
@@ -130,7 +139,7 @@ export default function Home() {
           <Dashboard chamados={chamadosFiltrados} />
           <MapaDeChamados chamados={chamadosFiltrados} />
 
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto mt-6">
             <table className="min-w-full bg-white rounded shadow">
               <thead className="bg-blue-100 text-left">
                 <tr>

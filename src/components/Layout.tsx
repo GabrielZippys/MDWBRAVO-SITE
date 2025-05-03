@@ -1,22 +1,17 @@
-// src/app/layout.tsx
-import '@/styles/globals.css';
-import { Inter } from 'next/font/google';
-import Header from '@/components/Header';
+'use client';
 
-const inter = Inter({ subsets: ['latin'] });
+import Header from './Header';
+import { ReactNode } from 'react';
 
-export const metadata = {
-  title: 'MDW Bravo',
-  description: 'Sistema de Chamados',
-};
+interface LayoutProps {
+  children: ReactNode;
+}
 
-export default function RootLayout({ children }) {
+export default function Layout({ children }: LayoutProps) {
   return (
-    <html lang="pt-br">
-      <body>
-        <Header />
-        {children}
-      </body>
-    </html>
+    <div className="min-h-screen bg-gray-100 text-gray-900">
+      <Header />
+      <main className="max-w-7xl mx-auto p-4">{children}</main>
+    </div>
   );
 }
