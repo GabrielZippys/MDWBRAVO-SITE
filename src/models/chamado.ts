@@ -7,6 +7,7 @@ const ChamadoSchema = new mongoose.Schema({
   tipo: String,
   dataCriacao: Date,
   zona: String,
+  prioridade: String, // campo "prioridade" adicionado (baixa, média, alta, crítica)
 });
 
 export default mongoose.models.Chamado || mongoose.model('Chamado', ChamadoSchema);

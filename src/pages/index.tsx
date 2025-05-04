@@ -18,6 +18,7 @@ type ChamadoType = {
   tipo: string;
   dataCriacao: string;
   zona: string;
+  prioridade: string; // campo "prioridade" adicionado
 };
 
 type HomeProps = {
@@ -31,11 +32,13 @@ export default function Home({ chamadosIniciais }: HomeProps) {
   const [filtroStatus, setFiltroStatus] = useState('');
   const [filtroLoja, setFiltroLoja] = useState('');
   const [filtroTipo, setFiltroTipo] = useState('');
+  const [filtroPrioridade, setFiltroPrioridade] = useState('');
 
   const zonasUnicas = Array.from(new Set(chamados.map((c) => c.zona).filter(Boolean)));
   const statusUnicos = Array.from(new Set(chamados.map((c) => c.status).filter(Boolean)));
   const lojasUnicas = Array.from(new Set(chamados.map((c) => c.loja).filter(Boolean)));
   const tiposUnicos = Array.from(new Set(chamados.map((c) => c.tipo).filter(Boolean)));
+  const prioridadesUnicas = Array.from(new Set(chamados.map((c) => c.prioridade).filter(Boolean)));
 
   const chamadosFiltrados = useMemo(() => {
     return chamados.filter((c) => {
@@ -43,9 +46,10 @@ export default function Home({ chamadosIniciais }: HomeProps) {
       const statusOk = !filtroStatus || c.status === filtroStatus;
       const lojaOk = !filtroLoja || c.loja === filtroLoja;
       const tipoOk = !filtroTipo || c.tipo === filtroTipo;
-      return zonaOk && statusOk && lojaOk && tipoOk;
+      const prioridadeOk = !filtroPrioridade || c.prioridade === filtroPrioridade;
+      return zonaOk && statusOk && lojaOk && tipoOk && prioridadeOk;
     });
-  }, [chamados, filtroZona, filtroStatus, filtroLoja, filtroTipo]);
+  }, [chamados, filtroZona, filtroStatus, filtroLoja, filtroTipo, filtroPrioridade]);
 
   if (status === "loading") return <p className="p-8">Carregando autenticação...</p>;
 
@@ -53,7 +57,7 @@ export default function Home({ chamadosIniciais }: HomeProps) {
     return (
       <main className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
         <h1 className="text-3xl font-bold mb-6">Acesso Restrito</h1>
-        <button onClick={() => signIn("google")} className="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition">
+        <button onClick={() => signIn("google")} className="px-6... bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition">
           Entrar com Google
         </button>
       </main>
@@ -66,6 +70,7 @@ export default function Home({ chamadosIniciais }: HomeProps) {
         <h1 className="text-3xl font-bold text-center w-full">Painel de Chamados 🚨</h1>
       </div>
 
+      {/* Filtros */}
       <div className="flex flex-wrap gap-4 mb-6 items-center justify-center">
         <select className="px-4 py-2 rounded border" value={filtroZona} onChange={(e) => setFiltroZona(e.target.value)}>
           <option value="">Todas as Zonas</option>
@@ -86,6 +91,11 @@ export default function Home({ chamadosIniciais }: HomeProps) {
           <option value="">Todos os Tipos</option>
           {tiposUnicos.map((t) => <option key={t} value={t}>{t}</option>)}
         </select>
+
+        <select className="px-4 py-2 rounded border" value={filtroPrioridade} onChange={(e) => setFiltroPrioridade(e.target.value)}>
+          <option value="">Todas as Prioridades</option>
+          {prioridadesUnicas.map((p) => <option key={p} value={p}>{p}</option>)}
+        </select>
       </div>
 
       {/* TABELA DE CHAMADOS */}
@@ -99,21 +109,19 @@ export default function Home({ chamadosIniciais }: HomeProps) {
               setFiltroStatus('');
               setFiltroLoja('');
               setFiltroTipo('');
+              setFiltroPrioridade('');
             }}
           >
             Limpar Filtros
           </button>
         </div>
         <Dashboard chamados={chamadosFiltrados} />
-
-      
+      </div>
 
       {/* MAPA */}
       <br /><br />
-      
-        <h2 className="text-xl font-semibold mb-2">Mapa Interativo</h2>
-        <MapaDeChamados chamados={chamadosFiltrados} />
-      </div>
+      <h2 className="text-xl font-semibold mb-2">Mapa Interativo</h2>
+      <MapaDeChamados chamados={chamadosFiltrados} />
     </main>
   );
 }
@@ -130,11 +138,15 @@ export const getServerSideProps: GetServerSideProps = async () => {
     tipo: c.tipo,
     dataCriacao: c.dataCriacao.toISOString(),
     zona: c.zona,
+    prioridade: c.prioridade, // inclui prioridade nos dados trazidos
   }));
 
   return {
     props: {
-      chamadosIniciais: chamados,
+      chamadosIniciais: chamados.map((chamado) => ({
+        ...chamado,
+        prioridade: chamado.prioridade ?? null, // substitui undefined por null
+      })),
     },
-  };
-};
+  }
+  }  
