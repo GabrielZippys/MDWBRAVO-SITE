@@ -120,7 +120,7 @@ export default function Home({ chamadosIniciais }: HomeProps) {
 
       {/* MAPA */}
       <br /><br />
-      <h2 className="text-xl font-semibold mb-2">Mapa Interativo</h2>
+      <h1 className="text-xl font-semibold mb-2" align = "center">Mapa Interativo</h1>
       <MapaDeChamados chamados={chamadosFiltrados} />
     </main>
   );

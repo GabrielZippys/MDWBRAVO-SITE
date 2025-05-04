@@ -59,7 +59,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
   return (
     <div className="space-y-6">
       {/* Filtros */}
-      <div className="flex gap-4 flex-wrap bg-gray-900 p-4 rounded-xl">
+      <div className="etiqueta">
         <Filtro label="Zona" valor={filtroZona} opcoes={opcoesUnicas('zona')} onChange={setFiltroZona} />
         <Filtro label="Status" valor={filtroStatus} opcoes={opcoesUnicas('status')} onChange={setFiltroStatus} />
         <Filtro label="Tipo" valor={filtroTipo} opcoes={opcoesUnicas('tipo')} onChange={setFiltroTipo} />

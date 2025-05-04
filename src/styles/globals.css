@@ -41,6 +41,7 @@ header {
   height: auto;
 }
 
+
 .MDW_TITU {
   font-size: 54px;
   font-weight: 900;
@@ -215,7 +216,7 @@ button:hover {
   font-size: 42px;
   font-weight: 700;
   margin: 2rem 0 1rem;
-  color: #1f2937;
+  color: #000000;
 }
 .dashboard-filters {
   display: flex;
@@ -312,7 +313,7 @@ button:hover {
   opacity: 0.5;
 }
 
-.mapa-container {
+.map-container {
   display: flex;
   width: 100%;
   align-items: center;
@@ -341,7 +342,7 @@ button:hover {
 .tabela-chamados th {
   background-color: #f8f9fa;
   font-weight: bold;
-  color: #333;
+  color: #000000;
 }
 
 .tabela-chamados tr:hover {
