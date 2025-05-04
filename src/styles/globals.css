@@ -318,3 +318,93 @@ button:hover {
   align-items: center;
   justify-content: center;
 }
+
+/* styles/tabela.css */
+
+.tabela-chamados {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background-color: #ffffff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.tabela-chamados th,
+.tabela-chamados td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.tabela-chamados th {
+  background-color: #f8f9fa;
+  font-weight: bold;
+  color: #333;
+}
+
+.tabela-chamados tr:hover {
+  background-color: #f1f5f9;
+}
+
+.tr-tipo-ti {
+  background-color: #e0f2fe;
+}
+
+.tr-tipo-manutencao {
+  background-color: #dcfce7;
+}
+
+.tr-tipo-urgente {
+  background-color: #fee2e2;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .tabela-chamados {
+    font-size: 14px;
+  }
+
+  .tabela-chamados th,
+  .tabela-chamados td {
+    padding: 10px 12px;
+  }
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #464646;
+  color: #ffffff;
+  font-size: 14px;
+  margin-top: 2rem;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+thead {
+  background-color: #3b82f6;
+  color: rgb(0, 0, 0);
+}
+
+th, td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+tr:hover {
+  background-color: #525252;
+}
+
+th:first-child,
+td:first-child {
+  border-top-left-radius: 8px;
+}
+
+th:last-child,
+td:last-child {
+  border-top-right-radius: 8px;
+}
