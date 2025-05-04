@@ -53,11 +53,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
 
     return (
       <div className="space-y-6">
-        {/* Filtros (já existentes no código) */}
-        <div className="flex flex-wrap gap-4 bg-gray-800 p-6 rounded-xl shadow-md items-end">
-          {/* ...Controles de filtro... */}
-          <button onClick={() => {/* Limpar filtros */}} className="bg-red-500 ... text-white px-4 py-2 rounded-lg">Limpar Filtros</button>
-        </div>
+      
   
         {/* Tabela de Chamados */}
         <div className="shadow overflow-x-auto border-b border-gray-200 sm:rounded-lg">

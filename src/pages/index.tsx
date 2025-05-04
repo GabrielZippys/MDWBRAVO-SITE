@@ -90,8 +90,22 @@ export default function Home({ chamadosIniciais }: HomeProps) {
 
       {/* TABELA DE CHAMADOS */}
       <div className="mapa-cointainer">
-        <h2 className="text-xl font-semibold mb-2">Lista de Chamados</h2>
+        <div className="flex justify-between items-center mb-2">
+          <h2 className="text-xl font-semibold">Lista de Chamados</h2>
+          <button
+            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+            onClick={() => {
+              setFiltroZona('');
+              setFiltroStatus('');
+              setFiltroLoja('');
+              setFiltroTipo('');
+            }}
+          >
+            Limpar Filtros
+          </button>
+        </div>
         <Dashboard chamados={chamadosFiltrados} />
+
       
 
       {/* MAPA */}
