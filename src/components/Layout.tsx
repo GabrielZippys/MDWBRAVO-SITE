@@ -3,19 +3,15 @@
 import Header from '@/components/Header';
 import { ReactNode } from 'react';
 
-
 interface LayoutProps {
   children: ReactNode;
 }
 
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function Layout({ children }: LayoutProps) {
   return (
-    <html lang="pt-BR">
-      <body>
-        <Header /> {/* <-- Este é o único lugar onde deve aparecer */}
-        {children}
-      </body>
-    </html>
+    <>
+      <Header />
+      {children}
+    </>
   );
 }
