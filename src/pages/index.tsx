@@ -7,7 +7,6 @@ import 'leaflet/dist/leaflet.css';
 import { GetServerSideProps } from 'next';
 import { connectDB } from '@/lib/mongodb';
 import Chamado from '@/models/chamado';
-import axios from 'axios';
 
 const MapaDeChamados = dynamic(() => import('@/components/MapaDeChamados'), { ssr: false });
 
