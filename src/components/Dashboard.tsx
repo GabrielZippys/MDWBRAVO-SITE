@@ -119,20 +119,31 @@ export default function Dashboard({ chamados }: DashboardProps) {
         </div>
 
   {/* Chamados por Zona */}
-  <div className="bg-white p-4 rounded shadow">
-        <h2 className="text-lg font-bold mb-2">Chamados por Zona</h2>
-        <ResponsiveContainer width="100%" height={300}>
-          <PieChart>
-            <Pie data={porZona} dataKey="valor" nameKey="nome" outerRadius={100} fill="#8884d8" label>
-              {porZona.map((_, index) => (
-                <Cell key={`cell-${index}`} fill={cores[index % cores.length]} />
-              ))}
-            </Pie>
-            <Legend />
-            <Tooltip />
-          </PieChart>
-        </ResponsiveContainer>
-      </div>
+<div className="bg-white p-4 rounded-xl shadow">
+  <h3 className="text-lg font-semibold mb-2">Chamados por Zona</h3>
+  {porZona.length > 0 ? (
+    <ResponsiveContainer width="100%" height={250}>
+      <PieChart>
+        <Pie
+          data={porZona}
+          dataKey="valor"
+          nameKey="nome"
+          outerRadius={80}
+          label
+        >
+          {porZona.map((_, index) => (
+            <Cell key={`cell-${index}`} fill={cores[index % cores.length]} />
+          ))}
+        </Pie>
+        <Legend />
+        <Tooltip />
+      </PieChart>
+    </ResponsiveContainer>
+  ) : (
+    <p className="text-center text-gray-500">Nenhum dado disponível para zonas.</p>
+  )}
+</div>
+
       </div>
     </div>
   );

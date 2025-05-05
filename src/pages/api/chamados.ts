@@ -1,6 +1,7 @@
 // pages/api/chamados.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Client } from '@notionhq/client';
+import { getZona } from '@/utils/classifyZone'; // ajuste o caminho conforme necessário
 
 const notion = new Client({ auth: process.env.NOTION_API_KEY! });
 const DATABASE_ID = process.env.NOTION_DATABASE_ID!;
@@ -10,9 +11,9 @@ const STATUSES_IGNORADOS = new Set(['Feito', 'Resolvido', 'Concluído']);
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
-    // Busca paginada de todas as páginas
     const results: any[] = [];
     let cursor: string | undefined = undefined;
+
     do {
       const response = await notion.databases.query({
         database_id: DATABASE_ID,
@@ -22,23 +23,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       cursor = response.has_more ? response.next_cursor! : undefined;
     } while (cursor);
 
-    // Filtra e mapeia para o formato de ChamadoType
     const chamados = results
-      .map(page => {
+      .map((page) => {
         const props = page.properties as any;
         const status = props.Status?.status?.name || 'Sem status';
+        const loja = props.Loja?.select?.name || 'Não definida';
+
         return {
           _id: page.id,
           titulo: props['Descrição do Problema']?.title?.[0]?.plain_text || 'Sem título',
-          loja: props.Loja?.select?.name || 'Não definida',
+          loja,
           status,
           tipo: props['Tipo de Ticket']?.select?.name || 'Não definido',
           prioridade: props.Prioridade?.select?.name || null,
           dataCriacao: page.created_time,
-          zona: '—', // se precisar lógica de zona, reinsira aqui
+          zona: getZona(loja), // aqui aplica a função para classificar a zona
         };
       })
-      // remove aqueles com status ignorado
       .filter((c) => !STATUSES_IGNORADOS.has(c.status));
 
     res.status(200).json(chamados);
