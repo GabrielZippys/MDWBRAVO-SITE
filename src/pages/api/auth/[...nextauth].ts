@@ -5,6 +5,7 @@ import type { User } from "next-auth";
 const allowedEmails: Record<string, string> = {
   "suporte@exemplo.com": "TI",
   "gabriel.henrique@bravo-ti.com": "Gestor",
+  "paulo.ikeda@bravo-ti.com": "gestor",
   "loja@exemplo.com": "Loja",
 };
 
