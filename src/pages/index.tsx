@@ -159,7 +159,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
   await connectDB();
   const chamados = await ChamadoModel.find().lean();
 
-  const chamadosFormatados: ChamadoType[] = chamados.map((c: any) => ({
+  const chamadosFormatados = chamados.map((c) => ({
     _id: c._id.toString(),
     titulo: c.titulo,
     loja: c.loja,
@@ -168,7 +168,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
     dataCriacao: c.dataCriacao?.toISOString() || '',
     zona: c.zona || '',
     prioridade: c.prioridade || '',
-  }));
+  }));  
 
   return {
     props: {
