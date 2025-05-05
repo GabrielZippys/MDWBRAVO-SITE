@@ -3,7 +3,7 @@ import GoogleProvider from "next-auth/providers/google";
 import type { User } from "next-auth";
 
 const allowedEmails: Record<string, string> = {
-  "suporte@exemplo.com": "TI",
+  "benedito.soares@bravo-ti.com": "TI",
   "gabriel.henrique@bravo-ti.com": "Gestor",
   "paulo.ikeda@bravo-ti.com": "gestor",
   "fernanda.p.s.b6@gmail.com": "gestor",
