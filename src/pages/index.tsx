@@ -97,10 +97,54 @@ export default function Home({ chamadosIniciais }: HomeProps) {
     <main className="p-8 bg-gray-100 min-h-screen">
       <h1 className="text-3xl font-bold mb-6 text-center">Painel de Chamados 🚨</h1>
 
-      {/* Filtros */}
-      <div className="flex flex-wrap gap-4 mb-8">
-        {/* ... seus selects e botões ... */}
+     {/* Filtros */}
+      <div className="flex flex-wrap gap-4 items-end mb-8">
+        <select className="px-4 py-2 rounded border bg-white" value={filtroZona} onChange={(e) => setFiltroZona(e.target.value)}>
+          <option value="">Todas as Zonas</option>
+          {zonasUnicas.map((z) => <option key={z} value={z}>{z}</option>)}
+        </select>
+
+        <select className="px-4 py-2 rounded border bg-white" value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)}>
+          <option value="">Todos os Status</option>
+          {statusUnicos.map((s) => <option key={s} value={s}>{s}</option>)}
+        </select>
+
+        <select className="px-4 py-2 rounded border bg-white" value={filtroLoja} onChange={(e) => setFiltroLoja(e.target.value)}>
+          <option value="">Todas as Lojas</option>
+          {lojasUnicas.map((l) => <option key={l} value={l}>{l}</option>)}
+        </select>
+
+        <select className="px-4 py-2 rounded border bg-white" value={filtroTipo} onChange={(e) => setFiltroTipo(e.target.value)}>
+          <option value="">Todos os Tipos</option>
+          {tiposUnicos.map((t) => <option key={t} value={t}>{t}</option>)}
+        </select>
+
+        <select className="px-4 py-2 rounded border bg-white" value={filtroPrioridade} onChange={(e) => setFiltroPrioridade(e.target.value)}>
+          <option value="">Todas as Prioridades</option>
+          {prioridadesUnicas.map((p) => <option key={p} value={p}>{p}</option>)}
+        </select>
+
+        <button
+          className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400 transition"
+          onClick={() => {
+            setFiltroZona('');
+            setFiltroStatus('');
+            setFiltroLoja('');
+            setFiltroTipo('');
+            setFiltroPrioridade('');
+          }}
+        >
+          Limpar Filtros
+        </button>
+
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+          onClick={fetchChamados}
+        >
+          Atualizar Chamados
+        </button>
       </div>
+
 
       {/* Lista de Chamados */}
       <section className="mb-10">
