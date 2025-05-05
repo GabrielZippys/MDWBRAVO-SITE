@@ -57,28 +57,12 @@ export default function Dashboard({ chamados }: DashboardProps) {
   const porTipo = agruparPor('tipo');
 
   return (
-    <div className="space-y-6">
-      {/* Filtros */}
-      <div className="etiqueta">
-        <Filtro label="Zona" valor={filtroZona} opcoes={opcoesUnicas('zona')} onChange={setFiltroZona} />
-        <Filtro label="Status" valor={filtroStatus} opcoes={opcoesUnicas('status')} onChange={setFiltroStatus} />
-        <Filtro label="Tipo" valor={filtroTipo} opcoes={opcoesUnicas('tipo')} onChange={setFiltroTipo} />
-        <button
-          className="ml-auto bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
-          onClick={() => {
-            setFiltroZona(null);
-            setFiltroStatus(null);
-            setFiltroTipo(null);
-          }}
-        >
-          Limpar Filtros
-        </button>
-      </div>
+    <div className="">
 
       {/* Tabela de Chamados */}
       <div className="shadow overflow-x-auto border-b border-gray-200 sm:rounded-lg">
         <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+          <thead className="bg-gray- 50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Título</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Loja</th>
@@ -115,8 +99,8 @@ export default function Dashboard({ chamados }: DashboardProps) {
       </div>
 
       {/* Gráficos */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <GraficoBarras titulo="Chamados por Status" dados={porStatus} cor="#a8dadc" />
+      <div className="Graficos">
+        <GraficoBarras titulo="Chamados por Status" dados={porStatus} cor="#a8dadc"/>
         <GraficoBarras titulo="Chamados por Tipo" dados={porTipo} cor="#f4a261" />
         <GraficoPizza titulo="Chamados por Zona" dados={porZona} />
       </div>
@@ -161,7 +145,7 @@ function GraficoBarras({
   cor: string;
 }) {
   return (
-    <div className="bg-white p-4 rounded-xl shadow-md">
+    <div className="Graficos">
       <h3 className="text-lg font-semibold text-gray-900 mb-4">{titulo}</h3>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={dados}>
@@ -183,15 +167,25 @@ function GraficoPizza({
   dados: { nome: string; valor: number }[];
 }) {
   return (
-    <div className="bg-white p-4 rounded-xl shadow-md">
+    <div className="Graficos">
       <h3 className="text-lg font-semibold text-gray-900 mb-4">{titulo}</h3>
       <ResponsiveContainer width="100%" height={300}>
         <PieChart>
-          <Pie data={dados} dataKey="valor" nameKey="nome" cx="50%" cy="50%" outerRadius={80} fill="#8884d8">
+          <Pie
+            data={dados}
+            dataKey="valor"
+            nameKey="nome"
+            cx="50%"
+            cy="50%"
+            outerRadius={100}
+            label
+          >
             {dados.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={cores[index % cores.length]} />
             ))}
           </Pie>
+          <Tooltip />
+          <Legend />
         </PieChart>
       </ResponsiveContainer>
     </div>

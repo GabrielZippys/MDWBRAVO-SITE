@@ -41,6 +41,11 @@ header {
   height: auto;
 }
 
+.butaofiltro{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .MDW_TITU {
   font-size: 54px;
@@ -249,14 +254,15 @@ button:hover {
   margin-bottom: 2rem;
 }
 
-.map-container {
-  width: 100%;
-  height: 500px;
-  margin: 2rem 0;
-  position: relative;
-  z-index: 0;
-}
 
+.Graficos{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 50px;
+  color: #000000;
+  font-size: 20px;
+}
 
 .chamados-section {
   background-color: #111;
@@ -270,6 +276,30 @@ button:hover {
   justify-content: center;
   gap: 1rem;
   margin-bottom: 2rem;
+}
+
+
+.titulo{
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  align-items: center;
+  font-size: 70px;
+  font-family:'Times New Roman', Times, serif;
+}
+
+.titulobarras{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.opcoes{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .chamados-filtros select {
@@ -315,9 +345,11 @@ button:hover {
 
 .map-container {
   display: flex;
-  width: 100%;
   align-items: center;
   justify-content: center;
+  background-color: #202020;
+  padding: 20px;
+  border-radius: 50px;
 }
 
 /* styles/tabela.css */

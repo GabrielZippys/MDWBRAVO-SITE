@@ -1,9 +1,9 @@
-import { useEffect, useState, useMemo } from 'react';
+// pages/index.tsx
+import React, { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Dashboard from '@/components/Dashboard';
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn, useSession } from 'next-auth/react';
 import 'leaflet/dist/leaflet.css';
-import React from 'react';
 import { GetServerSideProps } from 'next';
 import { connectDB } from '@/lib/mongodb';
 import Chamado from '@/models/chamado';
@@ -18,7 +18,7 @@ type ChamadoType = {
   tipo: string;
   dataCriacao: string;
   zona: string;
-  prioridade: string; // campo "prioridade" adicionado
+  prioridade: string;
 };
 
 type HomeProps = {
@@ -28,18 +28,37 @@ type HomeProps = {
 export default function Home({ chamadosIniciais }: HomeProps) {
   const { data: session, status } = useSession();
   const [chamados, setChamados] = useState<ChamadoType[]>(chamadosIniciais);
+
+  // Filtros
   const [filtroZona, setFiltroZona] = useState('');
   const [filtroStatus, setFiltroStatus] = useState('');
   const [filtroLoja, setFiltroLoja] = useState('');
   const [filtroTipo, setFiltroTipo] = useState('');
   const [filtroPrioridade, setFiltroPrioridade] = useState('');
 
-  const zonasUnicas = Array.from(new Set(chamados.map((c) => c.zona).filter(Boolean)));
-  const statusUnicos = Array.from(new Set(chamados.map((c) => c.status).filter(Boolean)));
-  const lojasUnicas = Array.from(new Set(chamados.map((c) => c.loja).filter(Boolean)));
-  const tiposUnicos = Array.from(new Set(chamados.map((c) => c.tipo).filter(Boolean)));
-  const prioridadesUnicas = Array.from(new Set(chamados.map((c) => c.prioridade).filter(Boolean)));
+  // Busca atualizada de chamados (client-side)
+  useEffect(() => {
+    const fetchChamados = async () => {
+      try {
+        const res = await fetch('/api/chamados');
+        const data = await res.json();
+        setChamados(data);
+      } catch (error) {
+        console.error('Erro ao buscar chamados:', error);
+      }
+    };
 
+    fetchChamados();
+  }, []);
+
+  // Geração de listas únicas para os filtros
+  const zonasUnicas = Array.from(new Set(chamados.map(c => c.zona).filter(Boolean)));
+  const statusUnicos = Array.from(new Set(chamados.map(c => c.status).filter(Boolean)));
+  const lojasUnicas = Array.from(new Set(chamados.map(c => c.loja).filter(Boolean)));
+  const tiposUnicos = Array.from(new Set(chamados.map(c => c.tipo).filter(Boolean)));
+  const prioridadesUnicas = Array.from(new Set(chamados.map(c => c.prioridade).filter(Boolean)));
+
+  // Aplicar filtros
   const chamadosFiltrados = useMemo(() => {
     return chamados.filter((c) => {
       const zonaOk = !filtroZona || c.zona === filtroZona;
@@ -51,13 +70,20 @@ export default function Home({ chamadosIniciais }: HomeProps) {
     });
   }, [chamados, filtroZona, filtroStatus, filtroLoja, filtroTipo, filtroPrioridade]);
 
-  if (status === "loading") return <p className="p-8">Carregando autenticação...</p>;
+  // Enquanto carrega sessão
+  if (status === 'loading') {
+    return <p className="p-8">Carregando autenticação...</p>;
+  }
 
+  // Se não estiver logado
   if (!session) {
     return (
       <main className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
         <h1 className="text-3xl font-bold mb-6">Acesso Restrito</h1>
-        <button onClick={() => signIn("google")} className="px-6... bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition">
+        <button
+          onClick={() => signIn('google')}
+          className="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition"
+        >
           Entrar com Google
         </button>
       </main>
@@ -67,11 +93,11 @@ export default function Home({ chamadosIniciais }: HomeProps) {
   return (
     <main className="p-8 bg-gray-100 min-h-screen">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-center w-full">Painel de Chamados 🚨</h1>
+        <h1 className="titulo">Painel de Chamados 🚨</h1>
       </div>
 
       {/* Filtros */}
-      <div className="flex flex-wrap gap-4 mb-6 items-center justify-center">
+      <div className="titulobarras flex flex-wrap gap-4 mb-6">
         <select className="px-4 py-2 rounded border" value={filtroZona} onChange={(e) => setFiltroZona(e.target.value)}>
           <option value="">Todas as Zonas</option>
           {zonasUnicas.map((z) => <option key={z} value={z}>{z}</option>)}
@@ -96,57 +122,54 @@ export default function Home({ chamadosIniciais }: HomeProps) {
           <option value="">Todas as Prioridades</option>
           {prioridadesUnicas.map((p) => <option key={p} value={p}>{p}</option>)}
         </select>
+
+        <button
+          className="ml-auto bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+          onClick={() => {
+            setFiltroZona('');
+            setFiltroStatus('');
+            setFiltroLoja('');
+            setFiltroTipo('');
+            setFiltroPrioridade('');
+          }}
+        >
+          Limpar Filtros
+        </button>
       </div>
 
-      {/* TABELA DE CHAMADOS */}
-      <div className="mapa-cointainer">
-        <div className="flex justify-between items-center mb-2">
-          <h2 className="text-xl font-semibold">Lista de Chamados</h2>
-          <button
-            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
-            onClick={() => {
-              setFiltroZona('');
-              setFiltroStatus('');
-              setFiltroLoja('');
-              setFiltroTipo('');
-              setFiltroPrioridade('');
-            }}
-          >
-            Limpar Filtros
-          </button>
-        </div>
+      {/* Tabela de Chamados */}
+      <section className="mb-10">
+        <h2 className="titulo mb-4">Lista de Chamados</h2>
         <Dashboard chamados={chamadosFiltrados} />
-      </div>
+      </section>
 
-      {/* MAPA */}
-      <br /><br />
-      <h1 className="text-xl font-semibold mb-2" align = "center">Mapa Interativo</h1>
-      <MapaDeChamados chamados={chamadosFiltrados} />
+      {/* Mapa Interativo */}
+      <section>
+        <h2 className="titulo mb-4">Mapa Interativo</h2>
+        <MapaDeChamados chamados={chamadosFiltrados} />
+      </section>
     </main>
   );
 }
 
-// 👉 BUSCA OS CHAMADOS DO MONGODB NO LADO DO SERVIDOR
+// Server-side props (pré-carrega chamados)
 export const getServerSideProps: GetServerSideProps = async () => {
   await connectDB();
-  const chamadosMongo = await Chamado.find().sort({ dataCriacao: -1 });
-  const chamados = chamadosMongo.map((c) => ({
-    _id: c._id.toString(),
-    titulo: c.titulo,
-    loja: c.loja,
-    status: c.status,
-    tipo: c.tipo,
-    dataCriacao: c.dataCriacao.toISOString(),
-    zona: c.zona,
-    prioridade: c.prioridade, // inclui prioridade nos dados trazidos
+
+  const chamadosMongo = await Chamado.find().lean();
+
+  const chamadosIniciais = chamadosMongo.map((chamado: any) => ({
+    _id: chamado._id.toString(),
+    titulo: chamado.titulo || '',
+    loja: chamado.loja || '',
+    status: chamado.status || '',
+    tipo: chamado.tipo || '',
+    dataCriacao: chamado.dataCriacao?.toISOString() || '',
+    zona: chamado.zona || '',
+    prioridade: chamado.prioridade || '',
   }));
 
   return {
-    props: {
-      chamadosIniciais: chamados.map((chamado) => ({
-        ...chamado,
-        prioridade: chamado.prioridade ?? null, // substitui undefined por null
-      })),
-    },
-  }
-  }  
+    props: { chamadosIniciais },
+  };
+};
