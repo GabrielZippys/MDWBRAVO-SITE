@@ -159,20 +159,20 @@ export const getServerSideProps: GetServerSideProps = async () => {
   await connectDB();
   const chamados = await ChamadoModel.find().lean();
 
-  const chamadosIniciais = chamados.map((chamado: any) => ({
-    _id: chamado._id.toString(),
-    titulo: chamado.titulo || '',
-    loja: chamado.loja || '',
-    status: chamado.status || '',
-    tipo: chamado.tipo || '',
-    dataCriacao: chamado.dataCriacao?.toISOString() || '',
-    zona: chamado.zona || '',
-    prioridade: chamado.prioridade || '',
+  const chamadosFormatados: ChamadoType[] = chamados.map((c: any) => ({
+    _id: c._id.toString(),
+    titulo: c.titulo,
+    loja: c.loja,
+    status: c.status,
+    tipo: c.tipo,
+    dataCriacao: c.dataCriacao?.toISOString() || '',
+    zona: c.zona || '',
+    prioridade: c.prioridade || '',
   }));
 
   return {
     props: {
-      chamadosIniciais,
+      chamadosIniciais: chamadosFormatados,
     },
   };
 };
