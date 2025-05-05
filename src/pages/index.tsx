@@ -7,7 +7,7 @@ import 'leaflet/dist/leaflet.css';
 import { GetServerSideProps } from 'next';
 import { connectDB } from '@/lib/mongodb';
 import ChamadoModel from '@/models/chamado';
-import { Types } from 'mongoose'; 
+import { Types } from 'mongoose';
 
 const MapaDeChamados = dynamic(() => import('@/components/MapaDeChamados'), { ssr: false });
 
@@ -30,14 +30,12 @@ export default function Home({ chamadosIniciais }: HomeProps) {
   const { data: session, status } = useSession();
   const [chamados, setChamados] = useState<ChamadoType[]>(chamadosIniciais);
 
-  // Filtros
   const [filtroZona, setFiltroZona] = useState('');
   const [filtroStatus, setFiltroStatus] = useState('');
   const [filtroLoja, setFiltroLoja] = useState('');
   const [filtroTipo, setFiltroTipo] = useState('');
   const [filtroPrioridade, setFiltroPrioridade] = useState('');
 
-  // Busca atualizada de chamados (client-side)
   const fetchChamados = async () => {
     try {
       const res = await fetch("/api/chamados");
@@ -52,14 +50,12 @@ export default function Home({ chamadosIniciais }: HomeProps) {
     fetchChamados();
   }, []);
 
-  // Listas únicas para os filtros
   const zonasUnicas = Array.from(new Set(chamados.map(c => c.zona).filter(Boolean)));
   const statusUnicos = Array.from(new Set(chamados.map(c => c.status).filter(Boolean)));
   const lojasUnicas = Array.from(new Set(chamados.map(c => c.loja).filter(Boolean)));
   const tiposUnicos = Array.from(new Set(chamados.map(c => c.tipo).filter(Boolean)));
   const prioridadesUnicas = Array.from(new Set(chamados.map(c => c.prioridade).filter(Boolean)));
 
-  // Aplicar filtros
   const chamadosFiltrados = useMemo(() => {
     return chamados.filter((c) => {
       const zonaOk = !filtroZona || c.zona === filtroZona;
@@ -97,52 +93,27 @@ export default function Home({ chamadosIniciais }: HomeProps) {
 
       {/* Filtros */}
       <div className="flex flex-wrap gap-4 items-end mb-8">
-        <select
-          className="px-4 py-2 rounded border bg-white"
-          value={filtroZona}
-          onChange={(e) => setFiltroZona(e.target.value)}
-          aria-label="Filtro por Zona"
-        >
+        <select className="px-4 py-2 rounded border bg-white" value={filtroZona} onChange={(e) => setFiltroZona(e.target.value)}>
           <option value="">Todas as Zonas</option>
           {zonasUnicas.map((z) => <option key={z} value={z}>{z}</option>)}
         </select>
 
-        <select
-          className="px-4 py-2 rounded border bg-white"
-          value={filtroStatus}
-          onChange={(e) => setFiltroStatus(e.target.value)}
-          aria-label="Filtro por Status"
-        >
+        <select className="px-4 py-2 rounded border bg-white" value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)}>
           <option value="">Todos os Status</option>
           {statusUnicos.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
 
-        <select
-          className="px-4 py-2 rounded border bg-white"
-          value={filtroLoja}
-          onChange={(e) => setFiltroLoja(e.target.value)}
-          aria-label="Filtro por Loja"
-        >
+        <select className="px-4 py-2 rounded border bg-white" value={filtroLoja} onChange={(e) => setFiltroLoja(e.target.value)}>
           <option value="">Todas as Lojas</option>
           {lojasUnicas.map((l) => <option key={l} value={l}>{l}</option>)}
         </select>
 
-        <select
-          className="px-4 py-2 rounded border bg-white"
-          value={filtroTipo}
-          onChange={(e) => setFiltroTipo(e.target.value)}
-          aria-label="Filtro por Tipo"
-        >
+        <select className="px-4 py-2 rounded border bg-white" value={filtroTipo} onChange={(e) => setFiltroTipo(e.target.value)}>
           <option value="">Todos os Tipos</option>
           {tiposUnicos.map((t) => <option key={t} value={t}>{t}</option>)}
         </select>
 
-        <select
-          className="px-4 py-2 rounded border bg-white"
-          value={filtroPrioridade}
-          onChange={(e) => setFiltroPrioridade(e.target.value)}
-          aria-label="Filtro por Prioridade"
-        >
+        <select className="px-4 py-2 rounded border bg-white" value={filtroPrioridade} onChange={(e) => setFiltroPrioridade(e.target.value)}>
           <option value="">Todas as Prioridades</option>
           {prioridadesUnicas.map((p) => <option key={p} value={p}>{p}</option>)}
         </select>
@@ -188,21 +159,20 @@ export const getServerSideProps: GetServerSideProps = async () => {
   await connectDB();
   const chamados = await ChamadoModel.find().lean();
 
-  const chamadosFormatados = chamados.map((c: any) => ({
-    _id: c._id.toString(),
-    titulo: c.titulo,
-    loja: c.loja,
-    status: c.status,
-    tipo: c.tipo,
-    dataCriacao: c.dataCriacao?.toISOString() || '', // garantir string
-    zona: c.zona || '',
-    prioridade: c.prioridade || '',
+  const chamadosIniciais = chamados.map((chamado: any) => ({
+    _id: chamado._id.toString(),
+    titulo: chamado.titulo || '',
+    loja: chamado.loja || '',
+    status: chamado.status || '',
+    tipo: chamado.tipo || '',
+    dataCriacao: chamado.dataCriacao?.toISOString() || '',
+    zona: chamado.zona || '',
+    prioridade: chamado.prioridade || '',
   }));
 
   return {
     props: {
-      chamadosIniciais: chamadosFormatados,
+      chamadosIniciais,
     },
   };
 };
-
