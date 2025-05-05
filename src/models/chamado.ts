@@ -6,8 +6,8 @@ export interface IChamado extends Document {
   status: string;
   tipo: string;
   dataCriacao: Date;
-  zona: string;
-  prioridade: string;
+  zona?: string;
+  prioridade?: string;
   localizacao?: {
     lat: number;
     lng: number;
@@ -23,8 +23,8 @@ const ChamadoSchema = new Schema<IChamado>({
   zona: { type: String },
   prioridade: { type: String },
   localizacao: {
-    lat: Number,
-    lng: Number,
+    lat: { type: Number },
+    lng: { type: Number },
   },
 });
 
