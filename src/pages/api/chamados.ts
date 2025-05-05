@@ -18,9 +18,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const response = await notion.databases.query({
         database_id: DATABASE_ID,
         start_cursor: cursor,
+        page_size: 100, // boa prática para controlar quantidade por página
       });
+
       results.push(...response.results);
-      cursor = response.has_more ? response.next_cursor! : undefined;
+      cursor = response.has_more ? response.next_cursor ?? undefined : undefined;
     } while (cursor);
 
     const chamados = results
@@ -37,7 +39,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           tipo: props['Tipo de Ticket']?.select?.name || 'Não definido',
           prioridade: props.Prioridade?.select?.name || null,
           dataCriacao: page.created_time,
-          zona: getZona(loja), // aqui aplica a função para classificar a zona
+          zona: getZona(loja),
         };
       })
       .filter((c) => !STATUSES_IGNORADOS.has(c.status));
