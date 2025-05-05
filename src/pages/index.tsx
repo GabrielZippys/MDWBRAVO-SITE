@@ -7,6 +7,7 @@ import 'leaflet/dist/leaflet.css';
 import { GetServerSideProps } from 'next';
 import { connectDB } from '@/lib/mongodb';
 import Chamado from '@/models/chamado';
+import axios from 'axios';
 
 const MapaDeChamados = dynamic(() => import('@/components/MapaDeChamados'), { ssr: false });
 
@@ -37,17 +38,17 @@ export default function Home({ chamadosIniciais }: HomeProps) {
   const [filtroPrioridade, setFiltroPrioridade] = useState('');
 
   // Busca atualizada de chamados (client-side)
-  useEffect(() => {
-    const fetchChamados = async () => {
-      try {
-        const res = await fetch('/api/chamados');
-        const data = await res.json();
-        setChamados(data);
-      } catch (error) {
-        console.error('Erro ao buscar chamados:', error);
-      }
-    };
+  const fetchChamados = async () => {
+    try {
+      const res = await fetch("/api/chamados");
+      const data = await res.json();
+      setChamados(data);
+    } catch (error) {
+      console.error("Erro ao buscar chamados:", error);
+    }
+  };
 
+  useEffect(() => {
     fetchChamados();
   }, []);
 
@@ -78,7 +79,7 @@ export default function Home({ chamadosIniciais }: HomeProps) {
   // Se não estiver logado
   if (!session) {
     return (
-      <main className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <main className="home">
         <h1 className="text-3xl font-bold mb-6">Acesso Restrito</h1>
         <button
           onClick={() => signIn('google')}
@@ -135,6 +136,9 @@ export default function Home({ chamadosIniciais }: HomeProps) {
         >
           Limpar Filtros
         </button>
+
+        <button onClick={fetchChamados}>Atualizar Chamados</button>
+
       </div>
 
       {/* Tabela de Chamados */}
