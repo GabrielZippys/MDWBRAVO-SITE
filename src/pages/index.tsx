@@ -51,7 +51,7 @@ export default function Home({ chamadosIniciais }: HomeProps) {
     fetchChamados();
   }, []);
 
-  // Geração de listas únicas para os filtros
+  // Listas únicas para os filtros
   const zonasUnicas = Array.from(new Set(chamados.map(c => c.zona).filter(Boolean)));
   const statusUnicos = Array.from(new Set(chamados.map(c => c.status).filter(Boolean)));
   const lojasUnicas = Array.from(new Set(chamados.map(c => c.loja).filter(Boolean)));
@@ -70,15 +70,13 @@ export default function Home({ chamadosIniciais }: HomeProps) {
     });
   }, [chamados, filtroZona, filtroStatus, filtroLoja, filtroTipo, filtroPrioridade]);
 
-  // Enquanto carrega sessão
   if (status === 'loading') {
     return <p className="p-8">Carregando autenticação...</p>;
   }
 
-  // Se não estiver logado
   if (!session) {
     return (
-      <main className="home">
+      <main className="home p-8 flex flex-col items-center justify-center min-h-screen bg-gray-100">
         <h1 className="text-3xl font-bold mb-6">Acesso Restrito</h1>
         <button
           onClick={() => signIn('google')}
@@ -93,38 +91,63 @@ export default function Home({ chamadosIniciais }: HomeProps) {
   return (
     <main className="p-8 bg-gray-100 min-h-screen">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="titulo">Painel de Chamados 🚨</h1>
+        <h1 className="text-3xl font-bold">Painel de Chamados 🚨</h1>
       </div>
 
       {/* Filtros */}
-      <div className="titulobarras flex flex-wrap gap-4 mb-6">
-        <select className="px-4 py-2 rounded border" value={filtroZona} onChange={(e) => setFiltroZona(e.target.value)}>
+      <div className="flex flex-wrap gap-4 items-end mb-8">
+        <select
+          className="px-4 py-2 rounded border bg-white"
+          value={filtroZona}
+          onChange={(e) => setFiltroZona(e.target.value)}
+          aria-label="Filtro por Zona"
+        >
           <option value="">Todas as Zonas</option>
           {zonasUnicas.map((z) => <option key={z} value={z}>{z}</option>)}
         </select>
 
-        <select className="px-4 py-2 rounded border" value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)}>
+        <select
+          className="px-4 py-2 rounded border bg-white"
+          value={filtroStatus}
+          onChange={(e) => setFiltroStatus(e.target.value)}
+          aria-label="Filtro por Status"
+        >
           <option value="">Todos os Status</option>
           {statusUnicos.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
 
-        <select className="px-4 py-2 rounded border" value={filtroLoja} onChange={(e) => setFiltroLoja(e.target.value)}>
+        <select
+          className="px-4 py-2 rounded border bg-white"
+          value={filtroLoja}
+          onChange={(e) => setFiltroLoja(e.target.value)}
+          aria-label="Filtro por Loja"
+        >
           <option value="">Todas as Lojas</option>
           {lojasUnicas.map((l) => <option key={l} value={l}>{l}</option>)}
         </select>
 
-        <select className="px-4 py-2 rounded border" value={filtroTipo} onChange={(e) => setFiltroTipo(e.target.value)}>
+        <select
+          className="px-4 py-2 rounded border bg-white"
+          value={filtroTipo}
+          onChange={(e) => setFiltroTipo(e.target.value)}
+          aria-label="Filtro por Tipo"
+        >
           <option value="">Todos os Tipos</option>
           {tiposUnicos.map((t) => <option key={t} value={t}>{t}</option>)}
         </select>
 
-        <select className="px-4 py-2 rounded border" value={filtroPrioridade} onChange={(e) => setFiltroPrioridade(e.target.value)}>
+        <select
+          className="px-4 py-2 rounded border bg-white"
+          value={filtroPrioridade}
+          onChange={(e) => setFiltroPrioridade(e.target.value)}
+          aria-label="Filtro por Prioridade"
+        >
           <option value="">Todas as Prioridades</option>
           {prioridadesUnicas.map((p) => <option key={p} value={p}>{p}</option>)}
         </select>
 
         <button
-          className="ml-auto bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+          className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400 transition"
           onClick={() => {
             setFiltroZona('');
             setFiltroStatus('');
@@ -136,26 +159,30 @@ export default function Home({ chamadosIniciais }: HomeProps) {
           Limpar Filtros
         </button>
 
-        <button onClick={fetchChamados}>Atualizar Chamados</button>
-
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+          onClick={fetchChamados}
+        >
+          Atualizar Chamados
+        </button>
       </div>
 
       {/* Tabela de Chamados */}
       <section className="mb-10">
-        <h2 className="titulo mb-4">Lista de Chamados</h2>
+        <h2 className="text-2xl font-semibold mb-4">Lista de Chamados</h2>
         <Dashboard chamados={chamadosFiltrados} />
       </section>
 
       {/* Mapa Interativo */}
       <section>
-        <h2 className="titulo mb-4">Mapa Interativo</h2>
+        <h2 className="text-2xl font-semibold mb-4">Mapa Interativo</h2>
         <MapaDeChamados chamados={chamadosFiltrados} />
       </section>
     </main>
   );
 }
 
-// Server-side props (pré-carrega chamados)
+// Server-side props
 export const getServerSideProps: GetServerSideProps = async () => {
   await connectDB();
 
