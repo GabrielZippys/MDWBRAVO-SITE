@@ -6,7 +6,8 @@ import { signIn, useSession } from 'next-auth/react';
 import 'leaflet/dist/leaflet.css';
 import { GetServerSideProps } from 'next';
 import { connectDB } from '@/lib/mongodb';
-import Chamado from '@/models/chamado';
+import ChamadoModel from '@/models/chamado';
+import { Types } from 'mongoose'; 
 
 const MapaDeChamados = dynamic(() => import('@/components/MapaDeChamados'), { ssr: false });
 
@@ -185,21 +186,23 @@ export default function Home({ chamadosIniciais }: HomeProps) {
 // Server-side props
 export const getServerSideProps: GetServerSideProps = async () => {
   await connectDB();
+  const chamados = await ChamadoModel.find().lean();
 
-  const chamadosMongo = await Chamado.find().lean();
-
-  const chamadosIniciais = chamadosMongo.map((chamado: any) => ({
-    _id: chamado._id.toString(),
-    titulo: chamado.titulo || '',
-    loja: chamado.loja || '',
-    status: chamado.status || '',
-    tipo: chamado.tipo || '',
-    dataCriacao: chamado.dataCriacao?.toISOString() || '',
-    zona: chamado.zona || '',
-    prioridade: chamado.prioridade || '',
+  const chamadosFormatados = chamados.map((c: any) => ({
+    _id: c._id.toString(),
+    titulo: c.titulo,
+    loja: c.loja,
+    status: c.status,
+    tipo: c.tipo,
+    dataCriacao: c.dataCriacao?.toISOString() || '', // garantir string
+    zona: c.zona || '',
+    prioridade: c.prioridade || '',
   }));
 
   return {
-    props: { chamadosIniciais },
+    props: {
+      chamadosIniciais: chamadosFormatados,
+    },
   };
 };
+
