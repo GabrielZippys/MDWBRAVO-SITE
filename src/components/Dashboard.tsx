@@ -10,7 +10,8 @@ import {
   ResponsiveContainer,
   PieChart,
   Pie,
-  Cell
+  Cell,
+  Legend
 } from 'recharts';
 import { useState, useMemo } from 'react';
 
@@ -60,6 +61,35 @@ export default function Dashboard({ chamados }: DashboardProps) {
   return (
     <div className="space-y-8">
       {/* Tabela de Chamados omitida para brevidade */}
+      <table className="min-w-full bg-white rounded-xl shadow overflow-hidden">
+  <thead className="bg-gray-100">
+    <tr>
+      <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Título</th>
+      <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Loja</th>
+      <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Status</th>
+      <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Tipo</th>
+      <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Zona</th>
+      <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Prioridade</th>
+      <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Criado em</th>
+    </tr>
+  </thead>
+  <tbody>
+    {chamadosFiltrados.map((chamado) => (
+      <tr key={chamado._id} className="border-t">
+        <td className="px-4 py-2 text-sm text-gray-800">{chamado.titulo}</td>
+        <td className="px-4 py-2 text-sm text-gray-800">{chamado.loja}</td>
+        <td className="px-4 py-2 text-sm text-gray-800">{chamado.status}</td>
+        <td className="px-4 py-2 text-sm text-gray-800">{chamado.tipo}</td>
+        <td className="px-4 py-2 text-sm text-gray-800">{chamado.zona}</td>
+        <td className="px-4 py-2 text-sm text-gray-800">{chamado.prioridade || 'Não definida'}</td>
+        <td className="px-4 py-2 text-sm text-gray-800">
+          {new Date(chamado.dataCriacao).toLocaleDateString()}
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Chamados por Status */}
@@ -89,28 +119,20 @@ export default function Dashboard({ chamados }: DashboardProps) {
         </div>
 
   {/* Chamados por Zona */}
-<div className="bg-white p-4 rounded-xl shadow">
-  <h3 className="text-lg font-semibold mb-2">Chamados por Zona</h3>
-  <ResponsiveContainer width="100%" height={250}>
-    <PieChart key={JSON.stringify(porZona)}>
-      <Pie
-        data={porZona}
-        dataKey="valor"
-        nameKey="nome"
-        cx="50%"
-        cy="50%"
-        outerRadius={80}
-        label
-        isAnimationActive={false}
-      >
-        {porZona.map((_, i) => (
-          <Cell key={i} fill={cores[i % cores.length]} />
-        ))}
-      </Pie>
-      <Tooltip />
-    </PieChart>
-  </ResponsiveContainer>
-</div>
+  <div className="bg-white p-4 rounded shadow">
+        <h2 className="text-lg font-bold mb-2">Chamados por Zona</h2>
+        <ResponsiveContainer width="100%" height={300}>
+          <PieChart>
+            <Pie data={porZona} dataKey="valor" nameKey="nome" outerRadius={100} fill="#8884d8" label>
+              {porZona.map((_, index) => (
+                <Cell key={`cell-${index}`} fill={cores[index % cores.length]} />
+              ))}
+            </Pie>
+            <Legend />
+            <Tooltip />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
       </div>
     </div>
   );

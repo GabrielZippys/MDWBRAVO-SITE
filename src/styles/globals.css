@@ -24,17 +24,18 @@ main {
 
 /* Header */
 header {
-  background-color: #383636;
+  background-color: #1f2937; /* cinza escuro elegante */
   padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  position: relative;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  position: sticky;
   top: 0;
   z-index: 100;
-  color: #020202;
+  color: #ffffff;
 }
+
 
 .home{
   display: flex;
@@ -63,18 +64,18 @@ header {
 }
 
 .MDW_TITU {
-  font-size: 54px;
-  font-weight: 900;
-  color: #000000;
+  font-size: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  font-weight: 700;
+  color: #ffffff;
   margin-left: 1rem;
 }
 
+
 /* Usuário */
-.foto {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
 
 .foto img {
   width: 48px;
@@ -82,21 +83,42 @@ header {
   border-radius: 50%;
   border: 2px solid #ddd;
 }
+.foto {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
 
 .direita {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  margin: 10px;
+  justify-content: center;
 }
 
 .direita p {
-  font-weight: 700;
-  margin: 10px;
   font-size: 14px;
-  color: #000000;
-  margin-bottom: 1rem;
+  color: #ffffff;
+  margin: 0;
 }
+
+.butodesair {
+  background-color: #ef4444;
+  color: white;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  margin-top: 0.25rem;
+  font-size: 12px;
+}
+
+.ada {
+  background-color: #3b82f6;
+  color: white;
+  font-size: 12px;
+  margin-top: 0.5rem;
+  border-radius: 6px;
+  padding: 0.3rem 0.6rem;
+}
+
 
 /* Container de Filtros e Botões */
 .filtro-container {
@@ -456,4 +478,25 @@ td:first-child {
 th:last-child,
 td:last-child {
   border-top-right-radius: 8px;
+}
+
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .foto {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .MDW_TITU {
+    font-size: 20px;
+  }
+
+  .bravo {
+    width: 100px;
+  }
 }
