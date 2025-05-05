@@ -160,7 +160,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
   const chamados = await ChamadoModel.find().lean();
 
   const chamadosFormatados = chamados.map((c) => ({
-    _id: c._id.toString(),
+    _id: c.id.toString(),
     titulo: c.titulo,
     loja: c.loja,
     status: c.status,

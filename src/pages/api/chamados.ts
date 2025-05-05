@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       // 2) mapeia para serializar o _id e limpar o objeto
       const chamados = chamadosRaw.map(c => ({
-        _id: c._id.toString(),
+        _id: c.id.toString(),
         titulo: c.titulo,
         loja: c.loja,
         status: c.status,
