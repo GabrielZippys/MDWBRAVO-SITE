@@ -98,7 +98,7 @@ export default function Home({ chamadosIniciais }: HomeProps) {
       <h1 className="titulo">Painel de Chamados🚨</h1>
 
      {/* Filtros */}
-      <div className="flex flex-wrap gap-4 items-end mb-8">
+      <div className="butaofiltro">
         <select className="px-4 py-2 rounded border bg-white" value={filtroZona} onChange={(e) => setFiltroZona(e.target.value)}>
           <option value="">Todas as Zonas</option>
           {zonasUnicas.map((z) => <option key={z} value={z}>{z}</option>)}
