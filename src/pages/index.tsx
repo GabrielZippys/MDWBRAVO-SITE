@@ -147,7 +147,7 @@ export default function Home({ chamadosIniciais }: HomeProps) {
 
 
       {/* Lista de Chamados */}
-      <section className="mb-10">
+      <section className="tabela-chamados">
         <h2 className="titulo">Lista de Chamados</h2>
         <Dashboard chamados={chamadosFiltrados} />
       </section>
