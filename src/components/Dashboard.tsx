@@ -116,10 +116,9 @@ export default function Dashboard({ chamados }: DashboardProps) {
               <Bar dataKey="valor" fill={cores[1]} isAnimationActive={false} />
             </BarChart>
           </ResponsiveContainer>
-        </div>
+        
 
   {/* Chamados por Zona */}
-<div className="bg-white p-4 rounded-xl shadow">
   <h3 className="titulo2">Chamados por Zona</h3>
   {porZona.length > 0 ? (
     <ResponsiveContainer width="100%" height={350}>
@@ -143,7 +142,6 @@ export default function Dashboard({ chamados }: DashboardProps) {
     <p className="text-center text-gray-500">Nenhum dado disponível para zonas.</p>
   )}
 </div>
-
       </div>
     </div>
   );
