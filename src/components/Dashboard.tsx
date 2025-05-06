@@ -94,8 +94,8 @@ export default function Dashboard({ chamados }: DashboardProps) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Chamados por Status */}
         <div className="bg-white p-4 rounded-xl shadow">
-          <h3 className="text-lg font-semibold mb-2">Chamados por Status</h3>
-          <ResponsiveContainer width="100%" height={250}>
+          <h3 className="titulo">Chamados por Status</h3>
+          <ResponsiveContainer width="50%" height={250}>
             <BarChart data={porStatus}>
               <XAxis dataKey="nome" stroke="#555" />
               <YAxis stroke="#555" />
@@ -106,9 +106,9 @@ export default function Dashboard({ chamados }: DashboardProps) {
         </div>
 
         {/* Chamados por Tipo */}
-        <div className="bg-white p-4 rounded-xl shadow">
-          <h3 className="text-lg font-semibold mb-2">Chamados por Tipo</h3>
-          <ResponsiveContainer width="100%" height={250}>
+        <div className="">
+          <h3 className="titulo">Chamados por Tipo</h3>
+          <ResponsiveContainer width="50%" height={250}>
             <BarChart data={porTipo}>
               <XAxis dataKey="nome" stroke="#555" />
               <YAxis stroke="#555" />
