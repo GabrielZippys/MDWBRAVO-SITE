@@ -89,12 +89,12 @@ export default function Dashboard({ chamados }: DashboardProps) {
     ))}
   </tbody>
 </table>
-
+<h3 className="titulo2">Chamados por Status</h3>
 
       <div className="Graficos">
         {/* Chamados por Status */}
         
-          <h3 className="titulo2">Chamados por Status</h3>
+          
           <ResponsiveContainer width="50%" height={250}>
             <BarChart data={porStatus}>
               <XAxis dataKey="nome" stroke="#555" />
