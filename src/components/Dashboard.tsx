@@ -124,7 +124,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
         {/* Chamados por Zona */}
         
         {porZona.length > 0 ? (
-    <ResponsiveContainer width="100%" height={350}>
+    <ResponsiveContainer width="50%" height={350}>
       <PieChart>
         <Pie
           data={porZona}
