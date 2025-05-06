@@ -125,13 +125,6 @@ export default function Home({ chamadosIniciais }: HomeProps) {
         >
           Atualizar Chamados
         </button>
-
-        <button onClick={() => {
-          setFiltroZona(''); setFiltroStatus(''); setFiltroLoja('');
-          setFiltroTipo(''); setFiltroPrioridade('');
-        }}>Limpar</button>
-
-        <button onClick={fetchChamados}>Atualizar</button>
       </div>
 
       {/* Tabela */}
