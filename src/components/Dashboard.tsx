@@ -91,7 +91,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
 </table>
 
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="Graficos">
         {/* Chamados por Status */}
         <div className="bg-white p-4 rounded-xl shadow">
           <h3 className="titulo">Chamados por Status</h3>
@@ -120,15 +120,15 @@ export default function Dashboard({ chamados }: DashboardProps) {
 
   {/* Chamados por Zona */}
 <div className="bg-white p-4 rounded-xl shadow">
-  <h3 className="text-lg font-semibold mb-2">Chamados por Zona</h3>
+  <h3 className="titulo">Chamados por Zona</h3>
   {porZona.length > 0 ? (
-    <ResponsiveContainer width="100%" height={250}>
+    <ResponsiveContainer width="100%" height={350}>
       <PieChart>
         <Pie
           data={porZona}
           dataKey="valor"
           nameKey="nome"
-          outerRadius={80}
+          outerRadius={90}
           label
         >
           {porZona.map((_, index) => (
