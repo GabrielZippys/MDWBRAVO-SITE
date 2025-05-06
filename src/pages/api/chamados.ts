@@ -8,22 +8,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'GET') {
     try {
-      // 1) usa .lean() para obter objetos JS simples
       const chamadosRaw = await Chamado.find().sort({ dataCriacao: -1 }).lean();
 
-      // 2) mapeia para serializar o _id e limpar o objeto
       const chamados = chamadosRaw.map(c => ({
-        _id: c.id.toString(),
+        _id: c._id.toString(),
         titulo: c.titulo,
         loja: c.loja,
         status: c.status,
         tipo: c.tipo,
         dataCriacao: c.dataCriacao?.toISOString() ?? null,
         zona: c.zona,
-        prioridade: c.prioridade ?? null
+        prioridade: c.prioridade ?? null,
       }));
 
-      return res.status(200).json(chamados);
+      return res.status(200).json({ chamados });
     } catch (error) {
       console.error('Erro ao buscar chamados:', error);
       return res.status(500).json({ message: 'Erro ao buscar chamados' });
