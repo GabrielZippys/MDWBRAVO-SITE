@@ -95,7 +95,7 @@ export default function Home({ chamadosIniciais }: HomeProps) {
 
   return (
     <main className="p-8 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6 text-center">Painel de Chamados 🚨</h1>
+      <h1 className="titulo">Painel de Chamados 🚨</h1>
 
      {/* Filtros */}
       <div className="flex flex-wrap gap-4 items-end mb-8">
@@ -148,13 +148,13 @@ export default function Home({ chamadosIniciais }: HomeProps) {
 
       {/* Lista de Chamados */}
       <section className="mb-10">
-        <h2 className="text-2xl font-semibold mb-4">Lista de Chamados</h2>
+        <h2 className="titulo">Lista de Chamados</h2>
         <Dashboard chamados={chamadosFiltrados} />
       </section>
 
       {/* Mapa */}
       <section>
-        <h2 className="text-2xl font-semibold mb-4">Mapa Interativo</h2>
+        <h2 className="titulo">Mapa Interativo</h2>
         <MapaDeChamados chamados={chamadosFiltrados} />
       </section>
     </main>
