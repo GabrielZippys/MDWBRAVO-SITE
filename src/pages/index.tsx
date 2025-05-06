@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 import Dashboard from '@/components/Dashboard';
 import { connectDB } from '@/lib/mongodb';
 import ChamadoModel from '@/models/chamado';
+import { notion } from '@/lib/notion';
 
 const MapaDeChamados = dynamic(() => import('@/components/MapaDeChamados'), { ssr: false });
 
@@ -162,22 +163,29 @@ export default function Home({ chamadosIniciais }: HomeProps) {
 }
 
 export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
-  await connectDB();
+  try {
+    const response = await notion.databases.query({
+      database_id: process.env.NOTION_DATABASE_ID!,
+      sorts: [{ property: 'dataCriacao', direction: 'descending' }],
+    });
 
-  // Busca todos os chamados e sempre retorna um array (mesmo vazio)
-  const raw = await ChamadoModel.find().sort({ dataCriacao: -1 }).lean();
-  const chamadosIniciais = Array.isArray(raw)
-    ? raw.map(c => ({
-        _id: c._id.toString(),
-        titulo: c.titulo,
-        loja: c.loja,
-        status: c.status,
-        tipo: c.tipo,
-        dataCriacao: c.dataCriacao?.toISOString() ?? '',
-        zona: c.zona ?? '',
-        prioridade: c.prioridade ?? '',
-      }))
-    : [];
+    const chamadosIniciais = response.results.map((page) => {
+      const properties = page.properties;
+      return {
+        _id: page.id,
+        titulo: properties.titulo?.title[0]?.plain_text || '',
+        loja: properties.loja?.select?.name || '',
+        status: properties.status?.select?.name || '',
+        tipo: properties.tipo?.select?.name || '',
+        dataCriacao: properties.dataCriacao?.date?.start || '',
+        zona: properties.zona?.select?.name || '',
+        prioridade: properties.prioridade?.select?.name || '',
+      };
+    });
 
-  return { props: { chamadosIniciais } };
+    return { props: { chamadosIniciais } };
+  } catch (error) {
+    console.error('Erro ao buscar chamados do Notion:', error);
+    return { props: { chamadosIniciais: [] } };
+  }
 };
