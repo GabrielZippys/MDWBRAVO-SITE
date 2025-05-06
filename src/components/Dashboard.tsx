@@ -58,93 +58,105 @@ export default function Dashboard({ chamados }: DashboardProps) {
   const porTipo   = agruparPor('tipo');
   const porZona   = agruparPor('zona');
 
-  return (
-    <div className="space-y-8">
-      {/* Tabela de Chamados omitida para brevidade */}
-      <table className="tabela-chamados">
-  <thead className="bg-gray-100">
-    <tr>
-      <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Título</th>
-      <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Loja</th>
-      <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Status</th>
-      <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Tipo</th>
-      <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Zona</th>
-      <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Prioridade</th>
-      <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Criado em</th>
-    </tr>
-  </thead>
-  <tbody>
-    {chamadosFiltrados.map((chamado) => (
-      <tr key={chamado._id} className="border-t">
-        <td className="px-4 py-2 text-sm text-gray-800">{chamado.titulo}</td>
-        <td className="px-4 py-2 text-sm text-gray-800">{chamado.loja}</td>
-        <td className="px-4 py-2 text-sm text-gray-800">{chamado.status}</td>
-        <td className="px-4 py-2 text-sm text-gray-800">{chamado.tipo}</td>
-        <td className="px-4 py-2 text-sm text-gray-800">{chamado.zona}</td>
-        <td className="px-4 py-2 text-sm text-gray-800">{chamado.prioridade || 'Não definida'}</td>
-        <td className="px-4 py-2 text-sm text-gray-800">
-          {new Date(chamado.dataCriacao).toLocaleDateString()}
-        </td>
-      </tr>
-    ))}
-  </tbody>
-</table>
-<div className='titulo2'>
-<h3 className="titulo2">Chamados por Status</h3>
-<h3 className="titulo2">Chamados por Tipo</h3>
-<h3 className="titulo2">Chamados por Zona</h3>
-</div>
-      <div className="Graficos">
-        {/* Chamados por Status */}
-        
-          
-          <ResponsiveContainer width="50%" height={250}>
-            <BarChart data={porStatus}>
-              <XAxis dataKey="nome" stroke="#555" />
-              <YAxis stroke="#555" />
-              <Tooltip />
-              <Bar dataKey="valor" fill={cores[0]} isAnimationActive={false} />
-            </BarChart>
-          </ResponsiveContainer>
-        
+ // Adicione estas modificações no JSX
+return (
+  <div className="dashboardContainer">
+    {/* Tabela */}
+    <table className="tabela-chamados">
+      <thead>
+        <tr>
+          <th>Título</th>
+          <th>Loja</th>
+          <th>Status</th>
+          <th>Tipo</th>
+          <th>Zona</th>
+          <th>Prioridade</th>
+          <th>Criado em</th>
+        </tr>
+      </thead>
+      <tbody>
+        {chamadosFiltrados.map((chamado) => (
+          <tr key={chamado._id}>
+            <td>{chamado.titulo}</td>
+            <td>{chamado.loja}</td>
+            <td>
+              <span className="status-badge">{chamado.status}</span>
+            </td>
+            <td>{chamado.tipo}</td>
+            <td>{chamado.zona}</td>
+            <td>{chamado.prioridade || 'Não definida'}</td>
+            <td>
+              {new Date(chamado.dataCriacao).toLocaleDateString()}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
 
-        {/* Chamados por Tipo */}
-        
-         
-          <ResponsiveContainer width="50%" height={250}>
-            <BarChart data={porTipo}>
-              <XAxis dataKey="nome" stroke="#555" />
-              <YAxis stroke="#555" />
-              <Tooltip />
-              <Bar dataKey="valor" fill={cores[1]} isAnimationActive={false} />
-            </BarChart>
-          </ResponsiveContainer>
-        
+    {/* Gráficos */}
+    <div className="Graficos">
+      <div>
+        <h3 className="titulo2">Chamados por Status</h3>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={porStatus}>
+            <XAxis dataKey="nome" />
+            <YAxis />
+            <Tooltip />
+            <Bar 
+              dataKey="valor" 
+              fill="#3b82f6"
+              radius={[4, 4, 0, 0]}
+            />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
 
-        {/* Chamados por Zona */}
-        
+      <div>
+        <h3 className="titulo2">Chamados por Tipo</h3>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={porTipo}>
+            <XAxis dataKey="nome" />
+            <YAxis />
+            <Tooltip />
+            <Bar 
+              dataKey="valor" 
+              fill="#10b981"
+              radius={[4, 4, 0, 0]}
+            />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div>
+        <h3 className="titulo2">Chamados por Zona</h3>
         {porZona.length > 0 ? (
-    <ResponsiveContainer width="50%" height={250}>
-      <PieChart>
-        <Pie
-          data={porZona}
-          dataKey="valor"
-          nameKey="nome"
-          outerRadius={90}
-          label
-        >
-          {porZona.map((_, index) => (
-            <Cell key={`cell-${index}`} fill={cores[index % cores.length]} />
-          ))}
-        </Pie>
-        <Legend />
-        <Tooltip />
-      </PieChart>
-    </ResponsiveContainer>
-  ) : (
-    <p className="text-center text-gray-500">Nenhum dado disponível para zonas.</p>
-  )}
-   </div>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={porZona}
+                dataKey="valor"
+                nameKey="nome"
+                outerRadius={80}
+                label
+              >
+                {porZona.map((_, index) => (
+                  <Cell 
+                    key={`cell-${index}`} 
+                    fill={cores[index % cores.length]}
+                  />
+                ))}
+              </Pie>
+              <Legend />
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
+        ) : (
+          <p className="text-center text-gray-500">
+            Nenhum dado disponível para zonas
+          </p>
+        )}
+      </div>
     </div>
-  );
+  </div>
+);
 }

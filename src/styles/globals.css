@@ -773,3 +773,130 @@ header {
 .recharts-pie-sector {
   animation: pieAppear 0.8s ease-out;
 }
+
+/* Dashboard.module.css */
+.dashboardContainer {
+  padding: 2rem;
+  background: #f8fafc;
+  min-height: 100vh;
+}
+
+/* Estilos da Tabela */
+.tabela-chamados {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 2rem 0;
+}
+
+.tabela-chamados thead {
+  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+}
+
+.tabela-chamados th {
+  padding: 1.2rem;
+  color: white;
+  font-weight: 600;
+  text-align: left;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tabela-chamados td {
+  padding: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  color: #1e293b;
+  font-size: 0.9rem;
+}
+
+.tabela-chamados tr:hover td {
+  background: #f1f5f9;
+}
+
+.tabela-chamados tr:last-child td {
+  border-bottom: none;
+}
+
+/* Títulos dos Gráficos */
+.titulo2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e3a8a;
+  margin: 2rem 0 1rem;
+  padding-left: 1rem;
+  border-left: 4px solid #3b82f6;
+}
+
+/* Container dos Gráficos */
+.Graficos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+/* Estilização dos Gráficos */
+.recharts-wrapper {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+}
+
+.recharts-cartesian-axis-tick-value {
+  fill: #64748b;
+  font-size: 0.8rem;
+}
+
+.recharts-label {
+  fill: #1e3a8a;
+  font-weight: 600;
+}
+
+.recharts-tooltip {
+  background: white !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.recharts-legend-item-text {
+  color: #64748b !important;
+  font-size: 0.8rem;
+}
+
+/* Estilos específicos para o Pie Chart */
+.recharts-pie-sector {
+  stroke: white;
+  stroke-width: 2px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .dashboardContainer {
+    padding: 1rem;
+  }
+
+  .tabela-chamados {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .tabela-chamados th,
+  .tabela-chamados td {
+    padding: 0.8rem;
+  }
+
+  .Graficos {
+    grid-template-columns: 1fr;
+  }
+
+  .recharts-wrapper {
+    width: 100% !important;
+  }
+}
