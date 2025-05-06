@@ -94,7 +94,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
       <div className="Graficos">
         {/* Chamados por Status */}
         <div className="bg-white p-4 rounded-xl shadow">
-          <h3 className="titulo">Chamados por Status</h3>
+          <h3 className="titulo2">Chamados por Status</h3>
           <ResponsiveContainer width="50%" height={250}>
             <BarChart data={porStatus}>
               <XAxis dataKey="nome" stroke="#555" />
@@ -107,7 +107,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
 
         {/* Chamados por Tipo */}
         <div className="">
-          <h3 className="titulo">Chamados por Tipo</h3>
+          <h3 className="titulo2">Chamados por Tipo</h3>
           <ResponsiveContainer width="50%" height={250}>
             <BarChart data={porTipo}>
               <XAxis dataKey="nome" stroke="#555" />
@@ -120,7 +120,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
 
   {/* Chamados por Zona */}
 <div className="bg-white p-4 rounded-xl shadow">
-  <h3 className="titulo">Chamados por Zona</h3>
+  <h3 className="titulo2">Chamados por Zona</h3>
   {porZona.length > 0 ? (
     <ResponsiveContainer width="100%" height={350}>
       <PieChart>

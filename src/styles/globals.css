@@ -327,6 +327,15 @@ button:hover {
   font-family:'Times New Roman', Times, serif;
 }
 
+.titulo2{
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  align-items: center;
+  font-size: 30px;
+  font-family:'Times New Roman', Times, serif;
+}
+
 .titulobarras{
   display: flex;
   flex-direction: row;
