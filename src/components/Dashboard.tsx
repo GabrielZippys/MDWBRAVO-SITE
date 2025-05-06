@@ -89,11 +89,11 @@ export default function Dashboard({ chamados }: DashboardProps) {
     ))}
   </tbody>
 </table>
-
+<div className='titulo2'>
 <h3 className="titulo2">Chamados por Status</h3>
 <h3 className="titulo2">Chamados por Tipo</h3>
 <h3 className="titulo2">Chamados por Zona</h3>
-
+</div>
       <div className="Graficos">
         {/* Chamados por Status */}
         
