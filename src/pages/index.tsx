@@ -7,6 +7,7 @@ import Dashboard from '@/components/Dashboard';
 import { connectDB } from '@/lib/mongodb';
 import ChamadoModel from '@/models/chamado';
 import { notion } from '@/lib/notion';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 const MapaDeChamados = dynamic(() => import('@/components/MapaDeChamados'), { ssr: false });
 
@@ -161,6 +162,8 @@ export default function Home({ chamadosIniciais }: HomeProps) {
     </main>
   );
 }
+
+const DATABASE_ID = process.env.NOTION_DATABASE_ID!;
 
 export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
   try {
