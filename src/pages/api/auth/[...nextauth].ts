@@ -7,6 +7,7 @@ const allowedEmails: Record<string, string> = {
   "gabriel.henrique@bravo-ti.com": "Gestor",
   "paulo.ikeda@bravo-ti.com": "gestor",
   "fernanda.p.s.b6@gmail.com": "gestor",
+  "wellington@bravo-ti.com": "gestor",
   "loja@exemplo.com": "Loja",
 };
 
