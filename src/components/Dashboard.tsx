@@ -61,7 +61,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
   return (
     <div className="space-y-8">
       {/* Tabela de Chamados omitida para brevidade */}
-      <table className="min-w-full bg-white rounded-xl shadow overflow-hidden">
+      <table className="tabela-chamados">
   <thead className="bg-gray-100">
     <tr>
       <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Título</th>
