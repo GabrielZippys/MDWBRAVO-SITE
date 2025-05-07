@@ -107,7 +107,7 @@ export default function Home({ chamadosIniciais }: HomeProps) {
         </select>
 
         <button
-          className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400 transition"
+          className="btn-filtro limpar"
           onClick={() => {
             setFiltroZona('');
             setFiltroStatus('');
@@ -116,14 +116,14 @@ export default function Home({ chamadosIniciais }: HomeProps) {
             setFiltroPrioridade('');
           }}
         >
-          Limpar Filtros
+          🧹Limpar Filtros
         </button>
 
         <button
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+          className="btn-filtro atualizar"
           onClick={fetchChamados}
         >
-          Atualizar Chamados
+          🔄 Atualizar Chamados
         </button>
       </div>
 

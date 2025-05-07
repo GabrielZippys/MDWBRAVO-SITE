@@ -93,7 +93,7 @@ function getZona(nomeLoja: string): string {
     "SP": "Oeste", "TA": "Oeste", "JB": "Oeste", "NS": "Oeste",
     "TS": "Oeste", "JA": "Oeste", "RP": "Oeste", "EL": "Centro",
     "MA": "Centro", "JM": "Oeste", "DD": "Oeste", "SS": "Centro",
-    "BU": "Centro"
+    "BU": "Centro", "VJ": "Leste"
   };
 
   // Extrai a sigla usando regex aprimorado

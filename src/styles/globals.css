@@ -1118,3 +1118,26 @@ html {
     50% { transform: translateY(-50%) translateX(5px); }
   }
 }
+
+/* Adicione no CSS */
+.prioridade {
+  font-weight: 700;
+  color: #3b82f6;
+  position: relative;
+  
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: currentColor;
+    opacity: 0.2;
+  }
+}
+
+.data-criacao {
+  font-size: 0.875rem;
+  color: #64748b;
+}
