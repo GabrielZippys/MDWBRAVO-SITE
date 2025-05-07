@@ -80,8 +80,13 @@ return (
             <td>{chamado.titulo}</td>
             <td>{chamado.loja}</td>
             <td>
-              <span className="status-badge">{chamado.status}</span>
-            </td>
+  <span 
+    className="status-badge" 
+    data-status={chamado.status}
+  >
+    {chamado.status}
+  </span>
+</td>
             <td>{chamado.tipo}</td>
             <td>{chamado.zona}</td>
             <td>{chamado.prioridade || 'Não definida'}</td>
