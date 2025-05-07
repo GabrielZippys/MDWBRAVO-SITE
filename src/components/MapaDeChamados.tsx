@@ -1,14 +1,32 @@
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { useMemo } from 'react';
 
-// Corrige ícone padrão do Leaflet
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-});
+// Definir tipo ChamadoStatus de forma global
+type ChamadoStatus = 'em aberto' | 'realizando' | 'designado' | 'resolvido' | 'feito' | 'outros';
+
+type Chamado = {
+  _id: string;
+  titulo: string;
+  loja: string;
+  status: ChamadoStatus;
+  tipo: string;
+  dataCriacao: string;
+  zona: string;
+};
+
+// Configuração de ícones
+const configureLeafletIcons = () => {
+  delete (L.Icon.Default.prototype as any)._getIconUrl;
+  L.Icon.Default.mergeOptions({
+    iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+  });
+};
+
+configureLeafletIcons();
 
 const coordenadasPorSigla: Record<string, [number, number]> = {
   MA: [-23.5586, -46.6252],
@@ -29,33 +47,85 @@ const coordenadasPorSigla: Record<string, [number, number]> = {
   FC: [-23.5300, -46.6350],
 };
 
-type Chamado = {
-  _id: string;
-  titulo: string;
-  loja: string;
-  status: string;
-  tipo: string;
-  dataCriacao: string;
-  zona: string;
-};
+interface MapaDeChamadosProps {
+  chamados: Chamado[];
+}
 
-export default function MapaDeChamados({ chamados }: { chamados: Chamado[] }) {
-  const getIconByStatus = (status: string) => {
-    let color = 'blue';
+export default function MapaDeChamados({ chamados }: MapaDeChamadosProps) {
+  const getIconByStatus = useMemo(() => {
+    const iconCache = new Map<string, L.Icon>();
 
-    if (status.toLowerCase() === 'em aberto') color = 'red';
-    else if (['realizando', 'designado'].includes(status.toLowerCase())) color = 'orange';
-    else if (['resolvido', 'feito'].includes(status.toLowerCase())) color = 'green';
+    return (status: ChamadoStatus) => {
+      const normalizedStatus = status.toLowerCase();
+      let color = 'blue';
 
-    return new L.Icon({
-      iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
-      shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowSize: [41, 41],
-    });
-  };
+      if (normalizedStatus === 'em aberto') color = 'red';
+      else if (['realizando', 'designado'].includes(normalizedStatus)) color = 'orange';
+      else if (['resolvido', 'feito'].includes(normalizedStatus)) color = 'green';
+
+      if (!iconCache.has(color)) {
+        iconCache.set(color, new L.Icon({
+          iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
+          shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+          iconSize: [25, 41],
+          iconAnchor: [12, 41],
+          popupAnchor: [1, -34],
+          shadowSize: [41, 41],
+        }));
+      }
+      return iconCache.get(color)!;
+    };
+  }, []);
+
+  const markers = useMemo(() => {
+    return chamados
+      .map((chamado) => {
+        const sigla = chamado.loja?.match(/[A-Z]{2,}/)?.[0]?.toUpperCase() || '';
+        const coordenadas = coordenadasPorSigla[sigla];
+        return coordenadas ? { ...chamado, coordenadas } : null;
+      })
+      .filter(Boolean)
+      .map((chamado) => (
+        <Marker
+          key={chamado!._id}
+          position={chamado!.coordenadas}
+          icon={getIconByStatus(chamado!.status)}
+          aria-label={`Marcador para chamado ${chamado!.titulo}`}
+        >
+          <Popup>
+            <div className="min-w-[200px] space-y-1">
+              <h3 className="font-bold">{chamado!.titulo || 'Sem título'}</h3>
+              <div className="grid grid-cols-2 gap-1">
+                <div className="flex items-center">
+                  <span>🏪</span>
+                  <span className="ml-1">{chamado!.loja || 'Desconhecida'}</span>
+                </div>
+                <div className="flex items-center">
+                  <span>📌</span>
+                  <span className="ml-1 capitalize">{chamado!.status}</span>
+                </div>
+                <div className="flex items-center">
+                  <span>🧭</span>
+                  <span className="ml-1">{chamado!.zona || '---'}</span>
+                </div>
+                <div className="flex items-center">
+                  <span>📅</span>
+                  <span className="ml-1">
+                    {chamado!.dataCriacao
+                      ? new Date(chamado!.dataCriacao).toLocaleDateString('pt-BR')
+                      : 'Sem data'}
+                  </span>
+                </div>
+                <div className="col-span-2 flex items-center">
+                  <span>📂</span>
+                  <span className="ml-1">{chamado!.tipo || '---'}</span>
+                </div>
+              </div>
+            </div>
+          </Popup>
+        </Marker>
+      ));
+  }, [chamados, getIconByStatus]);
 
   return (
     <div className="map-container">
@@ -63,38 +133,14 @@ export default function MapaDeChamados({ chamados }: { chamados: Chamado[] }) {
         center={[-23.55, -46.64]}
         zoom={11}
         scrollWheelZoom={false}
-        style={{ height: '500px', width: '1000px' }}
+        style={{ height: '500px', width: '100%' }}
+        aria-label="Mapa de chamados"
       >
         <TileLayer
-          attribution='&copy; OpenStreetMap'
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {chamados.map((chamado) => {
-          const sigla = chamado.loja?.match(/[A-Z]{2,}/)?.[0]?.toUpperCase();
-          const coordenadas = coordenadasPorSigla[sigla || ''];
-
-          if (!coordenadas) return null;
-
-          return (
-            <Marker
-              key={chamado._id}
-              position={coordenadas}
-              icon={getIconByStatus(chamado.status)}
-            >
-             <Popup>
-  <div>
-    <strong>{chamado?.titulo || 'Sem título'}</strong><br />
-    🏪 Loja: {chamado?.loja || 'Desconhecida'}<br />
-    🧭 Zona: {chamado?.zona || '---'}<br />
-    📅 {chamado?.dataCriacao ? new Date(chamado.dataCriacao).toLocaleDateString('pt-BR') : 'Sem data'}<br />
-    📌 Status: {chamado?.status || '---'}<br />
-    📂 Tipo: {chamado?.tipo || '---'}
-  </div>
-</Popup>
-
-            </Marker>
-          );
-        })}
+        {markers}
       </MapContainer>
     </div>
   );
