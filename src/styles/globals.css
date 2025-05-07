@@ -1141,3 +1141,105 @@ html {
   font-size: 0.875rem;
   color: #64748b;
 }
+
+/* Layout Principal */
+.dashboard-container {
+  display: grid;
+  gap: 2rem;
+  padding: 1.5rem;
+}
+
+/* Filtros */
+.filtros-avancados {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  background: #f8fafc;
+  padding: 1rem;
+  border-radius: 12px;
+}
+
+.filtro-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filtro-group label {
+  font-weight: 600;
+  color: #1e3a8a;
+}
+
+/* Mapa */
+.mapa-section {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.mapa-wrapper {
+  position: relative;
+  height: 500px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.mapa-legenda {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 1rem;
+  border-radius: 8px;
+  z-index: 1000;
+}
+
+.mapa-legenda div {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+}
+
+.cor-alta { background: #ef4444; width: 15px; height: 15px; border-radius: 50%; }
+.cor-media { background: #f59e0b; width: 15px; height: 15px; border-radius: 50%; }
+.cor-baixa { background: #10b981; width: 15px; height: 15px; border-radius: 50%; }
+
+/* Gráficos */
+.graficos-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.grafico-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Tabela */
+.tabela-section {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.tabela-wrapper {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .mapa-wrapper {
+    height: 300px;
+  }
+  
+  .filtros-avancados {
+    grid-template-columns: 1fr;
+  }
+}
