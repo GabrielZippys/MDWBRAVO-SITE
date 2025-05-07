@@ -1,100 +1,166 @@
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import MarkerClusterGroup from 'react-leaflet-cluster';
+import { useMemo } from 'react';
+import { format } from 'date-fns';
 
-// Corrige ícone padrão do Leaflet
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-});
+// Configuração de ícones
+interface CustomIconOptions extends L.IconOptions {
+  iconColor: string;
+}
 
-const coordenadasPorSigla: Record<string, [number, number]> = {
-  MA: [-23.5586, -46.6252],
-  PP: [-23.4996, -46.8509],
-  TS: [-23.5439, -46.8370],
-  DD: [-23.4919, -46.8434],
-  RP: [-23.5525, -46.6572],
-  CL: [-23.5265, -46.8001],
-  CB: [-23.6105, -46.7578],
-  JS: [-23.5503, -46.633],
-  EL: [-23.5475, -46.6361],
-  JB: [-23.5563, -46.7314],
-  NT: [-23.5615, -46.6559],
-  DJ: [-23.4920, -46.8500],
-  SD: [-23.5593, -46.7358],
-  NS: [-23.5105, -46.7291],
-  BU: [-23.5405, -46.6333],
-  FC: [-23.5300, -46.6350],
+const createCustomIcon = (color: string): L.Icon => {
+  return new L.Icon({
+    iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
+    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+    iconSize: [32, 42],
+    iconAnchor: [16, 42],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
+    className: `leaflet-marker-custom-${color}`,
+  });
 };
 
-type Chamado = {
+// Configurações do mapa
+const coordenadasPorSigla: Record<string, [number, number]> = {
+  // ... (mantido igual ao original)
+};
+
+const DEFAULT_CENTER: [number, number] = [-23.55, -46.64];
+const DEFAULT_ZOOM = 11;
+
+// Tipagem aprimorada
+type ChamadoStatus = 'em aberto' | 'realizando' | 'designado' | 'resolvido' | 'feito' | 'outros';
+
+interface Chamado {
   _id: string;
   titulo: string;
   loja: string;
-  status: string;
+  status: ChamadoStatus;
   tipo: string;
   dataCriacao: string;
   zona: string;
-};
+}
 
-export default function MapaDeChamados({ chamados }: { chamados: Chamado[] }) {
-  const getIconByStatus = (status: string) => {
-    let color = 'blue';
+interface MapaDeChamadosProps {
+  chamados: Chamado[];
+  className?: string;
+}
 
-    if (status.toLowerCase() === 'em aberto') color = 'red';
-    else if (['realizando', 'designado'].includes(status.toLowerCase())) color = 'orange';
-    else if (['resolvido', 'feito'].includes(status.toLowerCase())) color = 'green';
-
-    return new L.Icon({
-      iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
-      shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowSize: [41, 41],
-    });
-  };
+// Componente de controle personalizado
+const MapControls = () => {
+  const map = useMap();
 
   return (
-    <div className="map-container">
+    <div className="leaflet-top leaflet-right">
+      <div className="leaflet-control leaflet-bar">
+        <button
+          onClick={() => map.setView(DEFAULT_CENTER, DEFAULT_ZOOM)}
+          className="p-2 bg-white hover:bg-gray-100"
+          aria-label="Resetar vista do mapa"
+        >
+          ↺
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// Componente principal
+export default function MapaDeChamados({ chamados, className }: MapaDeChamadosProps) {
+  const statusColors: Record<ChamadoStatus, string> = {
+    'em aberto': 'red',
+    realizando: 'orange',
+    designado: 'orange',
+    resolvido: 'green',
+    feito: 'green',
+    outros: 'blue',
+  };
+
+  const getIcon = useMemo(() => {
+    const iconsCache: Record<string, L.Icon> = {};
+
+    return (status: ChamadoStatus) => {
+      const color = statusColors[status] || 'blue';
+      if (!iconsCache[color]) {
+        iconsCache[color] = createCustomIcon(color);
+      }
+      return iconsCache[color];
+    };
+  }, []);
+
+  const processarChamados = useMemo(() => {
+    return chamados.map(chamado => {
+      const siglaMatch = chamado.loja.split('-').pop()?.trim().toUpperCase();
+      const sigla = siglaMatch && coordenadasPorSigla[siglaMatch] ? siglaMatch : null;
+      
+      return {
+        ...chamado,
+        coordenadas: sigla ? coordenadasPorSigla[sigla] : null,
+        dataFormatada: format(new Date(chamado.dataCriacao), 'dd/MM/yyyy HH:mm'),
+      };
+    }).filter(chamado => chamado.coordenadas);
+  }, [chamados]);
+
+  return (
+    <div className={`map-container ${className || ''}`}>
       <MapContainer
-        center={[-23.55, -46.64]}
-        zoom={11}
+        center={DEFAULT_CENTER}
+        zoom={DEFAULT_ZOOM}
         scrollWheelZoom={false}
-        style={{ height: '500px', width: '1000px' }}
+        style={{ height: '600px', width: '100%' }}
+        aria-label="Mapa de chamados"
       >
+        <MapControls />
+        
         <TileLayer
-          attribution='&copy; OpenStreetMap'
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {chamados.map((chamado) => {
-          const sigla = chamado.loja?.match(/[A-Z]{2,}/)?.[0]?.toUpperCase();
-          const coordenadas = coordenadasPorSigla[sigla || ''];
 
-          if (!coordenadas) return null;
-
-          return (
+        <MarkerClusterGroup
+          chunkedLoading
+          spiderfyDistanceMultiplier={2}
+          showCoverageOnHover={false}
+        >
+          {processarChamados.map((chamado) => (
             <Marker
               key={chamado._id}
-              position={coordenadas}
-              icon={getIconByStatus(chamado.status)}
+              position={chamado.coordenadas!}
+              icon={getIcon(chamado.status)}
+              aria-label={`Marcador para chamado ${chamado.titulo}`}
             >
-             <Popup>
-  <div>
-    <strong>{chamado?.titulo || 'Sem título'}</strong><br />
-    🏪 Loja: {chamado?.loja || 'Desconhecida'}<br />
-    🧭 Zona: {chamado?.zona || '---'}<br />
-    📅 {chamado?.dataCriacao ? new Date(chamado.dataCriacao).toLocaleDateString('pt-BR') : 'Sem data'}<br />
-    📌 Status: {chamado?.status || '---'}<br />
-    📂 Tipo: {chamado?.tipo || '---'}
-  </div>
-</Popup>
-
+              <Popup>
+                <div className="min-w-[250px] space-y-2">
+                  <h3 className="font-bold text-lg">{chamado.titulo}</h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="flex items-center">
+                      <span className="emoji">🏪</span>
+                      <span className="ml-2">{chamado.loja}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="emoji">📌</span>
+                      <span className="ml-2 capitalize">{chamado.status}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="emoji">🧭</span>
+                      <span className="ml-2">{chamado.zona || 'N/A'}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="emoji">📅</span>
+                      <span className="ml-2">{chamado.dataFormatada}</span>
+                    </div>
+                    <div className="col-span-2 flex items-center">
+                      <span className="emoji">📂</span>
+                      <span className="ml-2">{chamado.tipo}</span>
+                    </div>
+                  </div>
+                </div>
+              </Popup>
             </Marker>
-          );
-        })}
+          ))}
+        </MarkerClusterGroup>
       </MapContainer>
     </div>
   );

@@ -1243,3 +1243,14 @@ html {
     grid-template-columns: 1fr;
   }
 }
+
+/* Em seu arquivo global CSS */
+.marker-cluster div {
+  background-color: rgba(59, 130, 246, 0.6);
+  color: white;
+  font-weight: bold;
+}
+
+.marker-cluster span {
+  background-color: rgba(59, 130, 246, 0.85);
+}
