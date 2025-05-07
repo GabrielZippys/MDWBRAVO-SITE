@@ -48,17 +48,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       })
       .map(page => {
         const props = page.properties as any;
-        
+        const rawLoja = props.Loja?.select?.name || '';
+        const loja = rawLoja.replace(/[^A-Z]/g, ''); // Remove não-letras
+
         // Debug: Logar todas as propriedades
         console.log(`Propriedades da página ${page.id}:`, JSON.stringify(props, null, 2));
 
         const status = props.Status?.status?.name || 'Sem status';
-        const loja = props.Loja?.select?.name || '';
         
         return {
           _id: page.id,
           titulo: props['Descrição do Problema']?.title?.[0]?.plain_text || '',
-          loja,
+          loja: rawLoja,
           status,
           tipo: props['Tipo de Ticket']?.select?.name || '',
           prioridade: props.Prioridade?.select?.name || '',
@@ -81,11 +82,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 }
 
-function getZona(lojaSigla: string) {
-  const map: Record<string, string> = {
-    BO: 'Centro', 
-    NS: 'Oeste',
-    // Adicione todas as siglas necessárias
+function getZona(nomeLoja: string): string {
+  const zonaMap: Record<string, string> = {
+    "BO": "Centro", "CA": "Centro", "CF": "Centro", "FC": "Centro",
+    "LV": "Centro", "MO": "Sul", "PC": "Centro", "VM": "Sul",
+    "PV": "Centro", "CB": "Centro", "RC": "Leste", "SD": "Leste",
+    "CN": "Leste", "DJ": "Leste", "BB": "Oeste", "CL": "Oeste",
+    "CR": "Sul", "HM": "Oeste", "JS": "Oeste", "PP": "Oeste",
+    "NN": "Oeste", "NT": "Sul", "PI": "Sul", "JR": "Oeste",
+    "SP": "Oeste", "TA": "Oeste", "JB": "Oeste", "NS": "Oeste",
+    "TS": "Oeste", "JA": "Oeste", "RP": "Oeste", "EL": "Centro",
+    "MA": "Centro", "JM": "Oeste", "DD": "Oeste", "SS": "Centro",
+    "BU": "Centro"
   };
-  return lojaSigla ? map[lojaSigla.toUpperCase()] || 'Não Mapeada' : 'Sem Loja';
+
+  // Extrai a sigla usando regex aprimorado
+  const match = nomeLoja.match(/^[A-Z]{2,}/); // Captura 2+ letras no início
+  const sigla = match ? match[0].toUpperCase() : '';
+
+  // Log para debug
+  console.log(`Processando loja: ${nomeLoja} | Sigla: ${sigla} | Zona: ${zonaMap[sigla] || 'Não Mapeada'}`);
+
+  return zonaMap[sigla] || 'Não Mapeada';
 }

@@ -935,6 +935,12 @@ header {
     padding: 0.8rem;
   }
 
+[data-zona="Não Mapeada"] {
+  background: #fef3c7;
+  color: #d97706;
+  font-weight: bold;
+}
+
   .Graficos {
     grid-template-columns: 1fr;
   }

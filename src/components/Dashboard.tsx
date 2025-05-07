@@ -1,6 +1,6 @@
 // components/Dashboard.tsx
 'use client';
-
+import { getZona } from '@/utils/classifyZone';
 import {
   BarChart,
   Bar,
