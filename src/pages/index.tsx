@@ -131,8 +131,10 @@ export default function Home({ chamadosIniciais }: HomeProps) {
       <Dashboard chamados={chamadosFiltrados} />
 
       {/* Mapa */}
+      <div className="mapa-container">
       <h2>Mapa Interativo</h2>
       <MapaDeChamados chamados={chamadosFiltrados} />
+    </div>
     </main>
   );
 }
