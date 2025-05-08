@@ -2,6 +2,7 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useEffect, useMemo, useState } from 'react';
+import styles from '@/styles/leaflet-fix.module.css';
 
 type ChamadoStatus = 'em aberto' | 'realizando' | 'designado' | 'resolvido' | 'feito' | 'outros';
 
@@ -153,7 +154,7 @@ export default function MapaDeChamados({ chamados }: MapaDeChamadosProps) {
   }
 
   return (
-    <div className="map-container">
+    <div className="{styles.leafletContainer}">
       <MapContainer
         center={[-23.55, -46.64]}
         zoom={11}

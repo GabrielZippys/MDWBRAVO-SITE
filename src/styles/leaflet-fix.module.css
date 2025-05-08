@@ -1,0 +1,18 @@
+/* src/styles/leaflet-fix.module.css */
+.leafletContainer {
+  height: 500px;
+  width: 100%;
+  z-index: 0;
+}
+
+.leafletPopupContent {
+  min-width: 200px;
+  padding: 1rem;
+  font-family: 'Arial', sans-serif;
+  font-size: 14px;
+}
+
+.leafletControlAttribution {
+  font-size: 0.75rem !important;
+  background: rgba(255, 255, 255, 0.8) !important;
+}
