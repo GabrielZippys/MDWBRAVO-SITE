@@ -74,15 +74,15 @@ export default function MapaDeChamados({ chamados }: MapaDeChamadosProps) {
       const color = colorMap[status];
 
       if (!iconCache.has(color)) {
-        iconCache.set(color, L.icon({
-          iconUrl: '/markers/marker-icon.png',
+        L.Icon.Default.mergeOptions({
           iconRetinaUrl: '/markers/marker-icon-2x.png',
+          iconUrl: '/markers/marker-icon.png',
           shadowUrl: '/markers/marker-shadow.png',
           iconSize: [25, 41],
           iconAnchor: [12, 41],
           popupAnchor: [1, -34],
           shadowSize: [41, 41],
-        }));
+        });
       }
       return iconCache.get(color)!;
     };
