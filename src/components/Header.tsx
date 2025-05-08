@@ -41,7 +41,30 @@ export default function Header() {
         {/* Seção do usuário */}
         {session && (
           <div className="user-panel">
-            {/* ... conteúdo existente ... */}
+            <div className="user-info">
+              {session.user?.image && (
+                <img
+                  src={session.user.image}
+                  alt="Foto de perfil"
+                  className="user-avatar"
+                />
+              )}
+              <div className="user-details">
+                <p className="welcome-message">
+                  Bem-vindo, <span className="user-name">{session.user?.name}</span>
+                  <span className="user-role">({session.user?.role || 'Sem permissão'})</span>
+                </p>
+                
+                <div className="action-buttons">
+                  <button
+                    onClick={() => signOut({ callbackUrl: '/' })}
+                    className="logout-button"
+                  >
+                    Sair
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </header>
