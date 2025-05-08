@@ -92,12 +92,23 @@ export default function MapaDeChamados({ chamados }: MapaDeChamadosProps) {
 
     return (status: ChamadoStatus) => {
       const color = colorMap[status];
+      
       if (!iconCache.has(color)) {
-        iconCache.set(color, createCustomIcon(color));
+        const iconConfig = {
+          iconUrl: `marker-icon-${color}.png`,       // Ícone padrão
+          iconRetinaUrl: `marker-icon-2x-${color}.png`, // Ícone para retina (2x)
+          shadowUrl: 'marker-shadow.png',           // Sombra (comum para todos)
+          iconSize: [25, 41] as [number, number],    // Tamanho do ícone (ajuste conforme necessário)
+          iconAnchor: [12, 41] as [number, number], // Ponto de ancoragem
+          shadowSize: [41, 41] as [number, number]  // Tamanho da sombra
+        };
+
+        iconCache.set(color, new L.Icon(iconConfig));
       }
-      return iconCache.get(color)!;
+      
+      return iconCache.get(color);
     };
-  }, []);
+}, []);
 
   const markers = useMemo(() => {
     return chamados
