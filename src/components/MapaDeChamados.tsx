@@ -15,21 +15,6 @@ type Chamado = {
   zona: string;
 };
 
-// Configuração global dos ícones
-const configureLeafletIcons = () => {
-  delete (L.Icon.Default.prototype as any)._getIconUrl;
-  
-  L.Icon.Default.mergeOptions({
-    iconRetinaUrl: '/markers/marker-icon-2x.png',
-    iconUrl: '/markers/marker-icon.png',
-    shadowUrl: '/markers/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41],
-  });
-};
-
 const coordenadasPorSigla: Record<string, [number, number]> = {
   MA: [-23.5586, -46.6252],
   PP: [-23.4996, -46.8509],
@@ -53,36 +38,49 @@ interface MapaDeChamadosProps {
   chamados: Chamado[];
 }
 
+const createCustomIcon = (color: string) => {
+  return new L.Icon({
+    iconUrl: `/markers/marker-icon-${color}.png`,
+    iconRetinaUrl: `/markers/marker-icon-2x-${color}.png`,
+    shadowUrl: '/markers/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+  });
+};
+
 export default function MapaDeChamados({ chamados }: MapaDeChamadosProps) {
   useEffect(() => {
-    configureLeafletIcons();
+    // Correção necessária para os ícones padrão do Leaflet
+    delete (L.Icon.Default.prototype as any)._getIconUrl;
+    
+    L.Icon.Default.mergeOptions({
+      iconRetinaUrl: '/markers/marker-icon-2x.png',
+      iconUrl: '/markers/marker-icon.png',
+      shadowUrl: '/markers/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41],
+    });
   }, []);
 
   const getIconByStatus = useMemo(() => {
     const iconCache = new Map<string, L.Icon>();
+    const colorMap: Record<ChamadoStatus, string> = {
+      'em aberto': 'red',
+      'realizando': 'orange',
+      'designado': 'orange',
+      'resolvido': 'green',
+      'feito': 'green',
+      'outros': 'blue'
+    };
 
     return (status: ChamadoStatus) => {
-      const colorMap = {
-        'em aberto': 'red',
-        'realizando': 'orange',
-        'designado': 'orange',
-        'resolvido': 'green',
-        'feito': 'green',
-        'outros': 'blue'
-      };
-
       const color = colorMap[status];
-
       if (!iconCache.has(color)) {
-        L.Icon.Default.mergeOptions({
-          iconRetinaUrl: '/markers/marker-icon-2x.png',
-          iconUrl: '/markers/marker-icon.png',
-          shadowUrl: '/markers/marker-shadow.png',
-          iconSize: [25, 41],
-          iconAnchor: [12, 41],
-          popupAnchor: [1, -34],
-          shadowSize: [41, 41],
-        });
+        iconCache.set(color, createCustomIcon(color));
       }
       return iconCache.get(color)!;
     };
@@ -137,6 +135,10 @@ export default function MapaDeChamados({ chamados }: MapaDeChamadosProps) {
         </Marker>
       ));
   }, [chamados, getIconByStatus]);
+
+  if (typeof window === 'undefined') {
+    return null;
+  }
 
   return (
     <div className="map-container">

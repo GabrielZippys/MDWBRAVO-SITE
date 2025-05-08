@@ -1544,11 +1544,13 @@ html {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
 }
 
-.leaflet-popup-content {
-  margin: 12px !important;
-  font-family: 'Segoe UI', sans-serif;
+.leaflet-container {
+  height: 500px;
+  width: 100%;
+  z-index: 0;
 }
 
-.leaflet-container {
-  background: #f3f4f6 !important;
+.leaflet-popup-content {
+  min-width: 200px;
+  font-family: 'Segoe UI', sans-serif;
 }

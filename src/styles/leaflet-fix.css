@@ -1,0 +1,14 @@
+.leaflet-container {
+    background: #f8fafc !important;
+    z-index: 0;
+  }
+  
+  .leaflet-control-attribution {
+    font-size: 0.75rem !important;
+    background: rgba(255, 255, 255, 0.8) !important;
+  }
+  
+  .leaflet-popup-content {
+    margin: 12px !important;
+    font-family: 'Segoe UI', sans-serif;
+  }

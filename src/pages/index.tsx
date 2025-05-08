@@ -4,6 +4,7 @@ import { useSession, signIn } from 'next-auth/react';
 import React, { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Dashboard from '@/components/Dashboard';
+import '@/styles/leaflet-fix.css';
 
 export type ChamadoType = {
   _id: string;
@@ -101,7 +102,13 @@ export default function Home({ chamadosIniciais }: HomeProps) {
     );
   }
 
-  const MapaDeChamados = dynamic(() => import('@/components/MapaDeChamados'), { ssr: false });
+  const MapaDeChamados = dynamic(
+    () => import('@/components/MapaDeChamados').then((mod) => mod.default),
+    { 
+      ssr: false,
+      loading: () => <p>Carregando mapa...</p>
+    }
+  );
 
   return (
     <main>
