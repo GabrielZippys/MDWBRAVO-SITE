@@ -1,17 +1,25 @@
-// app/components/Header.tsx
 'use client';
 
 import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
 import Head from 'next/head';
 
+// Tipo customizado para a sessão
+type CustomSession = {
+  user?: {
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+    role?: string;
+  };
+};
+
 export default function Header() {
-  const { data: session } = useSession();
+  const { data: session } = useSession() as { data: CustomSession | null };
 
   return (
     <>
       <Head>
-        {/* Conteúdo obrigatório dentro do Head */}
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>MDW-BRAVO - Gestão de Chamados</title>
@@ -19,30 +27,27 @@ export default function Header() {
       </Head>
 
       <header className="header-container">
-        {/* Restante do conteúdo do header */}
         <div className="logo-container">
           <img src="/bravo.png" alt="Logo Bravo" className="logo" />
           <h1 className="site-title">MDW-BRAVO</h1>
         </div>
 
-        {/* Botões centralizados */}
         <div className="nav-buttons">
           <Link href="/" className="home-button">
             🏠 Home
           </Link>
           
-          {session?.user?.role === 'Gestor' && (
+          {(session?.user?.role === 'Gestor' || session?.user?.role === 'Admin') && (
             <Link href="/gestao" className="admin-button">
               ⚙️ Painel Admin
             </Link>
           )}
         </div>
 
-        {/* Seção do usuário */}
-        {session && (
+        {session?.user && (
           <div className="user-panel">
             <div className="user-info">
-              {session.user?.image && (
+              {session.user.image && (
                 <img
                   src={session.user.image}
                   alt="Foto de perfil"
@@ -51,8 +56,10 @@ export default function Header() {
               )}
               <div className="user-details">
                 <p className="welcome-message">
-                  Bem-vindo, <span className="user-name">{session.user?.name}</span>
-                  <span className="user-role">({session.user?.role || 'Sem permissão'})</span>
+                  Bem-vindo, <span className="user-name">{session.user.name || 'Usuário'}</span>
+                  <span className="user-role">
+                    ({session.user.role || 'Sem perfil'})
+                  </span>
                 </p>
                 
                 <div className="action-buttons">

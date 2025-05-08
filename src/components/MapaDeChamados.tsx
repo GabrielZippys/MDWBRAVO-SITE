@@ -1,7 +1,7 @@
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 type ChamadoStatus = 'em aberto' | 'realizando' | 'designado' | 'resolvido' | 'feito' | 'outros';
 
@@ -50,9 +50,21 @@ const createCustomIcon = (color: string) => {
   });
 };
 
+const MapLoader = () => (
+  <div className="p-4 text-center text-gray-500">
+    Carregando mapa...
+  </div>
+);
+
 export default function MapaDeChamados({ chamados }: MapaDeChamadosProps) {
+  const [isClient, setIsClient] = useState(false);
+  
   useEffect(() => {
-    // Correção necessária para os ícones padrão do Leaflet
+    setIsClient(true);
+    configureLeafletIcons();
+  }, []);
+
+  const configureLeafletIcons = () => {
     delete (L.Icon.Default.prototype as any)._getIconUrl;
     
     L.Icon.Default.mergeOptions({
@@ -64,7 +76,7 @@ export default function MapaDeChamados({ chamados }: MapaDeChamadosProps) {
       popupAnchor: [1, -34],
       shadowSize: [41, 41],
     });
-  }, []);
+  };
 
   const getIconByStatus = useMemo(() => {
     const iconCache = new Map<string, L.Icon>();
@@ -136,8 +148,8 @@ export default function MapaDeChamados({ chamados }: MapaDeChamadosProps) {
       ));
   }, [chamados, getIconByStatus]);
 
-  if (typeof window === 'undefined') {
-    return null;
+  if (!isClient || typeof window === 'undefined') {
+    return <MapLoader />;
   }
 
   return (

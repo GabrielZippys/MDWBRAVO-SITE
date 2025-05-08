@@ -1,15 +1,16 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
+// pages/api/auth/[...nextauth].ts
+import NextAuth, { type NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import type { User } from "next-auth";
 
+// Lista de e-mails autorizados com roles padronizados
 const allowedEmails: Record<string, string> = {
-  "benedito.soares@bravo-ti.com": "TI",
-  "vinicius.farinha@bravo-ti.com": "TI",
-  "gabriel.henrique@bravo-ti.com": "Gestor",
+  "benedito.soares@bravo-ti.com": "ti",
+  "vinicius.farinha@bravo-ti.com": "ti",
+  "gabriel.henrique@bravo-ti.com": "gestor",
   "paulo.ikeda@bravo-ti.com": "gestor",
   "fernanda.p.s.b6@gmail.com": "gestor",
   "wellington@bravo-ti.com": "gestor",
-  "loja@exemplo.com": "Loja",
+  "loja@exemplo.com": "loja",
 };
 
 export const authOptions: NextAuthOptions = {
@@ -20,21 +21,16 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ user }: { user: User }) {
-      const email = user.email;
-      return !!email && email in allowedEmails;
+    async jwt({ token, user }: { token: any; user: any }) {
+      if (user?.role) token.role = user.role;
+      return token;
     },
-    async session({ session }) {
-      const email = session.user?.email || "";
-      const role = allowedEmails[email] || "Visitante";
-      session.user = {
-        ...session.user,
-        role,
-      };
+    async session({ session, token }: { session: any; token: any }) {
+      if (session.user) session.user.role = token.role;
       return session;
-    },
+    }
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET!,
 };
 
-export default NextAuth(authOptions);
+export default NextAuth(authOptions); 

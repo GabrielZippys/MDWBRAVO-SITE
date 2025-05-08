@@ -103,10 +103,14 @@ export default function Home({ chamadosIniciais }: HomeProps) {
   }
 
   const MapaDeChamados = dynamic(
-    () => import('@/components/MapaDeChamados').then((mod) => mod.default),
+    () => import('@/components/MapaDeChamados'),
     { 
       ssr: false,
-      loading: () => <p>Carregando mapa...</p>
+      loading: () => (
+        <div className="p-4 text-center text-gray-500">
+          Carregando mapa...
+        </div>
+      )
     }
   );
 
