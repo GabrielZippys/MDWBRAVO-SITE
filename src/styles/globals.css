@@ -1442,3 +1442,52 @@ html {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+/* Estilos para os botões centralizados */
+.nav-buttons {
+  display: flex;
+  gap: 1rem;
+  margin: 0 2rem;
+}
+
+.home-button, .admin-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.home-button {
+  background: #2d3748;
+  color: #fff;
+}
+
+.home-button:hover {
+  background: #4a5568;
+}
+
+.admin-button {
+  background: #2b6cb0;
+  color: #fff;
+}
+
+.admin-button:hover {
+  background: #4299e1;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .nav-buttons {
+    flex-direction: column;
+    width: 100%;
+    margin: 1rem 0;
+  }
+  
+  .home-button, .admin-button {
+    justify-content: center;
+    width: 100%;
+  }
+}
