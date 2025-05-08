@@ -1,9 +1,8 @@
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
-// Definir tipo ChamadoStatus de forma global
 type ChamadoStatus = 'em aberto' | 'realizando' | 'designado' | 'resolvido' | 'feito' | 'outros';
 
 type Chamado = {
@@ -16,17 +15,20 @@ type Chamado = {
   zona: string;
 };
 
-// Configuração de ícones
+// Configuração global dos ícones
 const configureLeafletIcons = () => {
   delete (L.Icon.Default.prototype as any)._getIconUrl;
+  
   L.Icon.Default.mergeOptions({
-    iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+    iconRetinaUrl: '/markers/marker-icon-2x.png',
+    iconUrl: '/markers/marker-icon.png',
+    shadowUrl: '/markers/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
   });
 };
-
-configureLeafletIcons();
 
 const coordenadasPorSigla: Record<string, [number, number]> = {
   MA: [-23.5586, -46.6252],
@@ -52,21 +54,30 @@ interface MapaDeChamadosProps {
 }
 
 export default function MapaDeChamados({ chamados }: MapaDeChamadosProps) {
+  useEffect(() => {
+    configureLeafletIcons();
+  }, []);
+
   const getIconByStatus = useMemo(() => {
     const iconCache = new Map<string, L.Icon>();
 
     return (status: ChamadoStatus) => {
-      const normalizedStatus = status.toLowerCase();
-      let color = 'blue';
+      const colorMap = {
+        'em aberto': 'red',
+        'realizando': 'orange',
+        'designado': 'orange',
+        'resolvido': 'green',
+        'feito': 'green',
+        'outros': 'blue'
+      };
 
-      if (normalizedStatus === 'em aberto') color = 'red';
-      else if (['realizando', 'designado'].includes(normalizedStatus)) color = 'orange';
-      else if (['resolvido', 'feito'].includes(normalizedStatus)) color = 'green';
+      const color = colorMap[status];
 
       if (!iconCache.has(color)) {
-        iconCache.set(color, new L.Icon({
-          iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
-          shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+        iconCache.set(color, L.icon({
+          iconUrl: `/markers/marker-icon-${color}.png`,
+          iconRetinaUrl: '/markers/marker-icon-2x.png',
+          shadowUrl: '/markers/marker-shadow.png',
           iconSize: [25, 41],
           iconAnchor: [12, 41],
           popupAnchor: [1, -34],

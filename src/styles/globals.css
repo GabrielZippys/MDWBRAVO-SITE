@@ -1524,3 +1524,31 @@ html {
   align-items: center;
   gap: 1rem;
 }
+
+/* Corrige o posicionamento dos ícones */
+.leaflet-marker-icon,
+.leaflet-marker-shadow {
+  display: block !important;
+}
+
+.leaflet-container a.leaflet-popup-close-button {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  padding: 4px;
+  color: #6b7280;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 8px !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+.leaflet-popup-content {
+  margin: 12px !important;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.leaflet-container {
+  background: #f3f4f6 !important;
+}
