@@ -66,9 +66,37 @@ export default function Home({ chamadosIniciais }: HomeProps) {
   if (status === 'loading') return <p>Carregando sessão...</p>;
   if (!session) {
     return (
-      <main className="home">
-        <h1>Acesso Restrito</h1>
-        <button onClick={() => signIn('google')}>Entrar com Google</button>
+      <main className="login-container">
+        <div className="auth-card">
+          <div className="logo-wrapper animate-float">
+            <img src="/logo.png" alt="MDW Bravo Logo" className="logo" />
+          </div>
+          
+          <h1 className="title animate-fade-in">
+            Acesso <span className="gradient-text">Restrito</span>
+          </h1>
+          
+          <p className="subtitle animate-fade-in-delay">
+            Gestão Inteligente de Chamados
+          </p>
+  
+          <button 
+            className="google-btn animate-scale-in"
+            onClick={() => signIn('google')}
+          >
+            <svg className="google-icon" viewBox="0 0 24 24">
+              <path d="M12.545 10.239v3.821h5.445c-.712 2.315-2.647 3.972-5.445 3.972a5.94 5.94 0 1 1 0-11.88c1.835 0 3.456.989 4.261 2.468l3.494-2.268A9.959 9.959 0 0 0 12.545 2C7.021 2 2.545 6.477 2.545 12s4.476 10 10 10c5.523 0 10-4.477 10-10a9.994 9.994 0 0 0-1-4.029l-9 5.268z"/>
+            </svg>
+            Entrar com Google
+          </button>
+  
+          <div className="footer animate-slide-up">
+            <img src="/company-logo.png" alt="Empresa" className="company-logo" />
+            <p className="security-text">
+              <span className="lock-icon">🔒</span> Login seguro via Google
+            </p>
+          </div>
+        </div>
       </main>
     );
   }
