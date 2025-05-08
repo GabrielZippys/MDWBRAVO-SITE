@@ -95,18 +95,18 @@ export default function MapaDeChamados({ chamados }: MapaDeChamadosProps) {
       
       if (!iconCache.has(color)) {
         const iconConfig = {
-          iconUrl: `marker-icon-${color}.png`,       // Ícone padrão
-          iconRetinaUrl: `marker-icon-2x-${color}.png`, // Ícone para retina (2x)
-          shadowUrl: 'marker-shadow.png',           // Sombra (comum para todos)
-          iconSize: [25, 41] as [number, number],    // Tamanho do ícone (ajuste conforme necessário)
-          iconAnchor: [12, 41] as [number, number], // Ponto de ancoragem
-          shadowSize: [41, 41] as [number, number]  // Tamanho da sombra
+          iconUrl: `./components/marker-icon-${color}.png`,       // Caminho relativo
+          iconRetinaUrl: `./components/marker-icon-2x-${color}.png`, 
+          shadowUrl: './components/marker-shadow.png',            // Sombra na mesma pasta
+          iconSize: [25, 41] as [number, number],     // ✅ Ajuste conforme suas imagens
+          iconAnchor: [12, 41] as [number, number], 
+          shadowSize: [41, 41] as [number, number] 
         };
 
         iconCache.set(color, new L.Icon(iconConfig));
       }
       
-      return iconCache.get(color);
+      return iconCache.get(color)!;
     };
 }, []);
 
