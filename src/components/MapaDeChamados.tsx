@@ -75,7 +75,7 @@ export default function MapaDeChamados({ chamados }: MapaDeChamadosProps) {
 
       if (!iconCache.has(color)) {
         iconCache.set(color, L.icon({
-          iconUrl: `/markers/marker-icon-${color}.png`,
+          iconUrl: '/markers/marker-icon.png',
           iconRetinaUrl: '/markers/marker-icon-2x.png',
           shadowUrl: '/markers/marker-shadow.png',
           iconSize: [25, 41],
