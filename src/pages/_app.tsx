@@ -2,7 +2,8 @@
 import type { AppProps } from 'next/app';
 import { SessionProvider } from 'next-auth/react';
 import Layout from '@/components/Layout';
-import '@/styles/globals.css';  // CSS global principal
+import 'leaflet/dist/leaflet.css'; // Estilos globais do Leaflet
+import '@/styles/globals.css'; // Seus estilos globais
 
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
