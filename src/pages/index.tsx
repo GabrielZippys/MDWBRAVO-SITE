@@ -4,7 +4,6 @@ import { useSession, signIn } from 'next-auth/react';
 import React, { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Dashboard from '@/components/Dashboard';
-import '@/styles/leaflet-fix.css';
 
 export type ChamadoType = {
   _id: string;
