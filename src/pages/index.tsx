@@ -5,7 +5,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Dashboard from '@/components/Dashboard';
 import '@/styles/leaflet-fix.css';
-import styles from '@/styles/leaflet-fix.module.css';
 
 export type ChamadoType = {
   _id: string;
