@@ -69,7 +69,7 @@ export default function Home({ chamadosIniciais }: HomeProps) {
       <main className="login-container">
         <div className="auth-card">
           <div className="logo-wrapper animate-float">
-            <img src="/logo.png" alt="MDW Bravo Logo" className="logo" />
+            <img src="/bravo.png" alt="MDW Bravo Logo" className="logo" />
           </div>
           
           <h1 className="title animate-fade-in">
@@ -91,7 +91,7 @@ export default function Home({ chamadosIniciais }: HomeProps) {
           </button>
   
           <div className="footer animate-slide-up">
-            <img src="/company-logo.png" alt="Empresa" className="company-logo" />
+            <img src="/Faixa Bravo.png" alt="Empresa" className="company-logo" />
             <p className="security-text">
               <span className="lock-icon">🔒</span> Login seguro via Google
             </p>
