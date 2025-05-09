@@ -3,6 +3,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useEffect, useMemo, useState } from 'react';
 import styles from '@/styles/leaflet-fix.module.css';
+import { ChamadoType } from '../pages/index';
 
 type ChamadoStatus = 'em aberto' | 'realizando' | 'designado' | 'resolvido' | 'feito' | 'outros';
 
@@ -21,7 +22,7 @@ const coordenadasPorSigla: Record<string, [number, number]> = {
 };
 
 interface MapaDeChamadosProps {
-  chamados: Chamado[];
+  chamados: ChamadoType[];
 }
 
 const colorMap: Record<ChamadoStatus, string> = {
