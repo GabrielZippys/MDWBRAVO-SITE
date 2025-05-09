@@ -89,7 +89,12 @@ return (
 </td>
             <td>{chamado.tipo}</td>
             <td>{chamado.zona}</td>
-            <td>{chamado.prioridade || 'Não definida'}</td>
+            <td 
+  data-priority={chamado.prioridade?.toLowerCase()}
+  data-zona={chamado.zona}
+>
+  {chamado.prioridade || 'Não definida'}
+</td>
             <td>
               {new Date(chamado.dataCriacao).toLocaleDateString()}
             </td>
