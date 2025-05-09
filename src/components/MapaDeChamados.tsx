@@ -74,7 +74,7 @@ export default function MapaDeChamados({ chamados }: MapaDeChamadosProps) {
     delete (L.Icon.Default.prototype as any)._getIconUrl;
     
     L.Icon.Default.mergeOptions({
-      iconRetinaUrl: '/markers/marker-icon-2x.png', // "2x" minúsculo
+      iconRetinaUrl: '/markers/marker-icon-2x.png',
       iconUrl: '/markers/marker-icon.png',
       shadowUrl: '/markers/marker-shadow.png',
       iconSize: [25, 41],
@@ -107,32 +107,46 @@ const getIconByStatus = useMemo(() => {
   };
 }, []);
 
-  const markers = useMemo(() => {
-    return chamados
-      .map((chamado) => {
-        const sigla = chamado.loja
-  ?.match(/([A-Z]{2,})|([A-Z]\d{1,2})/) // Captura siglas como "MA1" ou "PP"
-  ?.[0]
-  ?.replace(/[^A-Z]/g, '') // Remove números/dígitos
-  ?.substring(0, 2) // Pega apenas as 2 primeiras letras
-  ?.toUpperCase() || '';
-        const coordenadas = coordenadasPorSigla[sigla];
-
-        console.log('Chamado:', chamado._id, '| Sigla:', sigla, '| Coordenadas:', coordenadas);
-
-        return coordenadas ? { ...chamado, coordenadas } : null;
-      })      
-      .filter(Boolean)
-      .map((chamado) => (
-        <Marker
-          key={chamado!._id}
-          position={chamado!.coordenadas}
-          icon={getIconByStatus(chamado!.status)}
-          aria-label={`Marcador para chamado ${chamado!.titulo}`}
-        >
-          <Popup>
-            {/* Conteúdo mantido igual */}
-          </Popup>
+const markers = useMemo(() => {
+  return chamados
+    .map((chamado) => {
+      const sigla = chamado.loja
+        .match(/([A-Z]{2,})|([A-Z]+\d+)/)?.[0]
+        ?.replace(/[^A-Z]/g, '')
+        ?.substring(0, 2)
+        ?.toUpperCase() || '';
+      const coordenadas = coordenadasPorSigla[sigla];
+      return coordenadas ? { ...chamado, coordenadas } : null;
+    })
+    // Corrigindo a verificação de tipo
+    .filter((chamado): chamado is NonNullable<typeof chamado> => 
+      chamado !== null && !!chamado.coordenadas
+    )
+    .map((chamado) => (
+      <Marker
+        key={chamado._id} // Remova o "!"
+        position={chamado.coordenadas} // Remova o "!"
+        icon={getIconByStatus(chamado.status)}
+      >
+        <Popup>
+  <div className="min-w-[200px] space-y-2 p-2">
+    <h3 className="font-bold text-lg">{chamado.titulo}</h3>
+    <div className="grid grid-cols-2 gap-2">
+      <div className="flex items-center">
+        <span className="mr-2">🏪</span>
+        <span>{chamado.loja}</span>
+      </div>
+      <div className="flex items-center">
+        <span className="mr-2">📌</span>
+        <span className="capitalize">{chamado.status}</span>
+      </div>
+      <div className="flex items-center col-span-2">
+        <span className="mr-2">📅</span>
+        <span>{new Date(chamado.dataCriacao).toLocaleDateString('pt-BR')}</span>
+      </div>
+    </div>
+  </div>
+</Popup>
         </Marker>
       ));
   }, [chamados, getIconByStatus]);
