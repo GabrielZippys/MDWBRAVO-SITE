@@ -106,20 +106,21 @@ export default function MapaDeChamados({ chamados }: MapaDeChamadosProps) {
   }
 
   return (
-    <div className={styles.leafletContainer}>
-      <MapContainer
-        center={[-23.55, -46.64]}
-        zoom={11}
-        scrollWheelZoom={false}
-        style={{ height: '500px', width: '100%' }}
-        aria-label="Mapa de chamados"
-      >
+      <div className={styles.leafletContainer}>
+        {isClient && (
+          <MapContainer
+            center={[-23.55, -46.64]}
+            zoom={11}
+            scrollWheelZoom={false}
+            style={{ height: '500px', width: '100%' }}
+          >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         {markers}
       </MapContainer>
+       )}
     </div>
   );
 }
