@@ -1572,7 +1572,7 @@ html {
 
 .leaflet-marker-icon {
   background: transparent;
-  border: none;
+  border: 2px solid red !important; /* Debug visual */
   /* Adicione animação para debug */
   animation: markerPulse 1.5s infinite;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
@@ -1581,6 +1581,11 @@ html {
 .leaflet-marker-icon:hover {
   transform: scale(1.1) rotate(-5deg);
   z-index: 1000 !important;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 @keyframes markerPulse {
