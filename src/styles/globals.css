@@ -667,9 +667,10 @@ header {
 
 /* Estilos Gerais do Dashboard */
 .dashboard-container {
-  padding: 2rem;
+  padding: 2rem 1.5rem;
   background: #f8fafc;
-  min-height: 100vh;
+  min-height: 100vh; max-width: 1400px;
+  margin: 0 auto;
 }
 
 /* Títulos */
@@ -1255,7 +1256,7 @@ html {
   background: white;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
 }
 
 .tabela-wrapper {
@@ -1574,6 +1575,12 @@ html {
   border: none;
   /* Adicione animação para debug */
   animation: markerPulse 1.5s infinite;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  transition: transform 0.2s ease;
+}
+.leaflet-marker-icon:hover {
+  transform: scale(1.1) rotate(-5deg);
+  z-index: 1000 !important;
 }
 
 @keyframes markerPulse {

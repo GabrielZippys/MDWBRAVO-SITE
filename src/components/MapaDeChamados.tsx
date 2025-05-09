@@ -67,26 +67,28 @@ export default function MapaDeChamados({ chamados }: MapaDeChamadosProps) {
     
   };
 
-  const getIconByStatus = useMemo(() => {
-    const iconCache = new Map<string, L.Icon>();
-
-    return (status: ChamadoStatus) => {
-      const color = colorMap[status];
-      
-      if (!iconCache.has(color)) {
-        iconCache.set(color, new L.Icon({
-          iconUrl: `/markers/marker-icon-${color}.png?v=1.0.1`, // Versão atualizada
-          iconRetinaUrl: `/markers/marker-icon-2x-${color}.png?v=1.0.1`,
-          shadowUrl: '/markers/marker-shadow.png?v=1.0.1',
-          iconSize: [25, 41],
-          iconAnchor: [12, 41],
-          shadowSize: [41, 41]
-        }));
-      }
-      
-      return iconCache.get(color)!;
-    };
-  }, []);
+ // components/MapaDeChamados.tsx
+const getIconByStatus = useMemo(() => {
+  const iconCache = new Map<string, L.Icon>();
+  
+  return (status: ChamadoStatus) => {
+    const color = colorMap[status];
+    
+    if (!iconCache.has(color)) {
+      const icon = new L.Icon({
+        iconUrl: `/markers/marker-icon-${color}.png`,
+        iconRetinaUrl: `/markers/marker-icon-2x-${color}.png`,
+        shadowUrl: '/markers/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+      });
+      iconCache.set(color, icon);
+    }
+    return iconCache.get(color)!;
+  };
+}, []);
 
   const markers = useMemo(() => {
     return chamados
