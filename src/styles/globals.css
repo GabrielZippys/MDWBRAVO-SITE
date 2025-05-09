@@ -103,11 +103,15 @@ main > div {
   letter-spacing: 0.5px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   transform-origin: center;
+  background: #2b6cb0;
+  color: white;
+  border: 1px solid #1e4a7b;
 }
 
 .butaofiltro button:hover {
   transform: scale(1.05) translateY(-2px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+  background: #3582d1;
 }
 
 .butaofiltro button:active {
@@ -165,7 +169,8 @@ main > div {
   overflow-x: auto;
   border-radius: 15px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  background: #1a365d;
+  background: #0f2a4d !important; /* Cor mais escura */
+  color: #e2e8f0 !important;
   margin-bottom: 3rem;
 }
 
@@ -198,7 +203,7 @@ main > div {
 .dashboard td {
   padding: 1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  color: #cbd5e0;
+  color: #e2e8f0 !important;
 }
 
 .dashboard tr:nth-child(even) {
@@ -696,6 +701,8 @@ header {
   line-height: 1.5;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   transition: transform 0.3s ease;
+  display: block;
+    overflow-x: auto;
 }
 
 .tabela-chamados:hover {
@@ -809,11 +816,7 @@ header {
   .dashboard-container {
     padding: 1rem;
   }
-  
-  .tabela-chamados {
-    display: block;
-    overflow-x: auto;
-  }
+
   
   .Graficos {
     grid-template-columns: 1fr;
@@ -1540,7 +1543,8 @@ html {
 
 .leaflet-popup-content-wrapper {
   border-radius: 8px !important;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+  border: 1px solid rgba(255,255,255,0.2) !important;
 }
 
 .leaflet-container {
@@ -1558,10 +1562,47 @@ html {
 .leafletContainer {
   height: 500px;
   width: 100%;
-  z-index: 0; /* Importante para mapas */
+  z-index: 1; /* Alterado de 0 para 1 */
+  position: relative;
+  background: #1a365d; /* Fundo escuro para contraste */
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .leaflet-marker-icon {
-  background: transparent !important;
-  border: none !important;
+  background: transparent;
+  border: none;
+  /* Adicione animação para debug */
+  animation: markerPulse 1.5s infinite;
 }
+
+@keyframes markerPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Adicione no CSS existente */
+.tabela-chamados td[data-zona] {
+  position: relative;
+  padding-left: 28px;
+  font-weight: 600;
+}
+
+.tabela-chamados td[data-zona]::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+/* Cores por zona */
+td[data-zona="Centro"]::before { background: #3b82f6; }
+td[data-zona="Sul"]::before { background: #10b981; }
+td[data-zona="Leste"]::before { background: #f59e0b; }
+td[data-zona="Oeste"]::before { background: #ef4444; }
+td[data-zona="Não Mapeada"]::before { background: #94a3b8; }
