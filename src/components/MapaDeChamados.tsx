@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import styles from '@/styles/leaflet-fix.module.css';
 import { ChamadoType } from '../pages/index';
 
-type ChamadoStatus = 'em aberto' | 'realizando' | 'designado' | 'resolvido' | 'feito' | 'outros';
+type ChamadoStatus = 'em aberto' | 'realizando' | 'designado';
 
 type Chamado = {
   _id: string;
@@ -22,16 +22,22 @@ const coordenadasPorSigla: Record<string, [number, number]> = {
 };
 
 interface MapaDeChamadosProps {
-  chamados: ChamadoType[];
+  chamados: Array<{
+    _id: string
+    titulo: string
+    loja: string
+    status: ChamadoStatus
+    tipo: string
+    dataCriacao: string
+    zona: string
+    coordenadas?: [number, number] // Adicione esta linha
+  }>
 }
 
 const colorMap: Record<ChamadoStatus, string> = {
   'em aberto': 'red',
   'realizando': 'orange',
   'designado': 'orange',
-  'resolvido': 'green',
-  'feito': 'green',
-  'outros': 'blue'
 };
 
 const MapLoader = () => (

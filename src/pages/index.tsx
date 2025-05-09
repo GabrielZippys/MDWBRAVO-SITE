@@ -51,7 +51,12 @@ export default function Home({ chamadosIniciais }: HomeProps) {
   const lojasUnicas = Array.from(new Set(chamados.map(c => c.loja)));
   const tiposUnicos = Array.from(new Set(chamados.map(c => c.tipo)));
   const prioridadesUnicas = Array.from(new Set(chamados.map(c => c.prioridade)));
-
+  const STATUSES_PERMITIDOS = new Set([
+    'em aberto',
+    'designado',
+    'interrompido', // Adicionei o novo status
+    'realizando'
+  ]);
   // Chamados filtrados
   const chamadosFiltrados = useMemo(() => {
     return chamados.filter(c =>
@@ -59,7 +64,8 @@ export default function Home({ chamadosIniciais }: HomeProps) {
       (!filtroStatus || c.status === filtroStatus) &&
       (!filtroLoja || c.loja === filtroLoja) &&
       (!filtroTipo || c.tipo === filtroTipo) &&
-      (!filtroPrioridade || c.prioridade === filtroPrioridade)
+      (!filtroPrioridade || c.prioridade === filtroPrioridade) &&
+      STATUSES_PERMITIDOS.has(c.status) // Filtro global
     );
   }, [chamados, filtroZona, filtroStatus, filtroLoja, filtroTipo, filtroPrioridade]);
 
