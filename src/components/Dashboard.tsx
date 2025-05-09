@@ -1,4 +1,3 @@
-// components/Dashboard.tsx
 'use client';
 import { getZona } from '@/utils/classifyZone';
 import {
@@ -17,7 +16,7 @@ import { useState, useMemo } from 'react';
 
 type Chamado = {
   _id: string;
-  notionId: string; // Novo campo adicionado
+  notionId: string;
   titulo: string;
   loja: string;
   status: string;
@@ -75,7 +74,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
       <table className="tabela-chamados">
         <thead>
           <tr>
-            <th>ID Notion</th> {/* Coluna renomeada */}
+            <th>ID Notion</th>
             <th>Título</th>
             <th>Loja</th>
             <th>Status</th>
@@ -89,7 +88,18 @@ export default function Dashboard({ chamados }: DashboardProps) {
           {chamadosFiltrados.map((chamado) => (
             <tr key={chamado._id}>
               <td className="font-mono text-sm">
-                {chamado.notionId || 'N/A'} {/* Exibindo ID do Notion */}
+                {chamado.notionId ? (
+                  <a
+                    href={`https://www.notion.so/${chamado.notionId.replace(/-/g, '')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline"
+                  >
+                    {chamado.notionId}
+                  </a>
+                ) : (
+                  <span className="text-red-500">NÃO VINCULADO</span>
+                )}
               </td>
               <td>{chamado.titulo}</td>
               <td>{chamado.loja}</td>
@@ -107,14 +117,14 @@ export default function Dashboard({ chamados }: DashboardProps) {
                 {chamado.prioridade || 'Não definida'}
               </td>
               <td>
-                {new Date(chamado.dataCriacao).toLocaleDateString()}
+                {new Date(chamado.dataCriacao).toLocaleDateString('pt-BR')}
               </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      {/* Gráficos (mantido igual) */}
+      {/* Gráficos */}
       <div className="Graficos">
         <div>
           <h3 className="titulo2">Chamados por Status</h3>
