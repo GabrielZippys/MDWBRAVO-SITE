@@ -9,7 +9,7 @@ export type ChamadoType = {
   _id: string;
   titulo: string;
   loja: string;
-  status: string;
+  status: 'em aberto' | 'realizando' | 'designado' | 'resolvido' | 'feito' | 'outros';
   tipo: string;
   dataCriacao: string;
   zona: string;

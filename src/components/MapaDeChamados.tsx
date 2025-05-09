@@ -68,9 +68,9 @@ export default function MapaDeChamados({ chamados }: MapaDeChamadosProps) {
       
       if (!iconCache.has(color)) {
         iconCache.set(color, new L.Icon({
-          iconUrl: `/markers/marker-icon-${color}.png`,
-          iconRetinaUrl: `/markers/marker-icon-2x-${color}.png`, // "2x" minúsculo
-          shadowUrl: '/markers/marker-shadow.png',
+          iconUrl: `/markers/marker-icon-${color}.png?v=1.0.1`, // Versão atualizada
+          iconRetinaUrl: `/markers/marker-icon-2x-${color}.png?v=1.0.1`,
+          shadowUrl: '/markers/marker-shadow.png?v=1.0.1',
           iconSize: [25, 41],
           iconAnchor: [12, 41],
           shadowSize: [41, 41]
