@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { notion } from '@/lib/notion';
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 
-type ChamadoStatus = 'em aberto' | 'realizando' | 'designado' | 'resolvido' | 'feito' | 'outros';
+type ChamadoStatus = 'em aberto' | 'realizando' | 'designado' | 'interrompido';
 
 const DATABASE_ID = process.env.NOTION_DATABASE_ID!;
 const STATUSES_IGNORADOS = new Set(['Feito', 'Resolvido', 'Concluído']);
@@ -12,13 +12,10 @@ const STATUSES_IGNORADOS = new Set(['Feito', 'Resolvido', 'Concluído']);
 const statusMap: Record<string, ChamadoStatus> = {
   'Em aberto': 'em aberto',
   'Aberto': 'em aberto',
-  'Em andamento': 'realizando',
+  'Interrompido': 'interrompido', // Novo status
   'Realizando': 'realizando',
   'Designado': 'designado',
-  'Resolvido': 'resolvido',
-  'Concluído': 'feito',
-  'Outros': 'outros',
-  'Default': 'outros'
+  'Default': 'em aberto'
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

@@ -1526,7 +1526,6 @@ html {
 }
 
 /* Corrige o posicionamento dos ícones */
-.leaflet-marker-icon,
 .leaflet-marker-shadow {
   display: block !important;
 }
@@ -1553,4 +1552,16 @@ html {
 .leaflet-popup-content {
   min-width: 200px;
   font-family: 'Segoe UI', sans-serif;
+}
+
+/* styles/leaflet-fix.module.css */
+.leafletContainer {
+  height: 500px;
+  width: 100%;
+  z-index: 0; /* Importante para mapas */
+}
+
+.leaflet-marker-icon {
+  background: transparent !important;
+  border: none !important;
 }
