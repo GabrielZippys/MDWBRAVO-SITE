@@ -140,6 +140,7 @@ h2 {
     padding: 1rem !important;
     width: 100vw;
     overflow-x: hidden;
+    align-items: stretch;
   }
   
   main > div {
@@ -577,8 +578,9 @@ header {
   line-height: 1.5;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   transition: transform 0.3s ease;
-  display: block;
     overflow-x: auto;
+    margin: 2rem auto; /* Centraliza a tabela */
+  display: table; /* Mantém o comportamento de tabela */
 }
 
 .tabela-chamados:hover {
@@ -625,6 +627,7 @@ header {
 
 /* Gráficos Container */
 .Graficos {
+  justify-content: center; 
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
