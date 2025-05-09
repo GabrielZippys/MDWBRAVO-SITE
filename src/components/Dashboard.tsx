@@ -17,6 +17,7 @@ import { useState, useMemo } from 'react';
 
 type Chamado = {
   _id: string;
+  notionId: string; // Novo campo adicionado
   titulo: string;
   loja: string;
   status: string;
@@ -74,7 +75,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
       <table className="tabela-chamados">
         <thead>
           <tr>
-            <th>ID do Chamado</th> {/* Nova coluna adicionada */}
+            <th>ID Notion</th> {/* Coluna renomeada */}
             <th>Título</th>
             <th>Loja</th>
             <th>Status</th>
@@ -87,7 +88,9 @@ export default function Dashboard({ chamados }: DashboardProps) {
         <tbody>
           {chamadosFiltrados.map((chamado) => (
             <tr key={chamado._id}>
-              <td className="font-mono text-sm">{chamado._id}</td> {/* Exibição do ID */}
+              <td className="font-mono text-sm">
+                {chamado.notionId || 'N/A'} {/* Exibindo ID do Notion */}
+              </td>
               <td>{chamado.titulo}</td>
               <td>{chamado.loja}</td>
               <td>
