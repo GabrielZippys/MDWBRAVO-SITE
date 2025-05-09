@@ -19,6 +19,11 @@ type Chamado = {
 
 const coordenadasPorSigla: Record<string, [number, number]> = {
   // ... mantido igual
+  JM: [-23.5505, -46.6333],   // Exemplo: São Paulo
+  CR: [-23.5437, -46.6362],   // Exemplo: Centro
+  DD: [-23.5489, -46.6388],   // Exemplo: Zona Leste
+  VJ: [-23.5512, -46.6345],   // Exemplo: Vila Jaguara
+  FC: [-23.5520, -46.6350],   // Exemplo: Faria Lima
 };
 
 interface MapaDeChamadosProps {
@@ -93,7 +98,12 @@ const getIconByStatus = useMemo(() => {
   const markers = useMemo(() => {
     return chamados
       .map((chamado) => {
-        const sigla = chamado.loja?.match(/[A-Z]{2,}/)?.[0]?.toUpperCase() || '';
+        const sigla = chamado.loja
+  ?.match(/([A-Z]{2,})|([A-Z]\d{1,2})/) // Captura siglas como "MA1" ou "PP"
+  ?.[0]
+  ?.replace(/[^A-Z]/g, '') // Remove números/dígitos
+  ?.substring(0, 2) // Pega apenas as 2 primeiras letras
+  ?.toUpperCase() || '';
         const coordenadas = coordenadasPorSigla[sigla];
 
         console.log('Chamado:', chamado._id, '| Sigla:', sigla, '| Coordenadas:', coordenadas);
