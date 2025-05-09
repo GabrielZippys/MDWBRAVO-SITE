@@ -74,6 +74,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
       <table className="tabela-chamados">
         <thead>
           <tr>
+            <th>ID do Chamado</th> {/* Nova coluna adicionada */}
             <th>Título</th>
             <th>Loja</th>
             <th>Status</th>
@@ -86,6 +87,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
         <tbody>
           {chamadosFiltrados.map((chamado) => (
             <tr key={chamado._id}>
+              <td className="font-mono text-sm">{chamado._id}</td> {/* Exibição do ID */}
               <td>{chamado.titulo}</td>
               <td>{chamado.loja}</td>
               <td>
@@ -109,7 +111,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
         </tbody>
       </table>
 
-      {/* Gráficos */}
+      {/* Gráficos (mantido igual) */}
       <div className="Graficos">
         <div>
           <h3 className="titulo2">Chamados por Status</h3>
@@ -121,7 +123,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
               <Bar 
                 dataKey="valor" 
                 fill="#3b82f6"
-                radius={[4, 4, 0, 0]} // Corrigido
+                radius={[4, 4, 0, 0]}
               />
             </BarChart>
           </ResponsiveContainer>
@@ -137,7 +139,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
               <Bar 
                 dataKey="valor" 
                 fill="#10b981"
-                radius={[4, 4, 0, 0]} // Corrigido
+                radius={[4, 4, 0, 0]}
               />
             </BarChart>
           </ResponsiveContainer>
