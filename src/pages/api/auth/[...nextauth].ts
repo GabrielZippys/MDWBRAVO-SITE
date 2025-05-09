@@ -1,6 +1,8 @@
 // pages/api/auth/[...nextauth].ts
-import NextAuth, { type NextAuthOptions } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
+import NextAuth from 'next-auth';
+import GoogleProvider from 'next-auth/providers/google';
+import type { NextAuthOptions } from 'next-auth';
+
 
 // Lista de e-mails autorizados com roles padronizados
 const allowedEmails: Record<string, string> = {
@@ -21,16 +23,22 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }: { token: any; user: any }) {
-      if (user?.role) token.role = user.role;
+    async jwt({ token, user }) {
+      // Seta o role apenas na primeira vez
+      if (user && !token.role) {
+        token.role = 'Gestor'; // ou 'Admin' se você quiser testar
+      }
       return token;
     },
-    async session({ session, token }: { session: any; token: any }) {
-      if (session.user) session.user.role = token.role;
+    async session({ session, token }) {
+      // Injeta o role na sessão
+      if (session.user) {
+        session.user.role = token.role as string;
+      }
       return session;
-    }
+    },
   },
-  secret: process.env.NEXTAUTH_SECRET!,
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
-export default NextAuth(authOptions); 
+export default NextAuth(authOptions);
