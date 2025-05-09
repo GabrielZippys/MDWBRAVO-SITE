@@ -51,7 +51,7 @@ export default function MapaDeChamados({ chamados }: MapaDeChamadosProps) {
     delete (L.Icon.Default.prototype as any)._getIconUrl;
     
     L.Icon.Default.mergeOptions({
-      iconRetinaUrl: '/markers/marker-icon-2x.png',
+      iconRetinaUrl: '/markers/marker-icon-2x.png', // "2x" minúsculo
       iconUrl: '/markers/marker-icon.png',
       shadowUrl: '/markers/marker-shadow.png',
       iconSize: [25, 41],
@@ -69,7 +69,7 @@ export default function MapaDeChamados({ chamados }: MapaDeChamadosProps) {
       if (!iconCache.has(color)) {
         iconCache.set(color, new L.Icon({
           iconUrl: `/markers/marker-icon-${color}.png`,
-          iconRetinaUrl: `/markers/marker-icon-2x-${color}.png`,
+          iconRetinaUrl: `/markers/marker-icon-2x-${color}.png`, // "2x" minúsculo
           shadowUrl: '/markers/marker-shadow.png',
           iconSize: [25, 41],
           iconAnchor: [12, 41],
@@ -86,9 +86,11 @@ export default function MapaDeChamados({ chamados }: MapaDeChamadosProps) {
       .map((chamado) => {
         const sigla = chamado.loja?.match(/[A-Z]{2,}/)?.[0]?.toUpperCase() || '';
         const coordenadas = coordenadasPorSigla[sigla];
+
+        console.log('Chamado:', chamado._id, '| Sigla:', sigla, '| Coordenadas:', coordenadas);
+
         return coordenadas ? { ...chamado, coordenadas } : null;
-        
-      })
+      })      
       .filter(Boolean)
       .map((chamado) => (
         <Marker
