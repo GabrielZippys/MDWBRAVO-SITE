@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document, models } from 'mongoose';
 
 export interface IChamado extends Document {
-  notionId: string; // Campo obrigatório do Notion
+  notionId: number | string;
   titulo: string;
   loja: string;
   status: string;
