@@ -259,6 +259,32 @@ main > div {
   }
 }
 
+
+/* Status colors */
+[data-status="emaberto"] {
+  background: rgba(220, 38, 38, 0.15);
+  color: #dc2626;
+  border: 1px solid #dc2626;
+}
+
+[data-status="designado"] {
+  background: rgba(234, 179, 8, 0.15);
+  color: #eab308;
+  border: 1px solid #eab308;
+}
+
+[data-status="realizando"] {
+  background: rgba(101, 163, 13, 0.15);
+  color: #65a30d;
+  border: 1px solid #65a30d;
+}
+
+[data-status="interrompido"] {
+  background: rgba(244, 63, 94, 0.15);
+  color: #f43f5e;
+  border: 1px solid #f43f5e;
+}
+
 /* Adicionar no CSS */
 .tabela-chamados th {
   font-size: 0.9rem;

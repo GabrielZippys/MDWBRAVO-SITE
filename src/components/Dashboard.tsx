@@ -63,45 +63,42 @@ return (
   <div className="dashboardContainer">
     {/* Tabela */}
     <table className="tabela-chamados">
-      <thead>
-        <tr>
-          <th>Título</th>
-          <th>Loja</th>
-          <th>Status</th>
-          <th>Tipo</th>
-          <th>Zona</th>
-          <th>Prioridade</th>
-          <th>Criado em</th>
-        </tr>
-      </thead>
-      <tbody>
-        {chamadosFiltrados.map((chamado) => (
-          <tr key={chamado._id}>
-            <td>{chamado.titulo}</td>
-            <td>{chamado.loja}</td>
-            <td>
-  <span 
-    className="status-badge" 
-    data-status={chamado.status}
-  >
-    {chamado.status}
-  </span>
-</td>
-            <td>{chamado.tipo}</td>
-            <td>{chamado.zona}</td>
-            <td 
-  data-priority={chamado.prioridade?.toLowerCase()}
-  data-zona={chamado.zona}
->
-  {chamado.prioridade || 'Não definida'}
-</td>
-            <td>
-              {new Date(chamado.dataCriacao).toLocaleDateString()}
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+  <thead>
+    <tr>
+      <th>Título</th>
+      <th>Loja</th>
+      <th>Status</th>
+      <th>Tipo</th>
+      <th>Zona</th>
+      <th>Prioridade</th>
+      <th>Criado em</th>
+    </tr>
+  </thead>
+  <tbody>
+    {chamadosFiltrados.map((chamado) => (
+      <tr key={chamado._id}>
+        <td>{chamado.titulo}</td>
+        <td>{chamado.loja}</td>
+        <td>
+          <span 
+            className="status-badge"
+            data-status={chamado.status.replace(/\s/g, '')}
+          >
+            {chamado.status}
+          </span>
+        </td>
+        <td>{chamado.tipo}</td>
+        <td>{chamado.zona}</td>
+        <td data-priority={chamado.prioridade?.toLowerCase()}>
+          {chamado.prioridade || 'Não definida'}
+        </td>
+        <td>
+          {new Date(chamado.dataCriacao).toLocaleDateString()}
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
 
     {/* Gráficos */}
     <div className="Graficos">
