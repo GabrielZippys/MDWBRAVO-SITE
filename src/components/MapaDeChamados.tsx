@@ -3,7 +3,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useEffect, useMemo, useState } from 'react';
 import styles from '@/styles/leaflet-fix.module.css';
-import { ChamadoType } from '../pages/index';
+import { ChamadoType } from '@/pages/index';
 
 type ChamadoStatus = 'em aberto' | 'realizando' | 'designado';
 
@@ -84,6 +84,7 @@ export default function MapaDeChamados({ chamados }: MapaDeChamadosProps) {
   };
 
  // components/MapaDeChamados.tsx
+
 const getIconByStatus = useMemo(() => {
   const iconCache = new Map<string, L.Icon>();
   
@@ -92,13 +93,13 @@ const getIconByStatus = useMemo(() => {
     
     if (!iconCache.has(color)) {
       const icon = new L.Icon({
-        iconUrl: `/public/markers/marker-icon-${color}.png`,
-        iconRetinaUrl: `/public/markers/marker-icon-2x-${color}.png`,
-        shadowUrl: '/public/markers/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41]
+        iconUrl: `/markers/marker-icon-${color}.png`,
+        iconRetinaUrl: `/markers/marker-icon-2x-${color}.png`,
+        shadowUrl: '/markers/marker-shadow.png',
+        iconSize: [25, 41],      // Tamanho do ícone (ajuste conforme suas imagens)
+        iconAnchor: [12, 41],    // Ponto de fixação do ícone
+        popupAnchor: [1, -34],   // Posição do popup
+        shadowSize: [41, 41]     // Tamanho da sombra
       });
       iconCache.set(color, icon);
     }
