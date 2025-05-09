@@ -74,9 +74,9 @@ export default function MapaDeChamados({ chamados }: MapaDeChamadosProps) {
     delete (L.Icon.Default.prototype as any)._getIconUrl;
     
     L.Icon.Default.mergeOptions({
-      iconRetinaUrl: '/markers/marker-icon-2x.png', // "2x" minúsculo
-      iconUrl: '/markers/marker-icon.png',
-      shadowUrl: '/markers/marker-shadow.png',
+      iconRetinaUrl: '/public/markers/marker-icon-2x.png', // "2x" minúsculo
+      iconUrl: '/public/markers/marker-icon.png',
+      shadowUrl: '/public/markers/marker-shadow.png',
       iconSize: [25, 41],
       iconAnchor: [12, 41],
     });
@@ -92,9 +92,9 @@ const getIconByStatus = useMemo(() => {
     
     if (!iconCache.has(color)) {
       const icon = new L.Icon({
-        iconUrl: `/markers/marker-icon-${color}.png`,
-        iconRetinaUrl: `/markers/marker-icon-2x-${color}.png`,
-        shadowUrl: '/markers/marker-shadow.png',
+        iconUrl: `/public/markers/marker-icon-${color}.png`,
+        iconRetinaUrl: `/public/markers/marker-icon-2x-${color}.png`,
+        shadowUrl: '/public/markers/marker-shadow.png',
         iconSize: [25, 41],
         iconAnchor: [12, 41],
         popupAnchor: [1, -34],
