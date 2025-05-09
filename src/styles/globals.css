@@ -8,6 +8,8 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100vw;
+  overflow-x: hidden;
 }
 
 .titulo {
@@ -20,9 +22,10 @@ main {
 
 /* ===== CONTAINER PRINCIPAL ===== */
 main > div {
-  max-width: 1800px;
+  max-width: 95vw; /* Alterado de 1800px */
   width: 100%;
   margin: 0 auto;
+  box-sizing: border-box; /* Adicionado */
   background: rgba(255, 255, 255, 0.05);
   border-radius: 20px;
   padding: 2rem;
@@ -40,7 +43,10 @@ main > div {
   align-items: center;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   position: fixed;
-  width: 100%;
+  box-sizing: border-box;
+  width: 100vw;
+  left: 0;
+  right: 0;
   top: 0;
   z-index: 1000;
   animation: slideDown 0.5s ease-out;
@@ -338,7 +344,8 @@ main > div {
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;
   margin: 2rem auto;
-  max-width: 1800px;
+  max-width: 95vw;
+  box-sizing: border-box;
   padding: 1rem;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 15px;
@@ -394,7 +401,9 @@ main > div {
 /* Adicionar no CSS */
 
 .tabela-chamados {
-  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  display: block;
   border-collapse: separate;
   border-spacing: 0 0.8rem;
   margin: 2rem auto;
@@ -532,6 +541,40 @@ header {
 }
 
 /* ===== RESPONSIVIDADE ===== */
+
+@media (max-width: 1366px) {
+  main > div {
+    padding: 1.5rem;
+    border-radius: 15px;
+  }
+  
+  .tabela-chamados th,
+  .tabela-chamados td {
+    padding: 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .logo {
+    height: 45px;
+  }
+  
+  .site-title {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .nav-buttons {
+    gap: 0.8rem;
+    margin: 0 1rem;
+  }
+  
+  .home-button, .admin-button {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+}
+
 @media (max-width: 768px) {
   main {
     padding: 1rem;
