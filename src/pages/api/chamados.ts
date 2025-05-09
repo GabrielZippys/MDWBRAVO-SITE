@@ -1,6 +1,6 @@
 // pages/api/chamados.ts
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { notion } from '@/lib/notion';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { notion, databaseId } from '@/lib/notion';
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 
 type ChamadoStatus = 'em aberto' | 'realizando' | 'designado' | 'interrompido';
