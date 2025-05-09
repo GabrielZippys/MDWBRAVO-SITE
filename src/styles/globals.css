@@ -22,13 +22,13 @@ main {
 
 /* ===== CONTAINER PRINCIPAL ===== */
 main > div {
-  max-width: 95vw; /* Alterado de 1800px */
+  max-width: 98vw; /* Reduzido de 95vw para compensar padding */
+  padding: 1.5rem;
   width: 100%;
   margin: 0 auto;
   box-sizing: border-box; /* Adicionado */
   background: rgba(255, 255, 255, 0.05);
   border-radius: 20px;
-  padding: 2rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -341,10 +341,10 @@ main > div {
 /* ===== FILTROS ===== */
 .butaofiltro {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;
   margin: 2rem auto;
-  max-width: 95vw;
+  max-width: 98vw;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   box-sizing: border-box;
   padding: 1rem;
   background: rgba(255, 255, 255, 0.05);
@@ -401,7 +401,8 @@ main > div {
 /* Adicionar no CSS */
 
 .tabela-chamados {
-  max-width: 100%;
+  min-width: auto;
+  width: 100%;
   overflow-x: auto;
   display: block;
   border-collapse: separate;
@@ -544,22 +545,26 @@ header {
 
 @media (max-width: 1366px) {
   main > div {
-    padding: 1.5rem;
+    padding: 1rem;
     border-radius: 15px;
+  }
+  
+  .tabela-chamados {
+    border-spacing: 0 0.5rem;
   }
   
   .tabela-chamados th,
   .tabela-chamados td {
-    padding: 1rem;
-    font-size: 0.9rem;
+    padding: 0.8rem;
+    font-size: 0.85rem;
   }
   
   .logo {
-    height: 45px;
+    height: 40px;
   }
   
   .site-title {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
   }
 }
 
@@ -577,20 +582,17 @@ header {
 
 @media (max-width: 768px) {
   main {
-    padding: 1rem;
+    padding: 0.5rem;
   }
   
   .butaofiltro {
-    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    padding: 0.8rem;
   }
   
-  .dashboard {
-    margin: 0 -1rem;
-  }
-  
-  header {
-    padding: 1rem;
-    flex-direction: column;
+  .btn-filtro {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
   }
 }
 
