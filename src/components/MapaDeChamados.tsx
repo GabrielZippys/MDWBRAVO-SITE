@@ -54,7 +54,10 @@ export default function MapaDeChamados({ chamados }: MapaDeChamadosProps) {
       iconRetinaUrl: '/markers/marker-icon-2x.png',
       iconUrl: '/markers/marker-icon.png',
       shadowUrl: '/markers/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
     });
+    
   };
 
   const getIconByStatus = useMemo(() => {
@@ -70,7 +73,6 @@ export default function MapaDeChamados({ chamados }: MapaDeChamadosProps) {
           shadowUrl: '/markers/marker-shadow.png',
           iconSize: [25, 41],
           iconAnchor: [12, 41],
-          popupAnchor: [1, -34],
           shadowSize: [41, 41]
         }));
       }
@@ -85,6 +87,7 @@ export default function MapaDeChamados({ chamados }: MapaDeChamadosProps) {
         const sigla = chamado.loja?.match(/[A-Z]{2,}/)?.[0]?.toUpperCase() || '';
         const coordenadas = coordenadasPorSigla[sigla];
         return coordenadas ? { ...chamado, coordenadas } : null;
+        
       })
       .filter(Boolean)
       .map((chamado) => (
