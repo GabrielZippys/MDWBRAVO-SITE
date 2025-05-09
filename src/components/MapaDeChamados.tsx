@@ -7,18 +7,7 @@ import { ChamadoType } from '@/pages/index';
 
 type ChamadoStatus = 'em aberto' | 'realizando' | 'designado';
 
-type Chamado = {
-  _id: string;
-  titulo: string;
-  loja: string;
-  status: ChamadoStatus;
-  tipo: string;
-  dataCriacao: string;
-  zona: string;
-};
-
 const coordenadasPorSigla: Record<string, [number, number]> = {
-  // ... mantido igual
   "MA": [-23.5586, -46.6252],
   "PP": [-23.4996, -46.8509],
   "TS": [-23.5439, -46.8370],
@@ -38,16 +27,7 @@ const coordenadasPorSigla: Record<string, [number, number]> = {
 };
 
 interface MapaDeChamadosProps {
-  chamados: Array<{
-    _id: string
-    titulo: string
-    loja: string
-    status: ChamadoStatus
-    tipo: string
-    dataCriacao: string
-    zona: string
-    coordenadas?: [number, number] // Adicione esta linha
-  }>
+  chamados: Array<ChamadoType>;
 }
 
 const colorMap: Record<ChamadoStatus, string> = {
@@ -56,11 +36,7 @@ const colorMap: Record<ChamadoStatus, string> = {
   'designado': 'orange',
 };
 
-const MapLoader = () => (
-  <div className="p-4 text-center text-gray-500">
-    Carregando mapa...
-  </div>
-);
+const MapLoader = () => <div className="p-4 text-center text-gray-500">Carregando mapa...</div>;
 
 export default function MapaDeChamados({ chamados }: MapaDeChamadosProps) {
   const [isClient, setIsClient] = useState(false);
@@ -72,7 +48,6 @@ export default function MapaDeChamados({ chamados }: MapaDeChamadosProps) {
 
   const configureLeafletIcons = () => {
     delete (L.Icon.Default.prototype as any)._getIconUrl;
-    
     L.Icon.Default.mergeOptions({
       iconRetinaUrl: '/markers/marker-icon-2x.png',
       iconUrl: '/markers/marker-icon.png',
@@ -80,97 +55,87 @@ export default function MapaDeChamados({ chamados }: MapaDeChamadosProps) {
       iconSize: [25, 41],
       iconAnchor: [12, 41],
     });
-    
   };
 
- // components/MapaDeChamados.tsx
+  const getIconByStatus = useMemo(() => {
+    const iconCache = new Map<string, L.Icon>();
+    return (status: ChamadoStatus) => {
+      const color = colorMap[status];
+      if (!iconCache.has(color)) {
+        iconCache.set(color, new L.Icon({
+          iconUrl: `/markers/marker-icon-${color}.png`,
+          iconRetinaUrl: `/markers/marker-icon-2x-${color}.png`,
+          shadowUrl: '/markers/marker-shadow.png',
+          iconSize: [25, 41],
+          iconAnchor: [12, 41],
+          popupAnchor: [1, -34],
+          shadowSize: [41, 41]
+        }));
+      }
+      return iconCache.get(color)!;
+    };
+  }, []);
 
-const getIconByStatus = useMemo(() => {
-  const iconCache = new Map<string, L.Icon>();
-  
-  return (status: ChamadoStatus) => {
-    const color = colorMap[status];
+  const markers = useMemo(() => {
+    const coordenadasPadrao: [number, number] = [-23.5505, -46.6333];
     
-    if (!iconCache.has(color)) {
-      const icon = new L.Icon({
-        iconUrl: `/markers/marker-icon-${color}.png`,
-        iconRetinaUrl: `/markers/marker-icon-2x-${color}.png`,
-        shadowUrl: '/markers/marker-shadow.png',
-        iconSize: [25, 41],      // Tamanho do ícone (ajuste conforme suas imagens)
-        iconAnchor: [12, 41],    // Ponto de fixação do ícone
-        popupAnchor: [1, -34],   // Posição do popup
-        shadowSize: [41, 41]     // Tamanho da sombra
-      });
-      iconCache.set(color, icon);
-    }
-    return iconCache.get(color)!;
-  };
-}, []);
-
-const markers = useMemo(() => {
-  return chamados
-    .map((chamado) => {
-      const sigla = chamado.loja
-        .match(/([A-Z]{2,})|([A-Z]+\d+)/)?.[0]
-        ?.replace(/[^A-Z]/g, '')
-        ?.substring(0, 2)
-        ?.toUpperCase() || '';
-      const coordenadas = coordenadasPorSigla[sigla];
-      return coordenadas ? { ...chamado, coordenadas } : null;
-    })
-    // Corrigindo a verificação de tipo
-    .filter((chamado): chamado is NonNullable<typeof chamado> => 
-      chamado !== null && !!chamado.coordenadas
-    )
-    .map((chamado) => (
-      <Marker
-        key={chamado._id} // Remova o "!"
-        position={chamado.coordenadas} // Remova o "!"
-        icon={getIconByStatus(chamado.status)}
-      >
-        <Popup>
-  <div className="min-w-[200px] space-y-2 p-2">
-    <h3 className="font-bold text-lg">{chamado.titulo}</h3>
-    <div className="grid grid-cols-2 gap-2">
-      <div className="flex items-center">
-        <span className="mr-2">🏪</span>
-        <span>{chamado.loja}</span>
-      </div>
-      <div className="flex items-center">
-        <span className="mr-2">📌</span>
-        <span className="capitalize">{chamado.status}</span>
-      </div>
-      <div className="flex items-center col-span-2">
-        <span className="mr-2">📅</span>
-        <span>{new Date(chamado.dataCriacao).toLocaleDateString('pt-BR')}</span>
-      </div>
-    </div>
-  </div>
-</Popup>
+    return chamados
+      .map((chamado) => {
+        const sigla = chamado.loja
+          .match(/([A-Z]{2})(?![a-z])/)?.[0]
+          ?.toUpperCase() || '';
+        const coordenadas = coordenadasPorSigla[sigla] || coordenadasPadrao;
+        return { ...chamado, coordenadas };
+      })
+      .filter((chamado) => 
+        !!chamado.coordenadas && 
+        chamado.coordenadas.every(coord => !isNaN(coord))
+      )
+      .map((chamado) => (
+        <Marker
+          key={chamado._id}
+          position={chamado.coordenadas}
+          icon={getIconByStatus(chamado.status)}
+        >
+          <Popup>
+            <div className="min-w-[200px] space-y-2 p-2">
+              <h3 className="font-bold text-lg">{chamado.titulo}</h3>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="flex items-center">
+                  <span className="mr-2">🏪</span>
+                  <span>{chamado.loja}</span>
+                </div>
+                <div className="flex items-center">
+                  <span className="mr-2">📌</span>
+                  <span className="capitalize">{chamado.status}</span>
+                </div>
+                <div className="flex items-center col-span-2">
+                  <span className="mr-2">📅</span>
+                  <span>{new Date(chamado.dataCriacao).toLocaleDateString('pt-BR')}</span>
+                </div>
+              </div>
+            </div>
+          </Popup>
         </Marker>
       ));
   }, [chamados, getIconByStatus]);
 
-  if (!isClient || typeof window === 'undefined') {
-    return <MapLoader />;
-  }
+  if (!isClient) return <MapLoader />;
 
   return (
-      <div className={styles.leafletContainer}>
-        {isClient && (
-          <MapContainer
-            center={[-23.55, -46.64]}
-            zoom={11}
-            scrollWheelZoom={false}
-            style={{ height: '500px', width: '100%' }}
-          >
+    <div className={styles.leafletContainer}>
+      <MapContainer
+        center={[-23.55, -46.64]}
+        zoom={11}
+        scrollWheelZoom={false}
+        style={{ height: '500px', width: '100%' }}
+      >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         {markers}
       </MapContainer>
-       )}
     </div>
   );
 }
