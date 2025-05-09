@@ -20,6 +20,23 @@ main {
   animation: titleGlow 2s ease-in-out infinite alternate;
 }
 
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  position: relative;
+  width: 100%;
+  max-width: 100vw;
+}
+
 /* ===== CONTAINER PRINCIPAL ===== */
 main > div {
   max-width: 98vw; /* Reduzido de 95vw para compensar padding */
