@@ -1,46 +1,27 @@
+// components/ParticlesBackground.tsx
 'use client';
 import { useCallback } from 'react';
 import Particles from 'react-tsparticles';
-import { loadFull } from 'tsparticles';
+import { loadSlim } from 'tsparticles-slim';
+import type { Engine } from 'tsparticles-engine';
 
 export default function ParticlesBackground() {
-  const particlesInit = useCallback(async (engine: any) => {
-    await loadFull(engine);
+  const init = useCallback(async (engine: Engine) => {
+    await loadSlim(engine);
   }, []);
 
   return (
     <Particles
-      id="tsparticles"
-      init={particlesInit}
+      init={init}
       options={{
-        fullScreen: { enable: false },
-        background: { color: 'transparent' },
+        background: { color: { value: '#0a192f' } },
         particles: {
-          number: { value: 80, density: { enable: true, area: 800 } },
           color: { value: '#63b3ed' },
-          shape: { type: 'circle' },
-          opacity: { value: 0.2 },
+          links: { enable: true, color: '#63b3ed', distance: 120, opacity: 0.5 },
+          move: { enable: true, speed: 1 },
+          number: { value: 40 },
           size: { value: 3 },
-          move: {
-            enable: true,
-            speed: 1,
-            direction: 'none',
-            outModes: { default: 'bounce' }
-          }
         },
-        interactivity: {
-          events: { onHover: { enable: true, mode: 'repulse' } },
-          modes: { repulse: { distance: 100 } }
-        },
-        detectRetina: true
-      }}
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        zIndex: 0,
-        width: '100%',
-        height: '100%'
       }}
     />
   );
