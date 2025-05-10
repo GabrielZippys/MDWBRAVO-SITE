@@ -14,6 +14,122 @@ main {
 
 /* Aqui estamos mexendo na tela de LOGIN */
 
+
+/* Efeito de rede neural puro CSS */
+.neural-network {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.node {
+  width: 8px;
+  height: 8px;
+  background: #63b3ed;
+  border-radius: 50%;
+  position: absolute;
+  animation: pulse 2s infinite;
+}
+
+.connection {
+  stroke: #63b3ed33;
+  stroke-width: 1px;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.8); opacity: 0.3; }
+  50% { transform: scale(1.2); opacity: 0.6; }
+  100% { transform: scale(0.8); opacity: 0.3; }
+}
+
+@keyframes connection {
+  from { stroke-dashoffset: 100; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* Efeito de fundo neural */
+.neural-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.neural-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  position: absolute;
+  inset: 0;
+}
+
+.neural-node {
+  width: 8px;
+  height: 8px;
+  background: #63b3ed33;
+  border-radius: 50%;
+  position: absolute;
+  top: var(--y);
+  left: var(--x);
+  animation: node-pulse 3s var(--delay) infinite;
+}
+
+.neural-node::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  box-shadow: 0 0 20px 2px #63b3ed55;
+  opacity: 0;
+  animation: node-glow 3s var(--delay) infinite;
+}
+
+@keyframes node-pulse {
+  0%, 100% { transform: scale(0.8); opacity: 0.2; }
+  50% { transform: scale(1.2); opacity: 0.6; }
+}
+
+@keyframes node-glow {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 0.4; }
+}
+
+/* Mantendo as classes originais */
+.login-container {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-card {
+  /* Suas propriedades existentes */
+  position: relative;
+  z-index: 1;
+}
+
+/* Efeito de conexões entre nós */
+.auth-card:hover ~ .neural-bg .neural-node::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 150vw;
+  height: 150vh;
+  background: radial-gradient(circle, #63b3ed15 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
 .login-container {
   min-height: 100vh;
   background: linear-gradient(to bottom right, #0a192f, #1a365d);
