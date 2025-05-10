@@ -5,6 +5,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Dashboard from '@/components/Dashboard';
 
+
 export type ChamadoType = {
   _id: string;
   titulo: string;
@@ -74,18 +75,14 @@ export default function Home({ chamadosIniciais }: HomeProps) {
     }
   );
 
-  const ParticlesBackground = dynamic(
-    () => import('@/components/ParticlesBackground'),
-    { 
-      ssr: false,
-      loading: () => <div className="particles-loading"/> 
-    }
-  );
+  const ParticlesBackground = dynamic(() => import('@/components/ParticlesBackground'), { ssr: false });
 
+  if (status === 'loading') return <p>Carregando sessão...</p>;
   if (!session) {
     return (
       <main className="login-container">
-       <div className="auth-card animate-slide-in">
+      <ParticlesBackground />  {/* ← Agora deve funcionar corretamente */}
+        <div className="auth-card animate-slide-in">
           <div className="logo-wrapper pulse-shadow">
             <img
               src="/bravo.png"
@@ -95,11 +92,15 @@ export default function Home({ chamadosIniciais }: HomeProps) {
               height={90}
             />
           </div>
-
+  
           <h1 className="title pulse-glow">
             Acesso <span className="gradient-text">Restrito</span>
           </h1>
-
+  
+          <p className="subtitle animate-fade-in-delay">
+            Sistema de Gestão de Chamados Inteligente
+          </p>
+  
           <button
             className="google-btn shine-on-hover"
             onClick={() => signIn('google')}
@@ -111,7 +112,7 @@ export default function Home({ chamadosIniciais }: HomeProps) {
           </button>
   
           <div className="footer animate-fade-in-delay">
-            <img src="/Faixa Bravo.png" className="company-logo" />
+            <img src="/Faixa Bravo.png" alt="Empresa" className="company-logo" />
             <p className="security-text">
               <span className="lock-icon">🔒</span> Login seguro via Google
             </p>
