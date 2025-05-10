@@ -12,6 +12,127 @@ main {
   overflow-x: hidden;
 }
 
+
+/* ===== TELA DE LOGIN ===== */
+.login-page {
+  background: linear-gradient(to right, #0a192f, #1a365d);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #e2e8f0;
+  animation: fadeIn 1s ease-out;
+}
+
+.login-box {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 3rem;
+  width: 100%;
+  max-width: 500px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.8s ease-out;
+}
+
+.logo-bounce {
+  animation: bounce 2s infinite;
+  margin-bottom: 1rem;
+}
+
+.login-logo {
+  width: 100px;
+  height: auto;
+  filter: drop-shadow(0 4px 8px rgba(66, 153, 225, 0.3));
+}
+
+.login-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(45deg, #63b3ed, #4299e1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.login-subtitle {
+  font-size: 1rem;
+  color: #cbd5e0;
+  margin-bottom: 2rem;
+  animation: fadeIn 1.5s ease;
+}
+
+.login-google-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  justify-content: center;
+  background: linear-gradient(135deg, #2b6cb0, #4299e1);
+  color: white;
+  padding: 0.75rem 2rem;
+  border-radius: 50px;
+  border: none;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(66, 153, 225, 0.4);
+  transition: transform 0.2s ease;
+  animation: pulse 2.5s infinite;
+}
+
+.login-google-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(66, 153, 225, 0.6);
+}
+
+.google-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.login-footer {
+  margin-top: 2rem;
+  font-size: 0.9rem;
+  color: #a0aec0;
+}
+
+.login-footer .lock-icon {
+  margin-right: 0.5rem;
+}
+
+.footer-banner {
+  width: 100%;
+  margin-top: 1rem;
+  opacity: 0.8;
+  border-radius: 12px;
+}
+
+/* === ANIMAÇÕES === */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(66, 153, 225, 0.5); }
+  70% { box-shadow: 0 0 0 20px rgba(66, 153, 225, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(66, 153, 225, 0); }
+}
+
+
+
+
 .titulo {
   font-size: 2.5rem;
   text-align: center;
