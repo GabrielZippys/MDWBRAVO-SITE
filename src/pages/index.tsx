@@ -72,23 +72,47 @@ export default function Home({ chamadosIniciais }: HomeProps) {
   if (status === 'loading') return <p>Carregando sessão...</p>;
   if (!session) {
     return (
-      <main className="login-page">
-      <div className="login-box">
-        <div className="logo-bounce">
-          <img src="/bravo.png" alt="Logo MDW Bravo" className="login-logo" />
+      <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0f172a] to-[#1e293b] px-4">
+      <div className="bg-white/10 backdrop-blur-md rounded-xl shadow-2xl p-8 max-w-md w-full border border-white/20 animate-fade-in">
+        {/* 🎨 Estilos aplicados na tela de LOGIN */}
+        <div className="flex flex-col items-center space-y-6">
+          <img
+            src="/bravo.png"
+            alt="MDW Bravo Logo"
+            className="w-24 h-24 object-contain animate-float"
+          />
+          <h1 className="text-3xl font-bold text-white text-center">
+            Acesso <span className="text-blue-400">Restrito</span>
+          </h1>
+          <p className="text-white/70 text-center">
+            Gestão Inteligente de Chamados
+          </p>
+    
+          <button
+            onClick={() => signIn('google')}
+            className="flex items-center justify-center gap-3 bg-white text-gray-800 font-medium px-6 py-3 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 transform hover:scale-105 animate-scale-in"
+          >
+            <svg
+              className="w-5 h-5"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path d="M12.545 10.239v3.821h5.445c-.712 2.315-2.647 3.972-5.445 3.972a5.94 5.94 0 1 1 0-11.88c1.835 0 3.456.989 4.261 2.468l3.494-2.268A9.959 9.959 0 0 0 12.545 2C7.021 2 2.545 6.477 2.545 12s4.476 10 10 10c5.523 0 10-4.477 10-10a9.994 9.994 0 0 0-1-4.029l-9 5.268z" />
+            </svg>
+            Entrar com Google
+          </button>
+    
+          <div className="flex flex-col items-center space-y-2 mt-6">
+            <img
+              src="/Faixa Bravo.png"
+              alt="Empresa"
+              className="w-32 h-auto animate-slide-up"
+            />
+            <p className="text-white/60 text-sm">
+              🔒 Login seguro via Google
+            </p>
+          </div>
         </div>
-        <h1 className="login-title">Bem-vindo ao <span className="gradient-text">MDW-BRAVO</span></h1>
-        <p className="login-subtitle">Sistema inteligente de gestão de chamados</p>
-    
-        <button className="login-google-btn" onClick={() => signIn('google')}>
-          <img src="/google-icon.svg" alt="Google" className="google-icon" />
-          Entrar com Google
-        </button>
-    
-        <footer className="login-footer">
-          <p><span className="lock-icon">🔒</span> Login seguro com autenticação via Google</p>
-          <img src="/Faixa Bravo.png" alt="Bravo" className="footer-banner" />
-        </footer>
       </div>
     </main>
     
