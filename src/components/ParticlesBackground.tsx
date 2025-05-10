@@ -1,3 +1,4 @@
+// components/ParticlesBackground.tsx
 'use client';
 
 import { useCallback } from 'react';
@@ -13,7 +14,7 @@ export default function ParticlesBackground() {
   return (
     <Particles
       id="tsparticles"
-      init={particlesInit}  // Propriedade correta para v3.x
+      init={particlesInit}
       options={{
         fullScreen: { enable: true, zIndex: -1 },
         background: {
@@ -26,7 +27,7 @@ export default function ParticlesBackground() {
             value: 60,
             density: {
               enable: true,
-              area: 800,  // Propriedade correta para v3.x
+              value_area: 800 // <--- Propriedade corrigida
             },
           },
           color: {
@@ -43,7 +44,7 @@ export default function ParticlesBackground() {
             enable: true,
             speed: 1.6,
             outModes: {
-              default: 'out',
+              default: 'out'
             },
           },
           opacity: {
