@@ -1,7 +1,8 @@
 // components/ParticlesBackground.tsx
 'use client';
 import { useCallback } from 'react';
-import Particles from 'react-tsparticles';
+import Particles from "react-tsparticles";
+import { loadFull } from "tsparticles";
 import { loadSlim } from 'tsparticles-slim';
 import type { Engine } from 'tsparticles-engine';
 

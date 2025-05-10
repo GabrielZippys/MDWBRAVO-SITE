@@ -49,6 +49,8 @@ main {
   text-align: center;
   color: white;
   animation: fadeInUp 0.6s ease-out;
+  z-index: 10;
+  position: relative;
 }
 
 .logo-wrapper {
