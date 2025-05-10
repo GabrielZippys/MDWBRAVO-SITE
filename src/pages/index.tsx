@@ -77,7 +77,6 @@ export default function Home({ chamadosIniciais }: HomeProps) {
 
   const ParticlesBackground = dynamic(() => import('@/components/ParticlesBackground'), { ssr: false });
 
-  if (status === 'loading') return <p>Carregando sessão...</p>;
   if (!session) {
     return (
       <main className="login-container">
