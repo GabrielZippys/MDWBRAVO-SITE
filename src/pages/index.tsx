@@ -4,6 +4,7 @@ import { useSession, signIn } from 'next-auth/react';
 import React, { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Dashboard from '@/components/Dashboard';
+import ParticlesBackground from '@/components/ParticlesBackground';
 
 
 export type ChamadoType = {
@@ -75,11 +76,11 @@ export default function Home({ chamadosIniciais }: HomeProps) {
     }
   );
 
-  const ParticlesBackground = dynamic(() => import('@/components/ParticlesBackground'), { ssr: false });
 
   if (!session) {
     return (
       <main className="login-container">
+          <ParticlesBackground />
         <div className="auth-card animate-slide-in">
           <div className="logo-wrapper pulse-shadow">
             <img
@@ -118,7 +119,8 @@ export default function Home({ chamadosIniciais }: HomeProps) {
         </div>
       </main>
     );
-  }  
+  }
+  
   
   return (
     <main>

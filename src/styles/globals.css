@@ -14,17 +14,16 @@ main {
 
 
 /* === PARTICLES CANVAS FIX (Login background tech effect) === */
+
+/* Garante que o <Particles> cubra toda a tela */
 #tsparticles {
-  position: fixed !important;
-  top: 0;
-  left: 0;
-  z-index: -1 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  pointer-events: none;
-  background: transparent !important;
-  inset: 0;
+  position: absolute !important;
+  top: 0; left: 0;
+  width: 100% !important;
+  height: 100% !important;
 }
+
+
 
 
 /* Aqui estamos mexendo na tela de LOGIN */
@@ -36,6 +35,8 @@ main {
   align-items: center;
   justify-content: center;
   padding: 2rem;
+  position: relative;
+  overflow: hidden;
 }
 
 .auth-card {
