@@ -14,10 +14,8 @@ main {
 
 /* Aqui estamos mexendo na tela de LOGIN */
 
-
-
-/* Efeito de rede neural corrigido */
-.neural-network {
+/* Efeito neural corrigido */
+.neural-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -28,41 +26,85 @@ main {
   pointer-events: none;
 }
 
-.node {
-  width: 6px;
-  height: 6px;
+.neural-network {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.neural-node {
+  width: 8px;
+  height: 8px;
   background: #63b3ed;
   border-radius: 50%;
   position: absolute;
-  animation: pulse 4s infinite ease-in-out;
-  box-shadow: 0 0 15px rgba(99, 179, 237, 0.3);
+  top: var(--y);
+  left: var(--x);
+  animation: node-pulse var(--duration) var(--delay) infinite;
+  filter: drop-shadow(0 0 5px #63b3ed);
 }
 
-.connection {
-  stroke: #63b3ed33;
-  stroke-width: 1px;
-  animation: connection 12s linear infinite;
+.node-connection {
+  position: absolute;
+  width: 100vw;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #63b3ed33, transparent);
+  transform-origin: left center;
+  animation: connection-glow 4s infinite;
 }
 
-@keyframes pulse {
+@keyframes node-pulse {
   0%, 100% { 
-    transform: scale(0.95); 
-    opacity: 0.4; 
+    transform: scale(0.8); 
+    opacity: 0.3;
   }
   50% { 
-    transform: scale(1.8); 
-    opacity: 0.1; 
+    transform: scale(1.4); 
+    opacity: 0.6;
   }
 }
 
-@keyframes connection {
-  from { 
-    stroke-dasharray: 1000;
-    stroke-dashoffset: 1000; 
+@keyframes connection-glow {
+  0% { 
+    transform: translateX(-100%); 
+    opacity: 0;
   }
-  to { 
-    stroke-dashoffset: 0; 
+  50% { 
+    transform: translateX(100%); 
+    opacity: 0.4;
   }
+  100% { 
+    transform: translateX(100%); 
+    opacity: 0;
+  }
+}
+
+.neural-glows {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 50% 50%, rgba(99, 179, 237, 0.05) 0%, transparent 60%);
+  animation: glow-move 20s linear infinite;
+}
+
+@keyframes glow-move {
+  0% { transform: translate(-30%, -30%); }
+  33% { transform: translate(30%, 30%); }
+  66% { transform: translate(-30%, 30%); }
+  100% { transform: translate(-30%, -30%); }
+}
+
+/* Mantenha as classes originais abaixo */
+.login-container {
+  /* Seus estilos existentes */
+}
+
+.auth-card {
+  /* Seus estilos existentes */
+  position: relative;
+  z-index: 1;
 }
 
 /* Ajustes de largura */
