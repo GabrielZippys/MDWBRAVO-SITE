@@ -80,21 +80,25 @@ export default function Home({ chamadosIniciais }: HomeProps) {
   if (!session) {
     return (
       <main className="login-container">
-        <div className="neural-bg">
-          {/* Efeito de rede neural puro CSS */}
-          <div className="neural-grid">
-            {[...Array(36)].map((_, i) => (
+        <div className="neural-overlay">
+          {/* Efeito neural melhorado */}
+          <div className="neural-network">
+            {[...Array(50)].map((_, i) => (
               <div 
                 key={i}
                 className="neural-node"
                 style={{
                   '--x': `${Math.random() * 100}%`,
                   '--y': `${Math.random() * 100}%`,
-                  '--delay': `${i * 0.1}s`
+                  '--delay': `${i * 0.05}s`,
+                  '--duration': `${2 + Math.random() * 3}s`
                 } as React.CSSProperties}
-              />
+              >
+                <div className="node-connection"/>
+              </div>
             ))}
           </div>
+          <div className="neural-glows"/>
         </div>
   
         <div className="auth-card animate-slide-in">

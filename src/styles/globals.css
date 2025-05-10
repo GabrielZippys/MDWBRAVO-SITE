@@ -15,40 +15,76 @@ main {
 /* Aqui estamos mexendo na tela de LOGIN */
 
 
-/* Efeito de rede neural puro CSS */
+
+/* Efeito de rede neural corrigido */
 .neural-network {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: -1;
+  z-index: 0;
   overflow: hidden;
+  pointer-events: none;
 }
 
 .node {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   background: #63b3ed;
   border-radius: 50%;
   position: absolute;
-  animation: pulse 2s infinite;
+  animation: pulse 4s infinite ease-in-out;
+  box-shadow: 0 0 15px rgba(99, 179, 237, 0.3);
 }
 
 .connection {
   stroke: #63b3ed33;
   stroke-width: 1px;
+  animation: connection 12s linear infinite;
 }
 
 @keyframes pulse {
-  0% { transform: scale(0.8); opacity: 0.3; }
-  50% { transform: scale(1.2); opacity: 0.6; }
-  100% { transform: scale(0.8); opacity: 0.3; }
+  0%, 100% { 
+    transform: scale(0.95); 
+    opacity: 0.4; 
+  }
+  50% { 
+    transform: scale(1.8); 
+    opacity: 0.1; 
+  }
 }
 
 @keyframes connection {
-  from { stroke-dashoffset: 100; }
-  to { stroke-dashoffset: 0; }
+  from { 
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000; 
+  }
+  to { 
+    stroke-dashoffset: 0; 
+  }
+}
+
+/* Ajustes de largura */
+.login-container {
+  width: 100vw;
+  min-height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.neural-network::before {
+  content: '';
+  position: absolute;
+  width: 150vw;
+  height: 150vh;
+  background: radial-gradient(circle, rgba(99, 179, 237, 0.05) 0%, transparent 70%);
+  animation: gradientMove 20s linear infinite;
+}
+
+@keyframes gradientMove {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 /* Efeito de fundo neural */
