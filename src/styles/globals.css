@@ -13,15 +13,16 @@ main {
 }
 
 
-/* === PARTICLES BACKGROUND FIX === */
+/* ===== PARTICLES BACKGROUND ===== */
 #tsparticles {
   position: fixed !important;
   top: 0;
   left: 0;
+  z-index: -1 !important;
   width: 100vw !important;
   height: 100vh !important;
-  z-index: -1 !important;
   pointer-events: none;
+  background-color: transparent !important;
 }
 
 
