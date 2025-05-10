@@ -13,7 +13,7 @@ main {
 }
 
 
-/* ===== PARTICLES BACKGROUND ===== */
+/* === PARTICLES CANVAS FIX (Login background tech effect) === */
 #tsparticles {
   position: fixed !important;
   top: 0;
@@ -22,7 +22,7 @@ main {
   width: 100vw !important;
   height: 100vh !important;
   pointer-events: none;
-  background-color: transparent !important;
+  background: transparent !important;
 }
 
 
