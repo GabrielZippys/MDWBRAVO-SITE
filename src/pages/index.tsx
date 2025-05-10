@@ -75,13 +75,11 @@ export default function Home({ chamadosIniciais }: HomeProps) {
     }
   );
 
-  const ParticlesBackground = dynamic(() => import('@/components/ParticlesBackground'), { ssr: false });
 
   if (status === 'loading') return <p>Carregando sessão...</p>;
   if (!session) {
     return (
       <main className="login-container">
-      <ParticlesBackground />  {/* ← Agora deve funcionar corretamente */}
         <div className="auth-card animate-slide-in">
           <div className="logo-wrapper pulse-shadow">
             <img
