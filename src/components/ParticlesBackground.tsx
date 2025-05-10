@@ -13,19 +13,21 @@ export default function ParticlesBackground() {
   return (
     <Particles
       id="tsparticles"
-      init={particlesInit}
+      init={particlesInit}  // Propriedade correta para v3.x
       options={{
-        fullScreen: { enable: false, zIndex: -1 }, // Alterado para false
+        fullScreen: { enable: true, zIndex: -1 },
         background: {
-          color: '#0a192f',
+          color: {
+            value: '#0a192f',
+          },
         },
         particles: {
           number: {
-            value: 80,
+            value: 60,
             density: {
               enable: true,
-              area: 800,
-            }
+              area: 800,  // Propriedade correta para v3.x
+            },
           },
           color: {
             value: '#63b3ed',
