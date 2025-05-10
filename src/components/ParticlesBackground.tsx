@@ -1,13 +1,12 @@
 'use client';
 
 import { useCallback } from 'react';
-import Particles from 'react-tsparticles';
+import { Particles } from '@tsparticles/react';
 import { loadFull } from 'tsparticles';
+import type { Engine } from '@tsparticles/engine';
 
 export default function ParticlesBackground() {
-  // Pode tipar como `any` para evitar conflito de versões
-  const particlesInit = useCallback(async (engine: any) => {
-    // carrega todos os módulos core do tsparticles
+  const particlesInit = useCallback(async (engine: Engine) => {
     await loadFull(engine);
   }, []);
 
@@ -16,30 +15,61 @@ export default function ParticlesBackground() {
       id="tsparticles"
       init={particlesInit}
       options={{
-        fullScreen: { enable: true, zIndex: -1 }, // fica atrás de tudo
+        fullScreen: { enable: false, zIndex: -1 }, // Alterado para false
         background: {
-          color: { value: '#0a192f' }
+          color: '#0a192f',
         },
         particles: {
-          number: { value: 60, density: { enable: true, area: 800 } },
-          color: { value: '#63b3ed' },
-          links: { enable: true, distance: 150, color: '#63b3ed', opacity: 0.3, width: 1 },
-          move: { enable: true, speed: 1.2, outModes: { default: 'out' } },
-          opacity: { value: 0.5 },
-          size: { value: 2 }
+          number: {
+            value: 80,
+            density: {
+              enable: true,
+              area: 800,
+            }
+          },
+          color: {
+            value: '#63b3ed',
+          },
+          links: {
+            enable: true,
+            distance: 130,
+            color: '#63b3ed',
+            opacity: 0.4,
+            width: 1,
+          },
+          move: {
+            enable: true,
+            speed: 1.6,
+            outModes: {
+              default: 'out',
+            },
+          },
+          opacity: {
+            value: 0.5,
+          },
+          size: {
+            value: { min: 1, max: 3 },
+          },
         },
         interactivity: {
           events: {
-            onHover: { enable: true, mode: 'repulse' },
-            onClick: { enable: true, mode: 'push' },
-            resize: true
+            onHover: {
+              enable: true,
+              mode: 'repulse',
+            },
+            resize: {
+              enable: true,
+              delay: 0.5,
+            },
           },
           modes: {
-            repulse: { distance: 100, duration: 0.4 },
-            push: { quantity: 4 }
-          }
+            repulse: {
+              distance: 120,
+              duration: 0.4,
+            },
+          },
         },
-        detectRetina: true
+        detectRetina: true,
       }}
     />
   );
