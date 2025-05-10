@@ -5,6 +5,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Dashboard from '@/components/Dashboard';
 
+
 export type ChamadoType = {
   _id: string;
   titulo: string;
@@ -74,10 +75,13 @@ export default function Home({ chamadosIniciais }: HomeProps) {
     }
   );
 
+  const ParticlesBackground = dynamic(() => import('@/components/ParticlesBackground'), { ssr: false });
+
   if (status === 'loading') return <p>Carregando sessão...</p>;
   if (!session) {
     return (
       <main className="login-container">
+        <ParticlesBackground />
         <div className="auth-card animate-slide-in">
           <div className="logo-wrapper pulse-shadow">
             <img
