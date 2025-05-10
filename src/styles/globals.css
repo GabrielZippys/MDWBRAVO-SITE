@@ -13,8 +13,7 @@ main {
 }
 
 /* Aqui estamos mexendo na tela de LOGIN */
-
-/* Efeito neural corrigido */
+/* Efeito Neural 2.0 */
 .neural-overlay {
   position: fixed;
   top: 0;
@@ -24,76 +23,115 @@ main {
   z-index: 0;
   overflow: hidden;
   pointer-events: none;
+  perspective: 1000px;
 }
 
 .neural-network {
   position: absolute;
   width: 100%;
   height: 100%;
+  filter: blur(1px);
 }
 
 .neural-node {
   width: 8px;
   height: 8px;
-  background: #63b3ed;
-  border-radius: 50%;
   position: absolute;
   top: var(--y);
   left: var(--x);
-  animation: node-pulse var(--duration) var(--delay) infinite;
-  filter: drop-shadow(0 0 5px #63b3ed);
+  animation: node-orbit var(--duration) var(--delay) infinite linear;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+@keyframes node-orbit {
+  0% {
+    transform: 
+      rotateZ(0deg) 
+      translateX(var(--offset)) 
+      rotateZ(0deg);
+  }
+  100% {
+    transform: 
+      rotateZ(360deg) 
+      translateX(var(--offset)) 
+      rotateZ(-360deg);
+  }
 }
 
 .node-connection {
   position: absolute;
-  width: 100vw;
+  width: 100%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, #63b3ed33, transparent);
-  transform-origin: left center;
-  animation: connection-glow 4s infinite;
+  background: linear-gradient(90deg, transparent, #63b3ed55, transparent);
+  transform: translateY(-50%) scaleX(0.5);
+  animation: connection-pulse 4s infinite;
 }
 
-@keyframes node-pulse {
-  0%, 100% { 
-    transform: scale(0.8); 
-    opacity: 0.3;
-  }
-  50% { 
-    transform: scale(1.4); 
-    opacity: 0.6;
-  }
-}
-
-@keyframes connection-glow {
-  0% { 
-    transform: translateX(-100%); 
+@keyframes connection-pulse {
+  0%, 100% {
     opacity: 0;
+    transform: translateY(-50%) scaleX(0);
   }
-  50% { 
-    transform: translateX(100%); 
+  50% {
     opacity: 0.4;
+    transform: translateY(-50%) scaleX(1);
   }
-  100% { 
-    transform: translateX(100%); 
-    opacity: 0;
-  }
+}
+
+.node-glow {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, #63b3ed33 0%, transparent 70%);
+  animation: glow-pulse 3s infinite;
+}
+
+@keyframes glow-pulse {
+  0%, 100% { transform: scale(0.5); opacity: 0; }
+  50% { transform: scale(1.2); opacity: 0.3; }
 }
 
 .neural-glows {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at 50% 50%, rgba(99, 179, 237, 0.05) 0%, transparent 60%);
-  animation: glow-move 20s linear infinite;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: 
+    radial-gradient(circle at 30% 30%, #63b3ed11 0%, transparent 50%),
+    radial-gradient(circle at 70% 70%, #63b3ed11 0%, transparent 50%);
+  animation: glows-move 20s linear infinite;
 }
 
-@keyframes glow-move {
-  0% { transform: translate(-30%, -30%); }
-  33% { transform: translate(30%, 30%); }
-  66% { transform: translate(-30%, 30%); }
-  100% { transform: translate(-30%, -30%); }
+@keyframes glows-move {
+  0% { transform: translate(0%, 0%); }
+  25% { transform: translate(50%, 50%); }
+  50% { transform: translate(100%, 0%); }
+  75% { transform: translate(50%, -50%); }
+  100% { transform: translate(0%, 0%); }
+}
+
+/* Efeito de Interação */
+.auth-card:hover ~ .neural-overlay {
+  .neural-node {
+    animation-duration: calc(var(--duration) * 0.5);
+  }
+  
+  .node-connection {
+    animation-duration: 2s;
+  }
+}
+
+/* Mantenha as classes originais abaixo */
+.login-container {
+  /* Seus estilos existentes */
+}
+
+.auth-card {
+  /* Seus estilos existentes */
+  position: relative;
+  z-index: 1;
 }
 
 /* Mantenha as classes originais abaixo */

@@ -81,66 +81,38 @@ export default function Home({ chamadosIniciais }: HomeProps) {
     return (
       <main className="login-container">
         <div className="neural-overlay">
-          {/* Efeito neural melhorado */}
           <div className="neural-network">
-            {[...Array(50)].map((_, i) => (
-              <div 
-                key={i}
-                className="neural-node"
-                style={{
-                  '--x': `${Math.random() * 100}%`,
-                  '--y': `${Math.random() * 100}%`,
-                  '--delay': `${i * 0.05}s`,
-                  '--duration': `${2 + Math.random() * 3}s`
-                } as React.CSSProperties}
-              >
-                <div className="node-connection"/>
-              </div>
-            ))}
+            {[...Array(30)].map((_, i) => {
+              const angle = Math.random() * Math.PI * 2;
+              const distance = Math.random() * 40;
+              return (
+                <div 
+                  key={i}
+                  className="neural-node"
+                  style={{
+                    '--x': `${50 + Math.cos(angle) * distance}%`,
+                    '--y': `${50 + Math.sin(angle) * distance}%`,
+                    '--delay': `${i * 0.1}s`,
+                    '--duration': `${4 + Math.random() * 4}s`,
+                    '--offset': `${Math.random() * 100}px`
+                  } as React.CSSProperties}
+                >
+                  <div className="node-connection" />
+                  <div className="node-glow" />
+                </div>
+              );
+            })}
           </div>
-          <div className="neural-glows"/>
+          <div className="neural-glows" />
         </div>
   
+        {/* Mantenha o auth-card existente sem alterações */}
         <div className="auth-card animate-slide-in">
-          <div className="logo-wrapper pulse-shadow">
-            <img
-              src="/bravo.png"
-              alt="MDW Bravo Logo"
-              className="logo shadow-logo"
-              width={90}
-              height={90}
-            />
-          </div>
-  
-          <h1 className="title pulse-glow">
-            Acesso <span className="gradient-text">Restrito</span>
-          </h1>
-  
-          <p className="subtitle animate-fade-in-delay">
-            Sistema de Gestão de Chamados Inteligente
-          </p>
-  
-          <button
-            className="google-btn shine-on-hover"
-            onClick={() => signIn('google')}
-          >
-            <svg className="google-icon" viewBox="0 0 24 24">
-              <path d="M12.545 10.239v3.821h5.445c-.712 2.315-2.647 3.972-5.445 3.972a5.94 5.94 0 1 1 0-11.88c1.835 0 3.456.989 4.261 2.468l3.494-2.268A9.959 9.959 0 0 0 12.545 2C7.021 2 2.545 6.477 2.545 12s4.476 10 10 10c5.523 0 10-4.477 10-10a9.994 9.994 0 0 0-1-4.029l-9 5.268z"/>
-            </svg>
-            Entrar com Google
-          </button>
-  
-          <div className="footer animate-fade-in-delay">
-            <img src="/Faixa Bravo.png" alt="Empresa" className="company-logo" />
-            <p className="security-text">
-              <span className="lock-icon">🔒</span> Login seguro via Google
-            </p>
-          </div>
+          ...
         </div>
       </main>
     );
   }
-  
   return (
     <main>
       <h1 className="titulo">Painel de Chamados🚨</h1>
