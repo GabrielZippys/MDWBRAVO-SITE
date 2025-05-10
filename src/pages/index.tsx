@@ -80,7 +80,6 @@ export default function Home({ chamadosIniciais }: HomeProps) {
   if (!session) {
     return (
       <main className="login-container">
-      <ParticlesBackground />
         <div className="auth-card animate-slide-in">
           <div className="logo-wrapper pulse-shadow">
             <img
@@ -119,7 +118,7 @@ export default function Home({ chamadosIniciais }: HomeProps) {
         </div>
       </main>
     );
-  }
+  }  
   
   return (
     <main>
