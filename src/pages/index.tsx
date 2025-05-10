@@ -81,7 +81,7 @@ export default function Home({ chamadosIniciais }: HomeProps) {
   if (!session) {
     return (
       <main className="login-container">
-        <ParticlesBackground />
+      <ParticlesBackground />  {/* ← Agora deve funcionar corretamente */}
         <div className="auth-card animate-slide-in">
           <div className="logo-wrapper pulse-shadow">
             <img

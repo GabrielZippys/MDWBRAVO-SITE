@@ -2,48 +2,35 @@
 
 import { useCallback } from 'react';
 import Particles from 'react-tsparticles';
-import { loadSlim } from 'tsparticles-slim';
-import type { Engine } from 'tsparticles-engine';
+import { loadFull } from 'tsparticles';
+import { Engine } from 'tsparticles-engine'; // Certo!
 
 export default function ParticlesBackground() {
-  const particlesInit = useCallback(async (engine: Engine) => {
-    await loadSlim(engine);
-  }, []);
+    const particlesInit = useCallback(async (engine: any) => {
+        await loadFull(engine);
+      }, []);      
 
   return (
     <Particles
-      id="tech-background"
+      id="tsparticles"
       init={particlesInit}
       options={{
-        fullScreen: {
-          enable: true,
-          zIndex: -1,
-        },
-        fpsLimit: 60,
+        fullScreen: { enable: true, zIndex: -1 },
         background: {
-          color: '#0a192f', // mesmo fundo do login
+          color: {
+            value: '#0a192f',
+          },
         },
         particles: {
           number: {
-            value: 80,
+            value: 70,
             density: {
               enable: true,
               area: 800,
             },
           },
-          color: { value: '#63b3ed' }, // azul ciano
-          shape: { type: 'circle' },
-          opacity: {
-            value: 0.6,
-            anim: {
-              enable: true,
-              speed: 0.2,
-              opacity_min: 0.2,
-              sync: false,
-            },
-          },
-          size: {
-            value: { min: 1, max: 4 },
+          color: {
+            value: '#63b3ed',
           },
           links: {
             enable: true,
@@ -51,30 +38,39 @@ export default function ParticlesBackground() {
             color: '#63b3ed',
             opacity: 0.3,
             width: 1,
+            triangles: {
+              enable: true,
+              color: '#4299e1',
+              opacity: 0.05,
+            },
           },
           move: {
             enable: true,
-            speed: 0.5,
+            speed: 1.5,
             direction: 'none',
-            outModes: 'out',
-            random: true,
-            straight: false,
+            outModes: {
+              default: 'out',
+            },
+          },
+          opacity: {
+            value: 0.5,
+          },
+          size: {
+            value: 2,
           },
         },
         interactivity: {
           events: {
             onHover: {
               enable: true,
-              mode: 'grab', // 'grab' puxa as linhas ao mouse
+              mode: 'repulse',
             },
             resize: true,
           },
           modes: {
-            grab: {
-              distance: 140,
-              links: {
-                opacity: 0.5,
-              },
+            repulse: {
+              distance: 100,
+              duration: 0.4,
             },
           },
         },
