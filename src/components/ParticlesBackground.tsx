@@ -1,73 +1,27 @@
-// src/components/ParticlesBackground.tsx
+// components/ParticlesBackground.tsx
 'use client';
-
 import { useCallback } from 'react';
 import Particles from 'react-tsparticles';
-import type { Engine } from 'tsparticles-engine';
 import { loadSlim } from 'tsparticles-slim';
+import type { Engine } from 'tsparticles-engine';
 
 export default function ParticlesBackground() {
-  const particlesInit = useCallback(async (engine: Engine) => {
-    await loadSlim(engine); // mais leve que loadFull e evita resets
+  const init = useCallback(async (engine: Engine) => {
+    await loadSlim(engine);
   }, []);
 
   return (
     <Particles
-      id="tsparticles"
-      init={particlesInit}
+      init={init}
       options={{
-        fullScreen: {
-          enable: true,
-          zIndex: -1,
-        },
-        fpsLimit: 60,
+        background: { color: { value: '#0a192f' } },
         particles: {
-          number: {
-            value: 60,
-            density: {
-              enable: true,
-              area: 800,
-            },
-          },
           color: { value: '#63b3ed' },
-          shape: { type: 'circle' },
-          opacity: {
-            value: 0.6,
-            anim: {
-              enable: true,
-              speed: 0.5,
-              opacity_min: 0.2,
-              sync: false,
-            },
-          },
-          size: {
-            value: { min: 1, max: 4 },
-          },
-          move: {
-            enable: true,
-            speed: 1,
-            direction: 'none',
-            random: true,
-            straight: false,
-            outModes: 'out',
-            attract: {
-              enable: false,
-            },
-          },
+          links: { enable: true, color: '#63b3ed', distance: 120, opacity: 0.5 },
+          move: { enable: true, speed: 1 },
+          number: { value: 40 },
+          size: { value: 3 },
         },
-        interactivity: {
-          events: {
-            onHover: { enable: true, mode: 'repulse' },
-            resize: true,
-          },
-          modes: {
-            repulse: {
-              distance: 100,
-              duration: 0.4,
-            },
-          },
-        },
-        detectRetina: true,
       }}
     />
   );
