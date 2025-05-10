@@ -23,6 +23,7 @@ main {
   height: 100vh !important;
   pointer-events: none;
   background: transparent !important;
+  inset: 0;
 }
 
 

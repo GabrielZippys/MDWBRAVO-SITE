@@ -11,7 +11,6 @@
   "dependencies": {
     "@notionhq/client": "^2.3.0",
     "@react-leaflet/core": "^3.0.0",
-    "@tsparticles/engine": "^3.8.1",
     "date-fns": "^4.1.0",
     "leaflet": "^1.9.4",
     "leaflet-color-markers": "^0.1.0",
@@ -20,12 +19,10 @@
     "mongoose": "^8.14.1",
     "react-leaflet": "^5.0.0",
     "react-leaflet-markercluster": "^5.0.0-rc.0",
-    "react-tsparticles": "^2.12.2",
+    "react-tsparticles": "^2.12.0",
     "recharts": "^2.15.3",
-    "tsparticles": "^3.8.1",
-    "tsparticles-engine": "^2.12.0",
-    "tsparticles-preset-links": "^2.12.0",
-    "tsparticles-slim": "^2.12.0"
+    "tsparticles": "^2.12.0",
+    "tsparticles-engine": "^2.12.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",

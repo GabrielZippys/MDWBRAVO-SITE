@@ -3,78 +3,72 @@
 import { useCallback } from 'react';
 import Particles from 'react-tsparticles';
 import { loadFull } from 'tsparticles';
-import { Engine } from 'tsparticles-engine';
 
 export default function ParticlesBackground() {
-    const particlesInit = useCallback(async (engine: any) => {
-        await loadFull(engine);
-      }, []);      
+  const particlesInit = useCallback(async (engine: any) => {
+    await loadFull(engine);
+  }, []);
 
   return (
     <Particles
       id="tsparticles"
       init={particlesInit}
       options={{
-        fullScreen: {
-          enable: true,
-          zIndex: -1
-        },
+        fullScreen: { enable: true, zIndex: -1 },
         background: {
           color: {
-            value: '#0a192f' // Fundo escuro elegante
-          }
+            value: '#0a192f',
+          },
         },
         particles: {
           number: {
-            value: 80,
+            value: 70,
             density: {
               enable: true,
-              area: 800
-            }
+              area: 800,
+            },
           },
           color: {
-            value: '#63b3ed'
+            value: '#63b3ed',
           },
           links: {
             enable: true,
-            distance: 140,
+            distance: 130,
             color: '#63b3ed',
-            opacity: 0.4,
-            width: 1.2
+            opacity: 0.3,
+            width: 1,
           },
           move: {
             enable: true,
-            speed: 1.2,
+            speed: 1.5,
             direction: 'none',
             outModes: {
-              default: 'out'
-            }
+              default: 'out',
+            },
           },
           opacity: {
-            value: 0.5
+            value: 0.5,
           },
           size: {
-            value: 2.5
-          }
+            value: 2,
+          },
         },
         interactivity: {
           events: {
             onHover: {
               enable: true,
-              mode: 'grab'
+              mode: 'repulse',
             },
-            resize: true
+            resize: true,
           },
           modes: {
-            grab: {
-              distance: 150,
-              line_linked: {
-                opacity: 0.5
-              }
-            }
-          }
+            repulse: {
+              distance: 100,
+              duration: 0.4,
+            },
+          },
         },
-        detectRetina: true
+        detectRetina: true,
       }}
     />
   );
