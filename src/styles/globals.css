@@ -14,16 +14,17 @@ main {
 
 
 /* === PARTICLES CANVAS FIX (Login background tech effect) === */
-
-/* Garante que o <Particles> cubra toda a tela */
 #tsparticles {
   position: absolute !important;
-  top: 0; left: 0;
+  top: 0; 
   width: 100% !important;
   height: 100% !important;
+  left: 0;
+  z-index: -1 !important;
+  pointer-events: none;
+  background: transparent !important;
+  inset: 0;
 }
-
-
 
 
 /* Aqui estamos mexendo na tela de LOGIN */
