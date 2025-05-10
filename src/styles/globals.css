@@ -23,27 +23,27 @@ main {
   z-index: 0;
   overflow: hidden;
   pointer-events: none;
-  perspective: 1000px;
+  background: #0a192f;
 }
+
 
 .neural-network {
   position: absolute;
   width: 100%;
   height: 100%;
-  filter: blur(1px);
+  filter: blur(2px);
 }
 
 .neural-node {
-  width: 8px;
-  height: 8px;
   position: absolute;
   top: var(--y);
   left: var(--x);
+  width: 8px;
+  height: 8px;
   animation: node-orbit var(--duration) var(--delay) infinite linear;
   transform-style: preserve-3d;
   will-change: transform;
 }
-
 @keyframes node-orbit {
   0% {
     transform: 
@@ -92,6 +92,50 @@ main {
   50% { transform: scale(1.2); opacity: 0.3; }
 }
 
+.node-core {
+  width: 100%;
+  height: 100%;
+  background: #63b3ed;
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(99, 179, 237, 0.5);
+  animation: core-pulse 3s infinite;
+}
+
+.node-trail {
+  position: absolute;
+  width: 100px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #63b3ed55, transparent);
+  transform: rotate(calc(var(--angle) * 1deg)) translateX(50%);
+  animation: trail-flow 4s infinite;
+}
+
+@keyframes node-orbit {
+  0% {
+    transform: 
+      rotate(0deg) 
+      translateX(var(--offset)) 
+      rotate(0deg);
+  }
+  100% {
+    transform: 
+      rotate(360deg) 
+      translateX(var(--offset)) 
+      rotate(-360deg);
+  }
+}
+
+@keyframes core-pulse {
+  0%, 100% { transform: scale(0.8); opacity: 0.4; }
+  50% { transform: scale(1.2); opacity: 1; }
+}
+
+@keyframes trail-flow {
+  0% { opacity: 0; transform: scaleX(0); }
+  50% { opacity: 0.6; transform: scaleX(1); }
+  100% { opacity: 0; transform: scaleX(0); }
+}
+
 .neural-glows {
   position: absolute;
   top: -50%;
@@ -99,10 +143,34 @@ main {
   width: 200%;
   height: 200%;
   background: 
-    radial-gradient(circle at 30% 30%, #63b3ed11 0%, transparent 50%),
-    radial-gradient(circle at 70% 70%, #63b3ed11 0%, transparent 50%);
-  animation: glows-move 20s linear infinite;
+    radial-gradient(circle at 30% 30%, rgba(99, 179, 237, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 70% 70%, rgba(99, 179, 237, 0.1) 0%, transparent 50%);
+  animation: glows-rotate 40s linear infinite;
 }
+
+@keyframes glows-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Efeitos de Interação */
+.auth-card:hover ~ .neural-overlay {
+  .neural-node {
+    animation-duration: calc(var(--duration) * 0.8);
+  }
+  
+  .node-trail {
+    animation-duration: 3s;
+  }
+}
+
+.login-container {
+  position: relative;
+  width: 100vw;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
 
 @keyframes glows-move {
   0% { transform: translate(0%, 0%); }
@@ -123,21 +191,6 @@ main {
   }
 }
 
-/* Mantenha as classes originais abaixo */
-.login-container {
-  /* Seus estilos existentes */
-}
-
-.auth-card {
-  /* Seus estilos existentes */
-  position: relative;
-  z-index: 1;
-}
-
-/* Mantenha as classes originais abaixo */
-.login-container {
-  /* Seus estilos existentes */
-}
 
 .auth-card {
   /* Seus estilos existentes */
