@@ -23,7 +23,6 @@ main {
   z-index: 0;
   pointer-events: none;
   background: linear-gradient(to bottom right, #0a192f 30%, #0d1b36 100%);
-  overflow: hidden;
 }
 
 .neural-network {
@@ -209,11 +208,6 @@ main {
   }
 }
 
-.login-container {
-  position: relative;
-  width: 100vw;
-  min-height: 100vh;
-}
 
 
 @keyframes glows-move {
@@ -270,7 +264,6 @@ main {
   width: 100%;
   height: 100%;
   z-index: 0;
-  overflow: hidden;
 }
 
 .neural-grid {
@@ -314,13 +307,7 @@ main {
 }
 
 /* Mantendo as classes originais */
-.login-container {
-  position: relative;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+
 
 .auth-card {
   /* Suas propriedades existentes */
@@ -342,15 +329,9 @@ main {
 }
 
 .login-container {
-  min-height: 100vh;
-  background: linear-gradient(to bottom right, #0a192f, #1a365d);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
   position: relative;
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
   overflow: hidden;
 }
 
