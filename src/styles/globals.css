@@ -952,55 +952,6 @@ main > div {
 }
 
 
-.tabela-chamados tbody tr:hover td::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80%;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    #63b3ed,
-    transparent
-  );
-  animation: lineFlow 1.5s infinite;
-}
-
-@keyframes lineFlow {
-  0% { opacity: 0; width: 0%; }
-  50% { opacity: 1; width: 80%; }
-  100% { opacity: 0; width: 0%; }
-}
-
-.tabela-chamados tbody tr:hover td:first-child::after,
-.tabela-chamados tbody tr:hover td::after {
-  display: none;
-}
-
-
-.tabela-chamados tbody tr:hover td:first-child::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    #63b3ed,
-    transparent
-  );
-  animation: borderFlow 1.5s infinite;
-}
-
-@keyframes borderFlow {
-  0% { background-position-x: -200%; }
-  100% { background-position-x: 200%; }
-}
 
 .tabela-chamados::before,
 .tabela-chamados::after {
@@ -1034,22 +985,6 @@ main > div {
   perspective: 1000px;
 }
 
-.tabela-chamados tbody tr:hover {
-  background: rgba(99, 179, 237, 0.05) !important;
-  box-shadow: inset 0 0 15px 3px rgba(99, 179, 237, 0.1);
-  transform: scale(1.005);
-  animation: none; /* Remova a animação pulsante */
-}
-
-.tabela-chamados tbody tr:hover::before {
-  opacity: 1;
-}
-
-.tabela-chamados tbody tr:hover td {
-transform: none; /* Remove a escala */
-  box-shadow: none;
-   position: relative;
-}
 
 .tabela-chamados tbody tr::before {
   content: '';
@@ -1205,13 +1140,7 @@ text-align: left;
   padding-right: 1.5rem; /* Reduzido de 2rem */
 }
 
-.tabela-chamados tr:hover td {
-  background: rgba(99, 179, 237, 0.05);
-  transform: translateY(-3px);
-  box-shadow: 
-    0 4px 15px rgba(99, 179, 237, 0.2),
-    inset 0 -2px 0 rgba(99, 179, 237, 0.1);
-}
+
 
 .tabela-chamados::before,
 .tabela-chamados::after,
@@ -1220,22 +1149,7 @@ text-align: left;
   display: none !important;
 }
 
-.tabela-chamados tr:hover::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.05),
-    transparent
-  );
-  animation: none;
-  opacity: 0.3; /* Ajuste a opacidade */
-}
+
 
 .truncate {
   white-space: nowrap;
