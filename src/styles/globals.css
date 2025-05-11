@@ -931,21 +931,19 @@ main > div {
 /* Adicionar no CSS */
 
 .tabela-chamados {
-  min-width: auto;
-  width: auto; /* Alterado de 100% para auto */
-  margin: 2rem auto; /* Centraliza a tabela */
-  display: table; /* Alterado de block para table */
-  border-collapse: separate;
-  border-spacing: 0 0.8rem;
-  position: relative;
+  margin: 2rem auto;
+  border-spacing: 0;
+  border-radius: 15px;
   overflow: hidden;
-  box-shadow: 
-    0 0 0 2px rgba(99, 179, 237, 0.2),
-    0 0 30px rgba(99, 179, 237, 0.1);
-    border-radius: 15px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  animation: none !important;
+  min-width: auto;
+  display: table; /* Alterado de block para table */
+  position: relative;
+   width: 100%;
+  border-collapse: collapse;
   background: rgba(16, 42, 67, 0.3);
   backdrop-filter: blur(8px);
-   animation: float 6s ease-in-out infinite;
 }
 
 @keyframes float {
@@ -1084,8 +1082,12 @@ transform: none; /* Remove a escala */
 .table-container {
   display: flex;
   justify-content: center;
-  width: 100%;
-  padding: 0 1rem;
+   width: 100%;
+  overflow-x: auto;
+  margin: 2rem 0;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  padding: 1rem;
 }
 
 /* Adicione estas media queries para responsividade */
@@ -1100,12 +1102,21 @@ transform: none; /* Remove a escala */
   .tabela-chamados {
     box-shadow: none;
     animation: none;
+      display: block;
+    overflow-x: auto;
   }
+
+    .tabela-chamados td, 
+  .tabela-chamados th {
+    white-space: nowrap;
+    padding: 0.8rem;
+  }
+}
   
   .tabela-chamados::before,
   .tabela-chamados::after {
     display: none;
-  }
+  
 }
 
 .tabela-chamados thead {
@@ -1118,16 +1129,19 @@ background: linear-gradient(
 }
 .tabela-chamados th,
 .tabela-chamados td {
-  text-align: center; /* Alinha conteúdo ao centro */
   vertical-align: middle; /* Alinhamento vertical */
   min-width: 120px; /* Largura mínima das células */
   font-size: 0.9rem;
-  padding: 1.2rem 1.5rem;
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .tabela-chamados th {
   position: relative;
-  overflow: hidden;
+  background: linear-gradient(135deg, rgba(26, 54, 93, 0.95), rgba(43, 108, 176, 0.95));
+  color: #fff;
+  font-weight: 600;
 }
 
   
@@ -1192,11 +1206,18 @@ text-align: left;
 }
 
 .tabela-chamados tr:hover td {
-  background: rgba(99, 179, 237, 0.1) !important;
+  background: rgba(99, 179, 237, 0.05);
   transform: translateY(-3px);
   box-shadow: 
     0 4px 15px rgba(99, 179, 237, 0.2),
     inset 0 -2px 0 rgba(99, 179, 237, 0.1);
+}
+
+.tabela-chamados::before,
+.tabela-chamados::after,
+.tabela-chamados tr::before,
+.tabela-chamados td::after {
+  display: none !important;
 }
 
 .tabela-chamados tr:hover::before {
@@ -1216,14 +1237,33 @@ text-align: left;
   opacity: 0.3; /* Ajuste a opacidade */
 }
 
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.Graficos {
+  display: grid;
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.titulo2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #63b3ed;
+}
+
 /* Melhorar badges de status */
 .status-badge {
-  padding: 0.5rem 1.2rem;
-  border-radius: 25px;
   font-weight: 700;
   display: inline-block;
   text-align: center;
   min-width: 120px;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
 }
 
 @keyframes slideIn {

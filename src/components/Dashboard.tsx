@@ -17,7 +17,7 @@ import { useState, useMemo } from 'react';
 
 type Chamado = {
   _id: string;
-  notionId: string; // Novo campo adicionado
+  notionId: string;
   titulo: string;
   loja: string;
   status: string;
@@ -71,50 +71,44 @@ export default function Dashboard({ chamados }: DashboardProps) {
 
   return (
     <div className="dashboardContainer">
-      {/* Tabela */}
-      <table className="tabela-chamados">
-        <thead>
-          <tr>
-            <th>ID Notion</th> {/* Coluna renomeada */}
-            <th>Título</th>
-            <th>Loja</th>
-            <th>Status</th>
-            <th>Tipo</th>
-            <th>Zona</th>
-            <th>Prioridade</th>
-            <th>Criado em</th>
-          </tr>
-        </thead>
-        <tbody>
-          {chamadosFiltrados.map((chamado) => (
-            <tr key={chamado._id}>
-              <td className="font-mono text-sm">
-                {chamado.notionId || 'N/A'} {/* Exibindo ID do Notion */}
-              </td>
-              <td>{chamado.titulo}</td>
-              <td>{chamado.loja}</td>
-              <td>
-                <span 
-                  className="status-badge"
-                  data-status={chamado.status.replace(/\s/g, '')}
-                >
-                  {chamado.status}
-                </span>
-              </td>
-              <td>{chamado.tipo}</td>
-              <td>{getZonaFromLoja(chamado.loja)}</td>
-              <td data-priority={chamado.prioridade?.toLowerCase()}>
-                {chamado.prioridade || 'Não definida'}
-              </td>
-              <td>
-                {new Date(chamado.dataCriacao).toLocaleDateString()}
-              </td>
+      <div className="table-container">
+        <table className="tabela-chamados">
+          <thead>
+            <tr>
+              <th>ID Notion</th>
+              <th>Título</th>
+              <th>Loja</th>
+              <th>Status</th>
+              <th>Tipo</th>
+              <th>Zona</th>
+              <th>Prioridade</th>
+              <th>Criado em</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {chamadosFiltrados.map((chamado) => (
+              <tr key={chamado._id}>
+                <td className="font-mono">{chamado.notionId || 'N/A'}</td>
+                <td className="truncate max-w-[200px]">{chamado.titulo}</td>
+                <td>{chamado.loja}</td>
+                <td>
+                  <span 
+                    className="status-badge" 
+                    data-status={chamado.status.replace(/\s/g, '')}
+                  >
+                    {chamado.status}
+                  </span>
+                </td>
+                <td>{chamado.tipo}</td>
+                <td>{getZonaFromLoja(chamado.loja)}</td>
+                <td>{chamado.prioridade || 'Não definida'}</td>
+                <td>{new Date(chamado.dataCriacao).toLocaleDateString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
-      {/* Gráficos (mantido igual) */}
       <div className="Graficos">
         <div>
           <h3 className="titulo2">Chamados por Status</h3>
