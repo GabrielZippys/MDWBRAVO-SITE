@@ -82,22 +82,29 @@ export default function Home({ chamadosIniciais }: HomeProps) {
       <main className="login-container">
         <div className="neural-overlay">
           <div className="neural-network">
-            {[...Array(80)].map((_, i) => {
-                 const screenWidth = window.innerWidth;
-      const screenHeight = window.innerHeight;
-              return (
-        <div 
-          key={i}
-          className="neural-node"
-          style={{
-            '--x': `${Math.random() * screenWidth}px`,
-            '--y': `${Math.random() * screenHeight}px`,
-            '--offset': `${Math.random() * 100 + 50}px`,
-            '--duration': `${15 + Math.random() * 15}s`
-          } as React.CSSProperties}
-        >
-          <div className="node-trail"/>
-          <div className="node-core"/>
+         
+    {[...Array(100)].map((_, i) => {
+      const angle = Math.random() * Math.PI * 2;
+      const distance = Math.random() * 40 + 10;
+           return (
+        <div key={i}>
+          <div 
+            className="neural-node"
+            style={{
+              '--x': 50 + Math.cos(angle) * distance,
+              '--y': 50 + Math.sin(angle) * distance,
+              '--duration': 8 + Math.random() * 4,
+              '--delay': Math.random() * 2
+            } as React.CSSProperties}
+          />
+          <div 
+            className="node-connection"
+            style={{
+              '--angle': angle * (180/Math.PI),
+              '--length': 50 + Math.random() * 150,
+              '--start': Math.random() * 100 - 50
+            } as React.CSSProperties}
+          />
         </div>
               );
             })}
