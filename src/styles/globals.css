@@ -793,6 +793,11 @@ main > div {
   }
 }
 
+@keyframes aura-pulse {
+  0% { box-shadow: 0 0 10px 0px rgba(99, 179, 237, 0.1); }
+  50% { box-shadow: 0 0 20px 3px rgba(99, 179, 237, 0.15); }
+  100% { box-shadow: 0 0 10px 0px rgba(99, 179, 237, 0.1); }
+}
 
 /* Status colors */
 [data-status="emaberto"] {
@@ -823,6 +828,9 @@ main > div {
   padding: 1rem 1.5rem;
   font-size: 0.95rem;
   position: relative;
+  transition: transform 0.3s ease, background 0.3s ease;
+  will-change: transform;
+   transform-style: preserve-3d;
 }
 
 .tabela-chamados td:first-child {
@@ -945,6 +953,27 @@ main > div {
   50% { transform: translateY(-5px); }
 }
 
+.tabela-chamados tbody tr:hover td:first-child::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #63b3ed,
+    transparent
+  );
+  animation: borderFlow 1.5s infinite;
+}
+
+@keyframes borderFlow {
+  0% { background-position-x: -200%; }
+  100% { background-position-x: 200%; }
+}
+
 .tabela-chamados::before,
 .tabela-chamados::after {
   content: '';
@@ -972,6 +1001,38 @@ main > div {
   transform: translateY(20px);
   opacity: 0;
   animation: fadeInUp 0.6s forwards;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+  position: relative;
+  perspective: 1000px;
+}
+
+.tabela-chamados tbody tr:hover {
+  background: rgba(99, 179, 237, 0.05) !important;
+  animation: aura-pulse 2s infinite;
+}
+
+.tabela-chamados tbody tr:hover::before {
+  opacity: 1;
+}
+
+.tabela-chamados tbody tr:hover td {
+   transform: scale(1.008) translateZ(10px);
+}
+
+.tabela-chamados tbody tr::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 8px;
+  box-shadow: 
+    0 0 15px 3px rgba(99, 179, 237, 0.15),
+    inset 0 0 10px 1px rgba(99, 179, 237, 0.1);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
 }
 
 @keyframes fadeInUp {
