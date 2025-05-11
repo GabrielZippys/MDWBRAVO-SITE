@@ -83,23 +83,22 @@ export default function Home({ chamadosIniciais }: HomeProps) {
         <div className="neural-overlay">
           <div className="neural-network">
             {[...Array(80)].map((_, i) => {
-              const angle = Math.random() * Math.PI * 2;
-              const radius = Math.random() * 40 + 20;
+                 const screenWidth = window.innerWidth;
+      const screenHeight = window.innerHeight;
               return (
-                <div 
-                  key={i}
-                  className="neural-node"
-                  style={{
-                    '--x': `${50 + Math.cos(angle) * radius}%`,
-                    '--y': `${50 + Math.sin(angle) * radius}%`,
-                    '--delay': `${i * 0.05}s`,
-                    '--duration': `${4 + Math.random() * 4}s`,
-                    '--offset': `${Math.random() * 50 + 20}px`
-                  } as React.CSSProperties}
-                >
-                  <div className="node-trail"/>
-                  <div className="node-core"/>
-                </div>
+        <div 
+          key={i}
+          className="neural-node"
+          style={{
+            '--x': `${Math.random() * screenWidth}px`,
+            '--y': `${Math.random() * screenHeight}px`,
+            '--offset': `${Math.random() * 100 + 50}px`,
+            '--duration': `${15 + Math.random() * 15}s`
+          } as React.CSSProperties}
+        >
+          <div className="node-trail"/>
+          <div className="node-core"/>
+        </div>
               );
             })}
           </div>
