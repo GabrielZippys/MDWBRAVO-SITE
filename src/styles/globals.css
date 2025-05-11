@@ -22,7 +22,7 @@ main {
   z-index: 0;
    overflow: visible !important;
   pointer-events: none;
-  background: #0a192f;
+  background: linear-gradient(to bottom right, #0a192f, #0d1b36);
   min-width: 100%;
   right: 0;
   bottom: 0;
@@ -40,18 +40,40 @@ transform-origin: center center;
 }
 
 .neural-node {
+  width: 10px;
+  height: 10px;
+  background: #63b3ed;
+  border-radius: 50%;
   position: absolute;
-  top: var(--y);
-  left: var(--x);
-  width: 8px;
-  height: 8px;
-  animation: node-orbit var(--duration) var(--delay) infinite linear;
-  transform-style: preserve-3d;
-  will-change: transform;
-   transform: 
-    translateX(calc(var(--x) - 50%)) 
-    translateY(calc(var(--y) - 50%));
+  filter: 
+    blur(2px)
+    drop-shadow(0 0 8px rgba(99, 179, 237, 0.5));
+  animation: 
+    node-float calc(var(--duration) * 1s) var(--delay) infinite ease-in-out,
+    node-pulse 3s infinite;
 }
+
+@keyframes node-float {
+  0%, 100% {
+    transform: 
+      translate(calc(var(--x) * 1%), calc(var(--y) * 1%)) 
+      scale(0.8);
+  }
+  50% {
+    transform: 
+      translate(
+        calc(var(--x) * 1% + 10px), 
+        calc(var(--y) * 1% - 15px)
+      ) 
+      scale(1.2);
+  }
+}
+
+@keyframes node-pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+}
+
 @keyframes node-orbit {
   0% {
     transform: 
@@ -68,12 +90,25 @@ transform-origin: center center;
 }
 
 .node-connection {
-  position: absolute;
-  width: 100%;
+  width: calc(var(--length) * 1px);
   height: 1px;
-  background: linear-gradient(90deg, transparent, #63b3ed55, transparent);
-  transform: translateY(-50%) scaleX(0.5);
-  animation: connection-pulse 4s infinite;
+  background: linear-gradient(
+    90deg, 
+    transparent, 
+    rgba(99, 179, 237, 0.3) 30%, 
+    transparent 70%
+  );
+  transform: 
+    rotate(calc(var(--angle) * 1deg)) 
+    translateX(calc(var(--start) * 1px));
+  animation: connection-flow 6s infinite linear;
+}
+
+@keyframes connection-flow {
+  0% { opacity: 0; transform: scaleX(0); }
+  20% { opacity: 0.4; transform: scaleX(1); }
+  80% { opacity: 0.4; transform: scaleX(1); }
+  100% { opacity: 0; transform: scaleX(0); }
 }
 
 @keyframes connection-pulse {
@@ -144,18 +179,16 @@ transform-origin: center center;
   100% { opacity: 0; transform: scaleX(0); }
 }
 
+
 .neural-glows {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  transform: none;
-  animation: glows-move 20s linear infinite;
-  background: 
-    radial-gradient(circle at 30% 30%, rgba(99, 179, 237, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 70% 70%, rgba(99, 179, 237, 0.1) 0%, transparent 50%);
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(99, 179, 237, 0.08) 0%,
+    transparent 60%
+  );
+  animation: glows-move 30s infinite alternate;
 }
+
 
 @keyframes glows-rotate {
   from { transform: rotate(0deg); }
@@ -181,12 +214,12 @@ transform-origin: center center;
 
 
 @keyframes glows-move {
-  0% { transform: translate(-30%, -30%); }
-  25% { transform: translate(30%, 30%); }
-  50% { transform: translate(30%, -30%); }
-  75% { transform: translate(-30%, 30%); }
-  100% { transform: translate(-30%, -30%); }
+  0% { transform: translate(-20%, -20%) scale(1); }
+  33% { transform: translate(20%, 20%) scale(1.2); }
+  66% { transform: translate(-20%, 20%) scale(0.8); }
+  100% { transform: translate(20%, -20%) scale(1); }
 }
+
 /* Efeito de Interação */
 .auth-card:hover ~ .neural-overlay {
   .neural-node {
