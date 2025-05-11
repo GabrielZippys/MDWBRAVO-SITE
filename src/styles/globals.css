@@ -938,6 +938,13 @@ main > div {
   animation: slideIn 0.6s ease-out;
 }
 
+.table-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 0 1rem;
+}
+
 /* Adicione estas media queries para responsividade */
 @media (max-width: 1200px) {
   .tabela-chamados {
@@ -958,29 +965,24 @@ main > div {
   background: linear-gradient(145deg, #1a365d, #2b6cb0);
 }
 
-.tabela-chamados th {
-  padding: 1.5rem;
-  color: #e2e8f0;
-  text-align: left;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
+.tabela-chamados th,
 .tabela-chamados td {
-  padding: 1.2rem;
-  background: rgba(255, 255, 255, 0.03);
-  color: #e2e8f0;
-  transition: all 0.3s ease;
-  font-size: 0.95rem;
-  position: relative;
+  text-align: center; /* Alinha conteúdo ao centro */
+  vertical-align: middle; /* Alinhamento vertical */
+  min-width: 120px; /* Largura mínima das células */
 }
 
+/* Ajuste para primeira e última coluna */
+.tabela-chamados th:first-child,
 .tabela-chamados td:first-child {
-  border-radius: 8px 0 0 8px;
+  text-align: left;
+  padding-left: 2rem;
 }
 
+.tabela-chamados th:last-child,
 .tabela-chamados td:last-child {
-  border-radius: 0 8px 8px 0;
+  text-align: right;
+  padding-right: 2rem;
 }
 
 .tabela-chamados tr:hover td {
