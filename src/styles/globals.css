@@ -329,7 +329,13 @@ main {
 }
 
 .login-container {
-  position: relative;
+  background: linear-gradient(to bottom right, #0a192f, #1a365d);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  height: 100vh;
+   position: relative;
   width: 100vw;
   min-height: 100vh;
   overflow: hidden;
