@@ -930,13 +930,28 @@ main > div {
 
 .tabela-chamados {
   min-width: auto;
-  width: 100%;
-  overflow-x: auto;
-  display: block;
+  width: auto; /* Alterado de 100% para auto */
+  margin: 2rem auto; /* Centraliza a tabela */
+  display: table; /* Alterado de block para table */
   border-collapse: separate;
   border-spacing: 0 0.8rem;
-  margin: 2rem auto;
   animation: slideIn 0.6s ease-out;
+}
+
+/* Adicione estas media queries para responsividade */
+@media (max-width: 1200px) {
+  .tabela-chamados {
+    width: 100%;
+    display: block;
+  }
+}
+
+@media (max-width: 768px) {
+  .tabela-chamados {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 .tabela-chamados thead {
@@ -1077,9 +1092,6 @@ header {
     border-radius: 15px;
   }
   
-  .tabela-chamados {
-    border-spacing: 0 0.5rem;
-  }
   
   .tabela-chamados th,
   .tabela-chamados td {
