@@ -936,7 +936,53 @@ main > div {
   border-collapse: separate;
   border-spacing: 0 0.8rem;
   animation: slideIn 0.6s ease-out;
+  position: relative;
+  overflow: hidden;
+  border-radius: 15px;
+  box-shadow: 
+    0 0 0 2px rgba(99, 179, 237, 0.2),
+    0 0 30px rgba(99, 179, 237, 0.1);
 }
+
+.tabela-chamados::before,
+.tabela-chamados::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    #63b3ed,
+    transparent
+  );
+  animation: borderGlow 3s infinite;
+}
+
+@keyframes borderGlow {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+}
+
+.tabela-chamados tbody tr {
+  transform: translateY(20px);
+  opacity: 0;
+  animation: fadeInUp 0.6s forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tabela-chamados tbody tr:nth-child(1) { animation-delay: 0.2s; }
+.tabela-chamados tbody tr:nth-child(2) { animation-delay: 0.3s; }
+.tabela-chamados tbody tr:nth-child(3) { animation-delay: 0.4s; }
 
 .table-container {
   display: flex;
@@ -972,11 +1018,36 @@ main > div {
   min-width: 120px; /* Largura mínima das células */
 }
 
+.tabela-chamados td::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 60%;
+  width: 1px;
+  background: linear-gradient(
+    transparent,
+    rgba(99, 179, 237, 0.3),
+    transparent
+  );
+}
+
+.tabela-chamados td:last-child::after {
+  display: none;
+}
+
+@keyframes rowShine {
+  from { left: -100%; }
+  to { left: 100%; }
+}
+
 /* Ajuste para primeira e última coluna */
 .tabela-chamados th:first-child,
 .tabela-chamados td:first-child {
   text-align: left;
   padding-left: 2rem;
+   position: relative;
 }
 
 .tabela-chamados th:last-child,
@@ -986,8 +1057,27 @@ main > div {
 }
 
 .tabela-chamados tr:hover td {
-  background: rgba(66, 153, 225, 0.08);
-  transform: translateY(-2px);
+  background: rgba(99, 179, 237, 0.1) !important;
+  transform: translateY(-3px);
+  box-shadow: 
+    0 4px 15px rgba(99, 179, 237, 0.2),
+    inset 0 -2px 0 rgba(99, 179, 237, 0.1);
+}
+
+.tabela-chamados tr:hover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.05),
+    transparent
+  );
+  animation: rowShine 1.5s;
 }
 
 /* Melhorar badges de status */
