@@ -12,6 +12,140 @@ main {
   overflow-x: hidden;
 }
 
+/* ===== ESTILOS PARA GRÁFICOS ANIMADOS ===== */
+.Graficos {
+  display: grid;
+  gap: 2.5rem;
+  margin: 3rem 0;
+}
+
+/* Container principal do gráfico */
+.graphic-container {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.graphic-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(99, 179, 237, 0.2);
+}
+
+/* Títulos dos gráficos */
+.titulo2 {
+  font-size: 1.5rem;
+  color: #63b3ed;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  position: relative;
+  animation: titleGlow 2s infinite alternate;
+}
+
+@keyframes titleGlow {
+  from { text-shadow: 0 0 10px rgba(99, 179, 237, 0.4); }
+  to { text-shadow: 0 0 20px rgba(99, 179, 237, 0.6); }
+}
+
+/* Barras do gráfico com animação de crescimento */
+.recharts-bar-rectangle {
+  transition: all 0.5s ease-out;
+  transform-origin: bottom;
+  animation: barGrow 1s ease-out forwards;
+}
+
+@keyframes barGrow {
+  from { transform: scaleY(0); opacity: 0; }
+  to { transform: scaleY(1); opacity: 1; }
+}
+
+/* Efeito hover nas barras */
+.recharts-bar-rectangle:hover {
+  filter: drop-shadow(0 0 8px rgba(99, 179, 237, 0.4));
+  transform: scaleY(1.05) translateY(-2px);
+}
+
+/* Setores do Pie Chart com animação de rotação */
+.recharts-pie-sector {
+  transform-origin: center;
+  animation: pieSpin 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+@keyframes pieSpin {
+  from { transform: rotate(-90deg) scale(0); opacity: 0; }
+  to { transform: rotate(0) scale(1); opacity: 1; }
+}
+
+/* Efeito hover nos setores */
+.recharts-pie-sector:hover {
+  filter: drop-shadow(0 0 12px rgba(99, 179, 237, 0.3));
+  transform: scale(1.05);
+  transition: all 0.3s ease;
+}
+
+/* Linhas e eixos animados */
+.recharts-cartesian-axis-line {
+  stroke: #63b3ed;
+  stroke-width: 2;
+  animation: axisFade 1s ease-out;
+}
+
+@keyframes axisFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Tooltip estilizado */
+.recharts-tooltip-wrapper {
+  background: rgba(26, 54, 93, 0.9) !important;
+  backdrop-filter: blur(6px);
+  border-radius: 10px;
+  border: 1px solid rgba(99, 179, 237, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+/* Legendas interativas */
+.recharts-legend-item {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.recharts-legend-item:hover {
+  transform: translateX(5px);
+  text-shadow: 0 0 10px rgba(99, 179, 237, 0.4);
+}
+
+/* Animação para dados vazios */
+.graphic-empty {
+  animation: pulseEmpty 2s infinite;
+}
+
+@keyframes pulseEmpty {
+  0%, 100% { opacity: 0.4; transform: scale(0.98); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .graphic-container {
+    padding: 1rem;
+    border-radius: 15px;
+  }
+  
+  .recharts-pie-sector {
+    animation: pieSpinMobile 1s ease-out forwards;
+  }
+
+  @keyframes pieSpinMobile {
+    from { transform: rotate(-180deg) scale(0); }
+    to { transform: rotate(0) scale(1); }
+  }
+}
+
+
 /* ===== ANIMAÇÕES DE HOVER ===== */
 
 /* Tabela - Efeito de destaque na linha */
