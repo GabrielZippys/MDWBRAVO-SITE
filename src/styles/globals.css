@@ -953,6 +953,30 @@ main > div {
   50% { transform: translateY(-5px); }
 }
 
+
+.tabela-chamados tbody tr:hover td::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #63b3ed,
+    transparent
+  );
+  animation: lineFlow 1.5s infinite;
+}
+
+@keyframes lineFlow {
+  0% { opacity: 0; width: 0%; }
+  50% { opacity: 1; width: 80%; }
+  100% { opacity: 0; width: 0%; }
+}
+
 .tabela-chamados tbody tr:hover td:first-child::after {
   content: '';
   position: absolute;
@@ -998,17 +1022,18 @@ main > div {
 }
 
 .tabela-chamados tbody tr {
-  transform: translateY(20px);
+   transition: all 0.3s ease;
+  position: relative;
   opacity: 0;
   animation: fadeInUp 0.6s forwards;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-  position: relative;
   perspective: 1000px;
 }
 
 .tabela-chamados tbody tr:hover {
-  background: rgba(99, 179, 237, 0.05) !important;
-  animation: aura-pulse 2s infinite;
+ background: rgba(99, 179, 237, 0.08) !important;
+  transform: scale(1.005);
+  animation: none; /* Remova a animação pulsante */
 }
 
 .tabela-chamados tbody tr:hover::before {
@@ -1016,7 +1041,9 @@ main > div {
 }
 
 .tabela-chamados tbody tr:hover td {
-   transform: scale(1.008) translateZ(10px);
+    transform: scale(1.008); /* Remova translateZ(10px) */
+  box-shadow: none; /* Remova a sombra interna */
+   position: relative;
 }
 
 .tabela-chamados tbody tr::before {
@@ -1032,8 +1059,9 @@ main > div {
     inset 0 0 10px 1px rgba(99, 179, 237, 0.1);
   opacity: 0;
   transition: opacity 0.3s ease;
-  z-index: -1;
+  z-index: 1; /* Isso está causando o desaparecimento */
 }
+
 
 @keyframes fadeInUp {
   to {
@@ -1176,7 +1204,8 @@ background: linear-gradient(
     rgba(255, 255, 255, 0.05),
     transparent
   );
-  animation: rowShine 1.5s;
+  animation: none;
+  opacity: 0.3; /* Ajuste a opacidade */
 }
 
 /* Melhorar badges de status */
