@@ -17,6 +17,10 @@ type CustomSession = {
 export default function Header() {
   const { data: session } = useSession() as { data: CustomSession | null };
 
+  if (!session) {
+    return null;
+  }
+
   return (
     <>
       <Head>
