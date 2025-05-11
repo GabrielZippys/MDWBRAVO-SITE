@@ -13,6 +13,7 @@ main {
 }
 
 /* Aqui estamos mexendo na tela de LOGIN */
+/* ===== EFEITO NEURAL OTIMIZADO ===== */
 .neural-overlay {
   position: fixed;
   top: 0;
@@ -20,99 +21,107 @@ main {
   width: 100vw;
   height: 100vh;
   z-index: 0;
-   overflow: visible !important;
   pointer-events: none;
-  background: linear-gradient(to bottom right, #0a192f, #0d1b36);
-  min-width: 100%;
-  right: 0;
-  bottom: 0;
+  background: linear-gradient(to bottom right, #0a192f 30%, #0d1b36 100%);
+  overflow: hidden;
 }
-
 
 .neural-network {
   position: absolute;
   width: 100%;
   height: 100%;
-  filter: blur(2px);
-  min-width: 100%;
- min-height: 100vh;
-transform-origin: center center;
- transform: translateZ(0);
+  filter: blur(1.5px);
+  transform: translateZ(0);
 }
 
 .neural-node {
-  transform: translate(-50%, -50%);
-  top: var(--y);
-  left: var(--x);
-  width: 10px;
-  height: 10px;
+  --size: 8px;
+  width: var(--size);
+  height: var(--size);
   background: #63b3ed;
   border-radius: 50%;
   position: absolute;
-  filter: 
-  blur(2px)
-  drop-shadow(0 0 8px rgba(99, 179, 237, 0.5));
+  top: var(--y);
+  left: var(--x);
+  filter: drop-shadow(0 0 6px rgba(99, 179, 237, 0.6));
   animation: 
-    node-float calc(var(--duration) * 1s) var(--delay) infinite ease-in-out,
+    node-float 8s ease-in-out infinite,
     node-pulse 3s infinite;
+  transform: translate(-50%, -50%);
 }
 
 @keyframes node-float {
   0%, 100% {
     transform: 
       translate(-50%, -50%)
-      scale(0.8);
+      translate(0, 0)
+      scale(0.9);
   }
   50% {
     transform: 
-      translate(
-        calc(-50% + 10px), 
-        calc(-50% - 15px)
-      ) 
+      translate(-50%, -50%)
+      translate(15px, -20px)
       scale(1.2);
   }
 }
 
 @keyframes node-pulse {
-  0%, 100% { opacity: 0.3; }
+  0%, 100% { opacity: 0.4; }
   50% { opacity: 0.8; }
 }
 
-@keyframes node-orbit {
-  0% {
-    transform: 
-      rotateZ(0deg) 
-      translateX(var(--offset)) 
-      rotateZ(0deg);
-  }
-  100% {
-    transform: 
-      rotateZ(360deg) 
-      translateX(var(--offset)) 
-      rotateZ(-360deg);
-  }
-}
-
 .node-connection {
-  width: calc(var(--length) * 1px);
+  width: var(--length);
   height: 1px;
   background: linear-gradient(
     90deg, 
-    transparent, 
-    rgba(99, 179, 237, 0.3) 30%, 
-    transparent 70%
+    transparent,
+    rgba(99, 179, 237, 0.3) 40%,
+    transparent
   );
   transform: 
     rotate(calc(var(--angle) * 1deg)) 
     translateX(calc(var(--start) * 1px));
-  animation: connection-flow 6s infinite linear;
+  animation: connection-flow 6s linear infinite;
+  position: absolute;
 }
 
 @keyframes connection-flow {
-  0% { opacity: 0; transform: scaleX(0); }
-  20% { opacity: 0.4; transform: scaleX(1); }
-  80% { opacity: 0.4; transform: scaleX(1); }
-  100% { opacity: 0; transform: scaleX(0); }
+  0%, 100% { opacity: 0; transform: scaleX(0); }
+  30%, 70% { opacity: 0.4; transform: scaleX(1); }
+}
+
+.neural-glows {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(99, 179, 237, 0.08) 0%,
+    transparent 70%
+  );
+  animation: glows-move 40s linear infinite;
+}
+
+@keyframes glows-move {
+  0% { transform: translate(-30%, -30%); }
+  33% { transform: translate(30%, 30%); }
+  66% { transform: translate(-30%, 30%); }
+  100% { transform: translate(30%, -30%); }
+}
+
+/* INTERAÇÃO OTIMIZADA */
+.auth-card:hover ~ .neural-overlay {
+  .neural-node {
+    animation-duration: 6s;
+    filter: drop-shadow(0 0 10px rgba(99, 179, 237, 0.8));
+  }
+  
+  .node-connection {
+    animation-duration: 4s;
+  }
 }
 
 @keyframes connection-pulse {
@@ -183,20 +192,6 @@ transform-origin: center center;
   100% { opacity: 0; transform: scaleX(0); }
 }
 
-.neural-glows {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  transform: none;
-   background: radial-gradient(
-    circle at 50% 50%,
-    rgba(99, 179, 237, 0.08) 0%,
-    transparent 60%
-  );
-  animation: glows-move 30s infinite alternate;
-}
 
 @keyframes glows-rotate {
   from { transform: rotate(0deg); }
