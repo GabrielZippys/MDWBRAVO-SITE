@@ -597,7 +597,7 @@ main > div {
 }
 
 .logo {
-  height: 50px;
+  height: 70px;
   filter: drop-shadow(0 2px 4px rgba(66, 153, 225, 0.3));
   transition: all 0.3s ease;
   animation: logoFloat 3s ease-in-out infinite;
