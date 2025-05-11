@@ -37,17 +37,21 @@ main {
   min-width: 100%;
  min-height: 100vh;
 transform-origin: center center;
+ transform: translateZ(0);
 }
 
 .neural-node {
+  transform: translate(-50%, -50%);
+  top: var(--y);
+  left: var(--x);
   width: 10px;
   height: 10px;
   background: #63b3ed;
   border-radius: 50%;
   position: absolute;
   filter: 
-    blur(2px)
-    drop-shadow(0 0 8px rgba(99, 179, 237, 0.5));
+  blur(2px)
+  drop-shadow(0 0 8px rgba(99, 179, 237, 0.5));
   animation: 
     node-float calc(var(--duration) * 1s) var(--delay) infinite ease-in-out,
     node-pulse 3s infinite;
@@ -56,14 +60,14 @@ transform-origin: center center;
 @keyframes node-float {
   0%, 100% {
     transform: 
-      translate(calc(var(--x) * 1%), calc(var(--y) * 1%)) 
+      translate(-50%, -50%)
       scale(0.8);
   }
   50% {
     transform: 
       translate(
-        calc(var(--x) * 1% + 10px), 
-        calc(var(--y) * 1% - 15px)
+        calc(-50% + 10px), 
+        calc(-50% - 15px)
       ) 
       scale(1.2);
   }

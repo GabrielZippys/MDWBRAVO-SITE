@@ -81,34 +81,33 @@ export default function Home({ chamadosIniciais }: HomeProps) {
     return (
       <main className="login-container">
         <div className="neural-overlay">
-          <div className="neural-network">
-         
-    {[...Array(100)].map((_, i) => {
-      const angle = Math.random() * Math.PI * 2;
-      const distance = Math.random() * 40 + 10;
-           return (
-        <div key={i}>
-          <div 
-            className="neural-node"
-            style={{
-              '--x': 50 + Math.cos(angle) * distance,
-              '--y': 50 + Math.sin(angle) * distance,
-              '--duration': 8 + Math.random() * 4,
-              '--delay': Math.random() * 2
-            } as React.CSSProperties}
-          />
-          <div 
-            className="node-connection"
-            style={{
-              '--angle': angle * (180/Math.PI),
-              '--length': 50 + Math.random() * 150,
-              '--start': Math.random() * 100 - 50
-            } as React.CSSProperties}
-          />
-        </div>
-              );
-            })}
-          </div>
+         <div className="neural-network">
+  {[...Array(100)].map((_, i) => {
+    const angle = Math.random() * Math.PI * 2;
+    const distance = Math.random() * 100;
+    return (
+      <div key={i}>
+        <div 
+          className="neural-node"
+          style={{
+            '--x': `${50 + Math.cos(angle) * distance}%`,
+            '--y': `${50 + Math.sin(angle) * distance}%`,
+            '--duration': `${8 + Math.random() * 4}s`,
+            '--delay': `${Math.random() * 2}s`
+          } as React.CSSProperties}
+        />
+        <div 
+          className="node-connection"
+          style={{
+            '--angle': angle * (180/Math.PI),
+            '--length': `${50 + Math.random() * 150}px`,
+            '--start': `${Math.random() * 100 - 50}px`
+          } as React.CSSProperties}
+        />
+      </div>
+    );
+  })}
+</div>
           <div className="neural-glows"/>
         </div>
   
