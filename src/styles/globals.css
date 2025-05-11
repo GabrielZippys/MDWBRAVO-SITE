@@ -819,12 +819,6 @@ main > div {
   border: 1px solid #f43f5e;
 }
 
-/* Adicionar no CSS */
-.tabela-chamados th {
-  font-size: 0.9rem;
-  padding: 1.2rem 1.5rem;
-}
-
 .tabela-chamados td {
   padding: 1rem 1.5rem;
   font-size: 0.95rem;
@@ -935,13 +929,20 @@ main > div {
   display: table; /* Alterado de block para table */
   border-collapse: separate;
   border-spacing: 0 0.8rem;
-  animation: slideIn 0.6s ease-out;
   position: relative;
   overflow: hidden;
-  border-radius: 15px;
   box-shadow: 
     0 0 0 2px rgba(99, 179, 237, 0.2),
     0 0 30px rgba(99, 179, 237, 0.1);
+    border-radius: 15px;
+  background: rgba(16, 42, 67, 0.3);
+  backdrop-filter: blur(8px);
+   animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
 }
 
 .tabela-chamados::before,
@@ -1001,23 +1002,39 @@ main > div {
 
 @media (max-width: 768px) {
   .tabela-chamados {
-    display: block;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    box-shadow: none;
+    animation: none;
+  }
+  
+  .tabela-chamados::before,
+  .tabela-chamados::after {
+    display: none;
   }
 }
 
 .tabela-chamados thead {
-  background: linear-gradient(145deg, #1a365d, #2b6cb0);
+background: linear-gradient(
+    135deg,
+    rgba(26, 54, 93, 0.95),
+    rgba(43, 108, 176, 0.95)
+  );
+  backdrop-filter: blur(5px);
 }
-
 .tabela-chamados th,
 .tabela-chamados td {
   text-align: center; /* Alinha conteúdo ao centro */
   vertical-align: middle; /* Alinhamento vertical */
   min-width: 120px; /* Largura mínima das células */
+  font-size: 0.9rem;
+  padding: 1.2rem 1.5rem;
 }
 
+.tabela-chamados th {
+  position: relative;
+  overflow: hidden;
+}
+
+  
 .tabela-chamados td::after {
   content: '';
   position: absolute;
@@ -1031,6 +1048,27 @@ main > div {
     rgba(99, 179, 237, 0.3),
     transparent
   );
+}
+
+.tabela-chamados th::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #63b3ed,
+    transparent
+  );
+  animation: headerGlow 3s infinite;
+}
+
+@keyframes headerGlow {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
 }
 
 .tabela-chamados td:last-child::after {
@@ -1185,12 +1223,7 @@ header {
   }
   
   
-  .tabela-chamados th,
-  .tabela-chamados td {
-    padding: 0.8rem;
-    font-size: 0.85rem;
-  }
-  
+ 
   .logo {
     height: 40px;
   }
