@@ -12,6 +12,94 @@ main {
   overflow-x: hidden;
 }
 
+/* ===== ANIMAÇÕES DE HOVER ===== */
+
+/* Tabela - Efeito de destaque na linha */
+.tabela-chamados tbody tr {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tabela-chamados tbody tr:hover {
+  background: rgba(99, 179, 237, 0.05) !important;
+  transform: scale(1.005);
+  box-shadow: 0 4px 15px rgba(99, 179, 237, 0.1);
+}
+
+/* Botões do Header - Elevação e brilho */
+.home-button:hover,
+.admin-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(66, 153, 225, 0.2);
+  transition: all 0.3s ease;
+}
+
+/* Botão Admin - Efeito de onda */
+.admin-button:hover::before {
+  animation: admin-wave 0.6s;
+}
+
+@keyframes admin-wave {
+  from { left: -100%; }
+  to { left: 100%; }
+}
+
+/* Avatar do Usuário - Pulsação */
+.user-avatar:hover {
+  animation: pulse 1.5s infinite;
+  transform: scale(1.1);
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(66, 153, 225, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(66, 153, 225, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(66, 153, 225, 0); }
+}
+
+/* Botão Logout - Trepidação */
+.logout-button:hover {
+  animation: shake 0.5s;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(3px); }
+  75% { transform: translateX(-3px); }
+}
+
+/* Filtros - Brilho dinâmico */
+.btn-filtro:hover {
+  filter: brightness(1.2);
+  transform: translateY(-1px);
+}
+
+/* Cards de Gráfico - Elevação suave */
+.Graficos > div:hover {
+  transform: translateY(-5px);
+  transition: transform 0.3s ease;
+}
+
+/* Efeito de brilho no login */
+.shine-on-hover:hover::after {
+  animation: shine 1.5s ease-in-out;
+}
+
+@keyframes shine {
+  from { left: -75%; }
+  to { left: 125%; }
+}
+
+/* Nodes do Background - Reação ao hover */
+.auth-card:hover ~ .neural-overlay .neural-node {
+  animation-duration: 0.8s;
+  filter: drop-shadow(0 0 12px rgba(99, 179, 237, 0.9));
+}
+
+/* Durações Padrão */
+.tabela-chamados tr { transition-duration: 300ms; }
+.btn-filtro { transition-duration: 200ms; }
+.Graficos > div { transition-duration: 400ms; }
+
+
 /* Aqui estamos mexendo na tela de LOGIN */
 /* ===== EFEITO NEURAL OTIMIZADO ===== */
 .neural-overlay {
