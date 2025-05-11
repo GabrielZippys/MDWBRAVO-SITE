@@ -77,7 +77,7 @@ export default function Home({ chamadosIniciais }: HomeProps) {
 
 
   if (status === 'loading') return <p>Carregando sessão...</p>;
-  if (!session) {
+    if (!session) {
     return (
       <main className="login-container">
        <div className="neural-overlay">
