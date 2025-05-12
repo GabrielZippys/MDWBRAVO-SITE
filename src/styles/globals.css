@@ -1190,6 +1190,7 @@ main > div {
 }
 
 .butaofiltro select:focus {
+  background: linear-gradient(145deg, #1e1e1e, #2b2b2b);
   outline: none;
   border-color: #1e90ff;
   box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.2);
@@ -1221,6 +1222,39 @@ main > div {
 
 .btn-filtro:hover::after {
   transform: rotate(45deg) translate(20%, -100%);
+}
+
+.btn-filtro.limpar::before {
+  content: "🧹";
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.btn-filtro.limpar:hover::before {
+  transform: rotate(-20deg) scale(1.2);
+}
+
+/* Estilização das opções dos dropdowns */
+.butaofiltro select option {
+  background: #2d3436 !important;
+  color: #ffffff !important;
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Melhoria para navegadores WebKit (Chrome/Safari) */
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  .butaofiltro select option {
+    background: #2d3436;
+    color: #fff;
+    font-weight: 500;
+  }
+}
+
+/* Estilo de hover para as opções */
+.butaofiltro select option:hover {
+  background: #1e90ff !important;
+  cursor: pointer;
 }
 
 /* ===== TABELA ===== */
