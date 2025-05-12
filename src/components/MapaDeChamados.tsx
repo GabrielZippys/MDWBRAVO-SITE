@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import styles from '@/styles/leaflet-fix.module.css';
 import { ChamadoType } from '@/pages/index';
 
-type ChamadoStatus = 'em aberto' | 'realizando' | 'designado';
+type ChamadoStatus = 'em aberto' | 'realizando' | 'designado' | 'iterrompido';
 
 const coordenadasPorSigla: Record<string, [number, number]> = {
     "BO": [-23.563173210271877, -46.6201345329807],
@@ -55,6 +55,7 @@ const colorMap: Record<ChamadoStatus, string> = {
   'em aberto': 'red',
   'realizando': 'orange',
   'designado': 'orange',
+  'iterrompido' : 'black'
 };
 
 const MapLoader = () => <div className="p-4 text-center text-gray-500">Carregando mapa...</div>;
