@@ -1224,15 +1224,6 @@ main > div {
   transform: rotate(45deg) translate(20%, -100%);
 }
 
-.btn-filtro.limpar::before {
-  content: "🧹";
-  display: inline-block;
-  transition: transform 0.3s ease;
-}
-
-.btn-filtro.limpar:hover::before {
-  transform: rotate(-20deg) scale(1.2);
-}
 
 /* Estilização das opções dos dropdowns */
 .butaofiltro select option {
