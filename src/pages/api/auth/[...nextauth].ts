@@ -13,7 +13,6 @@ const allowedEmails: Record<string, string> = {
   "fernanda.p.s.b6@gmail.com": "gestor",
   "wellington@bravo-ti.com": "gestor",
   "loja@exemplo.com": "loja",
-  "filipesalessoaresrocha798564@gmail.com" : "ti"
 };
 
 export const authOptions: NextAuthOptions = {
