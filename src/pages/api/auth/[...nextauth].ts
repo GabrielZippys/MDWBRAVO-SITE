@@ -8,6 +8,7 @@ import type { NextAuthOptions } from 'next-auth';
 const allowedEmails: Record<string, string> = {
   "benedito.soares@bravo-ti.com": "ti",
   "vinicius.farinha@bravo-ti.com": "ti",
+  "mataldercraft56@gmail.com": "ti",
   "gabriel.henrique@bravo-ti.com": "gestor",
   "paulo.ikeda@bravo-ti.com": "gestor",
   "fernanda.p.s.b6@gmail.com": "gestor",

@@ -77,7 +77,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (error instanceof Error) {
         errorMessage = error.message;
         
-        // Verificação adicional para erros com propriedade response (comum em axios)
+        // Verificação adicional para erros com propriedade response 
         if (typeof error === 'object' && error !== null && 'response' in error) {
             const axiosError = error as { response?: { data?: unknown } };
             errorDetails = axiosError.response?.data;
