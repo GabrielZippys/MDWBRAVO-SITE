@@ -3,11 +3,9 @@ import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import type { NextAuthOptions } from 'next-auth';
 
-
-// Lista de e-mails autorizados com roles padronizados
 const allowedEmails: Record<string, string> = {
   "benedito.soares@bravo-ti.com": "ti",
-  "vinicius.farinha@bravo-ti.com": "ti",
+  "vinicius.farinha@bravo-ti.com": "ti", 
   "mataldercraft56@gmail.com": "ti",
   "gabriel.henrique@bravo-ti.com": "gestor",
   "paulo.ikeda@bravo-ti.com": "gestor",
@@ -24,20 +22,29 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
+    async signIn({ user }) {
+      // Verifica se o e-mail está na lista de permitidos
+      const isAllowed = user.email && allowedEmails[user.email];
+      return !!isAllowed; // Retorna true se permitido, false caso contrário
+    },
     async jwt({ token, user }) {
-      // Seta o role apenas na primeira vez
-      if (user && !token.role) {
-        token.role = 'Gestor'; // ou 'Admin' se você quiser testar
+      // Adiciona o role apenas se o e-mail estiver autorizado
+      if (user?.email) {
+        token.role = allowedEmails[user.email] || 'unauthorized';
       }
       return token;
     },
     async session({ session, token }) {
-      // Injeta o role na sessão
+      // Passa o role para a sessão
       if (session.user) {
-        session.user.role = token.role as string;
+        session.user.role = token.role;
       }
       return session;
     },
+  },
+  pages: {
+    signIn: '/auth/signin',
+    error: '/auth/error', // Página personalizada para erros
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
