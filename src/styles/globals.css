@@ -792,7 +792,7 @@ main > div {
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  position: fixed;
+  position: relative;
   box-sizing: border-box;
   width: 100vw;
   left: 0;
