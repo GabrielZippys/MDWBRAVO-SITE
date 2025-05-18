@@ -29,7 +29,7 @@ export default function GestaoPage() {
         <h1 className="text-2xl font-bold text-blue-700 mb-4">Bem-vindo à Gestão 🔐</h1>
         <p className="mb-2"><strong>Nome:</strong> {user?.name}</p>
         <p className="mb-2"><strong>Email:</strong> {user?.email}</p>
-        <p className="mb-4"><strong>Papel:</strong> {user?.role || 'Sem permissão atribuída'}</p>
+        <p className="mb-4"><strong>Cargo:</strong> {user?.role || 'Sem permissão atribuída'}</p>
       </div>
     </main>
   );
