@@ -4,12 +4,13 @@ import GoogleProvider from 'next-auth/providers/google';
 import type { NextAuthOptions } from 'next-auth';
 
 const allowedEmails: Record<string, string> = {
-  "benedito.soares@bravo-ti.com": "Técnico TI",
-  "vinicius.farinha@bravo-ti.com": "Técnico TI", 
-  "mataldercraft56@gmail.com": "Técnico TI",
-  "gabriel.henrique@bravo-ti.com": "Técnico TI",
-  "paulo.ikeda@bravo-ti.com": "Coodernador Infra",
-  "wellington@bravo-ti.com": "Gerente Infra",
+  "benedito.soares@bravo-ti.com": "TI",
+  "vinicius.farinha@bravo-ti.com": "TI", 
+  "mataldercraft56@gmail.com": "TI",
+  "gabriel.henrique@bravo-ti.com": "Gestor",
+  "paulo.ikeda@bravo-ti.com": "Gestor",
+  "fernanda.p.s.b6@gmail.com": "TI",
+  "wellington@bravo-ti.com": "Gestor",
   "loja@exemplo.com": "Loja",
 };
 
