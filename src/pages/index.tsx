@@ -4,7 +4,7 @@ import { useSession, signIn } from 'next-auth/react';
 import React, { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Dashboard from '@/components/Dashboard';
-import { getProjetosFromNotion } from '@/lib/notion';
+import { getProjetosFromNotion } from "@/lib/notion";
 
 export const getStaticProps: GetStaticProps = async () => {
   const projetos = await getProjetosFromNotion();
