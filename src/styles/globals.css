@@ -6,6 +6,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import "tw-animate-css";
+@custom-variant dark (&:is(.dark *));
+
+.recharts-bar-rectangle {
+   animation: barGrow 1s ease-out forwards; 
+}
+
+.recharts-pie-sector {
+  animation: pieSpin 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+
 
 /* ===== ESTILOS GERAIS ===== */
 main {
@@ -1747,4 +1759,12 @@ header {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+
+.recharts-bar-rectangle,
+.recharts-pie-sector {
+  opacity: 1 !important;
+  transform: scale(1) !important;
+  animation: none !important;
 }
