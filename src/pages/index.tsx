@@ -1,10 +1,20 @@
 // pages/index.tsx
-import { GetServerSideProps } from 'next';
+import { GetStaticProps } from 'next';
 import { useSession, signIn } from 'next-auth/react';
 import React, { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Dashboard from '@/components/Dashboard';
+import { getProjetosFromNotion } from '@/lib/notion';
 
+export const getStaticProps: GetStaticProps = async () => {
+  const projetos = await getProjetosFromNotion();
+  return {
+    props: {
+      projetos,
+    },
+    revalidate: 60,
+  };
+};
 
 export type ChamadoType = {
   _id: string;
@@ -19,14 +29,18 @@ export type ChamadoType = {
 
 interface HomeProps {
   chamadosIniciais: ChamadoType[];
+  projetos: {
+    id: string;
+    titulo: string;
+    descricao: string;
+    imagem: string;
+    link: string;
+  }[];
 }
 
-export default function Home({ chamadosIniciais }: HomeProps) {
+export default function Home({ chamadosIniciais, projetos }: HomeProps) {
   const { data: session, status } = useSession();
   const [chamados, setChamados] = useState<ChamadoType[]>(chamadosIniciais || []);
-  const [error, setError] = useState<string | null>(null);
-  const [loadingLogin, setLoadingLogin] = useState(false);
-
   const [filtroZona, setFiltroZona] = useState('');
   const [filtroStatus, setFiltroStatus] = useState('');
   const [filtroLoja, setFiltroLoja] = useState('');
@@ -52,9 +66,7 @@ export default function Home({ chamadosIniciais }: HomeProps) {
   const tiposUnicos = Array.from(new Set(chamados.map(c => c.tipo)));
   const prioridadesUnicas = Array.from(new Set(chamados.map(c => c.prioridade)));
 
-  const STATUSES_PERMITIDOS = new Set([
-    'em aberto', 'designado', 'interrompido', 'realizando'
-  ]);
+  const STATUSES_PERMITIDOS = new Set(['em aberto', 'designado', 'interrompido', 'realizando']);
 
   const chamadosFiltrados = useMemo(() => {
     return chamados.filter(c =>
@@ -67,77 +79,65 @@ export default function Home({ chamadosIniciais }: HomeProps) {
     );
   }, [chamados, filtroZona, filtroStatus, filtroLoja, filtroTipo, filtroPrioridade]);
 
-  const MapaDeChamados = dynamic(
-    () => import('@/components/MapaDeChamados'),
-    {
-      ssr: false,
-      loading: () => <div className="p-4 text-center text-gray-500">Carregando mapa...</div>
-    }
-  );
-
+  const MapaDeChamados = dynamic(() => import('@/components/MapaDeChamados'), {
+    ssr: false,
+    loading: () => <div className="p-4 text-center text-gray-500">Carregando mapa...</div>,
+  });
 
   if (status === 'loading') return <p>Carregando sessão...</p>;
-    if (!session) {
+
+  if (!session) {
     return (
       <main className="login-container">
-       <div className="neural-overlay">
-  <div className="neural-network">
-    {[...Array(80)].map((_, i) => {
-      const angle = Math.random() * Math.PI * 2;
-      const radius = Math.random() * 100;
-      return (
-        <div key={i}>
-          <div 
-            className="neural-node"
-            style={{
-              '--x': `${50 + Math.cos(angle) * radius}%`,
-              '--y': `${50 + Math.sin(angle) * radius}%`,
-            } as React.CSSProperties}
-          />
-          <div 
-            className="node-connection"
-            style={{
-              '--angle': angle * (180/Math.PI),
-              '--length': `${50 + Math.random() * 150}px`,
-              '--start': `${Math.random() * 40 - 20}px`
-            } as React.CSSProperties}
-          />
+        <div className="neural-overlay">
+          <div className="neural-network">
+            {[...Array(80)].map((_, i) => {
+              const angle = Math.random() * Math.PI * 2;
+              const radius = Math.random() * 100;
+              return (
+                <div key={i}>
+                  <div
+                    className="neural-node"
+                    style={{
+                      '--x': `${50 + Math.cos(angle) * radius}%`,
+                      '--y': `${50 + Math.sin(angle) * radius}%`,
+                    } as React.CSSProperties}
+                  />
+                  <div
+                    className="node-connection"
+                    style={{
+                      '--angle': angle * (180 / Math.PI),
+                      '--length': `${50 + Math.random() * 150}px`,
+                      '--start': `${Math.random() * 40 - 20}px`,
+                    } as React.CSSProperties}
+                  />
+                </div>
+              );
+            })}
+          </div>
+          <div className="neural-glows" />
         </div>
-      );
-    })}
-  </div>
-  <div className="neural-glows"/>
-</div>
-  
+
         <div className="auth-card animate-slide-in">
           <div className="logo-wrapper pulse-shadow">
-            <img
-              src="/bravo.png"
-              alt="MDW Bravo Logo"
-              className="logo shadow-logo"
-              width={90}
-              height={90}
-            />
+            <img src="/bravo.png" alt="MDW Bravo Logo" className="logo shadow-logo" width={90} height={90} />
           </div>
-  
+
           <h1 className="title pulse-glow">
             Acesso <span className="gradient-text">Restrito</span>
           </h1>
-  
+
           <p className="subtitle animate-fade-in-delay">
             Sistema de Gestão de Chamados Inteligente
           </p>
-  
-          <button
-            className="google-btn shine-on-hover"
-            onClick={() => signIn('google')}
-          >
+
+          <button className="google-btn shine-on-hover" onClick={() => signIn('google')}>
             <svg className="google-icon" viewBox="0 0 24 24">
-              <path d="M12.545 10.239v3.821h5.445c-.712 2.315-2.647 3.972-5.445 3.972a5.94 5.94 0 1 1 0-11.88c1.835 0 3.456.989 4.261 2.468l3.494-2.268A9.959 9.959 0 0 0 12.545 2C7.021 2 2.545 6.477 2.545 12s4.476 10 10 10c5.523 0 10-4.477 10-10a9.994 9.994 0 0 0-1-4.029l-9 5.268z"/>
+              <path d="M12.545 10.239v3.821h5.445c-.712 2.315-2.647 3.972-5.445 3.972a5.94 5.94 0 1 1 0-11.88c1.835 0 3.456.989 4.261 2.468l3.494-2.268A9.959 9.959 0 0 0 12.545 2C7.021 2 2.545 6.477 2.545 12s4.476 10 10 10c5.523 0 10-4.477 10-10a9.994 9.994 0 0 0-1-4.029l-9 5.268z" />
             </svg>
             Entrar com Google
           </button>
-  
+
           <div className="footer animate-fade-in-delay">
             <img src="/Faixa Bravo.png" alt="Empresa" className="company-logo" />
             <p className="security-text">
@@ -148,7 +148,7 @@ export default function Home({ chamadosIniciais }: HomeProps) {
       </main>
     );
   }
-  
+
   return (
     <main>
       <h1 className="titulo">Painel de Chamados🚨</h1>
@@ -156,27 +156,27 @@ export default function Home({ chamadosIniciais }: HomeProps) {
       <div className="butaofiltro">
         <select className="px-4 py-2 rounded border bg-white" value={filtroZona} onChange={(e) => setFiltroZona(e.target.value)}>
           <option value="">Todas as Zonas</option>
-          {zonasUnicas.map((z) => <option key={z} value={z}>{z}</option>)}
+          {zonasUnicas.map(z => <option key={z} value={z}>{z}</option>)}
         </select>
 
         <select className="px-4 py-2 rounded border bg-white" value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)}>
           <option value="">Todos os Status</option>
-          {statusUnicos.map((s) => <option key={s} value={s}>{s}</option>)}
+          {statusUnicos.map(s => <option key={s} value={s}>{s}</option>)}
         </select>
 
         <select className="px-4 py-2 rounded border bg-white" value={filtroLoja} onChange={(e) => setFiltroLoja(e.target.value)}>
           <option value="">Todas as Lojas</option>
-          {lojasUnicas.map((l) => <option key={l} value={l}>{l}</option>)}
+          {lojasUnicas.map(l => <option key={l} value={l}>{l}</option>)}
         </select>
 
         <select className="px-4 py-2 rounded border bg-white" value={filtroTipo} onChange={(e) => setFiltroTipo(e.target.value)}>
           <option value="">Todos os Tipos</option>
-          {tiposUnicos.map((t) => <option key={t} value={t}>{t}</option>)}
+          {tiposUnicos.map(t => <option key={t} value={t}>{t}</option>)}
         </select>
 
         <select className="px-4 py-2 rounded border bg-white" value={filtroPrioridade} onChange={(e) => setFiltroPrioridade(e.target.value)}>
           <option value="">Todas as Prioridades</option>
-          {prioridadesUnicas.map((p) => <option key={p} value={p}>{p}</option>)}
+          {prioridadesUnicas.map(p => <option key={p} value={p}>{p}</option>)}
         </select>
 
         <button className="btn-filtro limpar" onClick={() => {
@@ -196,10 +196,33 @@ export default function Home({ chamadosIniciais }: HomeProps) {
         <h2>Mapa Interativo</h2>
         <MapaDeChamados chamados={chamadosFiltrados} />
       </div>
+
+      <section id="projetos" className="bg-gray-100 py-12">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold mb-8 text-center">Projetos</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {projetos.map(projeto => (
+              <a
+                key={projeto.id}
+                href={projeto.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block bg-white rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105"
+              >
+                <img
+                  src={projeto.imagem}
+                  alt={projeto.titulo}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold">{projeto.titulo}</h3>
+                  <p className="text-sm text-gray-600">{projeto.descricao}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
-
-export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
-  return { props: { chamadosIniciais: [] } };
-};
