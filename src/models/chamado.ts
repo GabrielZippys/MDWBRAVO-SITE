@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document, models } from 'mongoose';
+import { notion } from '@/lib/notion';
 
 export interface IChamado extends Document {
   notionId: string;

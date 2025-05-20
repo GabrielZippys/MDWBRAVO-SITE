@@ -1,7 +1,7 @@
 // lib/notion.ts
 import { Client } from '@notionhq/client';
 
-const notion = new Client({ auth: process.env.NOTION_API_KEY });
+export const notion = new Client({ auth: process.env.NOTION_API_KEY });
 const databaseId = 'a2982b0a81ff4378a8d6159012d6cfa6';
 
 export async function getProjetosFromNotion() {
