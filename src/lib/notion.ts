@@ -1,41 +1,32 @@
 // lib/notion.ts
 import { Client } from '@notionhq/client';
 
-export const notion = new Client({
-  auth: process.env.NOTION_TOKEN,
-});
-
-// aqui pegamos a mesma var de ambiente que o seu chamados.ts usa
-export const databaseId = process.env.NOTION_DATABASE_ID!;
+export const notion = new Client({ auth: process.env.NOTION_TOKEN! });
 export const projectsDatabaseId = process.env.NOTION_PROJECTS_DATABASE_ID!;
 
 export async function getProjetosFromNotion() {
   try {
-    // 1) Busca TUDO (até 100 itens) da base de projetos
     const response = await notion.databases.query({
       database_id: projectsDatabaseId,
-      page_size: 100,
+      page_size: 10, // só pra teste rápido
     });
 
-    // 2) Filtra em JS pelas tags exatas que você usa em Notion
-    const filtrados = response.results.filter((page: any) => {
-      const tags = (page.properties.Categoria.multi_select || []).map((t: any) => t.name);
-      return tags.includes('Infra') || tags.includes('Infra & BI');
-    });
+    // DEBUG: imprima as chaves de properties do primeiro item
+    if (response.results.length > 0) {
+      const first = response.results[0] as any;
+      console.log('🛠️  PROPERTIES KEYS:', Object.keys(first.properties));
+      console.log('🛠️  FIRST MULTI_SELECT RAW:', first.properties['Categoria']?.multi_select);
+    } else {
+      console.log('🛠️  Nenhum resultado retornado pelo Notion.');
+    }
 
-    // 3) Mapeia pro formato que o front espera
-    return filtrados.map((page: any) => {
-      const p = page.properties;
-      return {
-        id: page.id,
-        titulo: p.Nome?.title?.[0]?.plain_text ?? 'Sem título',
-        descricao: p.Descrição?.rich_text?.[0]?.plain_text ?? '',
-        imagem: p.Imagem?.files?.[0]?.file?.url ?? '',
-        link: p.Link?.url ?? '#',
-      };
-    });
+    // Aí seguimos devolvendo tudo para o front, sem filtro JS ainda
+    return response.results.map((page: any) => ({
+      id: page.id,
+      raw: page.properties,
+    }));
   } catch (err) {
-    console.error('Erro ao buscar projetos do Notion:', err);
+    console.error('❌ Erro ao buscar projetos do Notion:', err);
     return [];
   }
 }
