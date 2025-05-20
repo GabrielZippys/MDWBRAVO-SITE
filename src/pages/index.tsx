@@ -8,6 +8,7 @@ import { getProjetosFromNotion } from '@/lib/notion';
 
 export const getStaticProps: GetStaticProps = async () => {
   const projetos = await getProjetosFromNotion();
+  console.log('Projetos carregados:', projetos);
   return {
     props: {
       projetos,
@@ -15,6 +16,7 @@ export const getStaticProps: GetStaticProps = async () => {
     revalidate: 60,
   };
 };
+
 
 export type ChamadoType = {
   _id: string;
