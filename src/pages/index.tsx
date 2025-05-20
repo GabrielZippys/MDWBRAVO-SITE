@@ -5,6 +5,15 @@ import React, { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Dashboard from '@/components/Dashboard';
 import { getProjetosFromNotion } from '@/lib/notion';
+import { GetServerSideProps } from 'next';
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const projetos = await getProjetosFromNotion();
+  console.log('Projetos carregados:', projetos);
+  return { props: { projetos } };
+};
+
+
 
 export const getStaticProps: GetStaticProps = async () => {
   const projetos = await getProjetosFromNotion();
