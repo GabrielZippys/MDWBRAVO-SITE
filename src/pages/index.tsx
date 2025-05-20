@@ -199,36 +199,34 @@ export default function Home({ chamadosIniciais, projetos }: HomeProps) {
         <MapaDeChamados chamados={chamadosFiltrados} />
       </div>
 
-      <section id="projetos" className="bg-gray-100 py-12">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-8 text-center">Projetos</h2>
-          {projetos.length === 0 ? (
-            <p className="text-center text-gray-500">Nenhum projeto encontrado.</p>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {projetos.map((projeto) => (
-                <a
-                  key={projeto.id}
-                  href={projeto.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block bg-white rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105"
-                >
-                  <img
-                    src={projeto.imagem}
-                    alt={projeto.titulo}
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="p-4">
-                    <h3 className="text-lg font-semibold">{projeto.titulo}</h3>
-                    <p className="text-sm text-gray-600">{projeto.descricao}</p>
-                  </div>
-                </a>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
+     <section id="projetos" className="bg-gray-100 py-8 px-4">
+  <h2 className="text-2xl font-bold text-center mb-6">Projetos em Destaque 🚀</h2>
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+    {projetos && projetos.length > 0 ? (
+      projetos.map((projeto) => (
+        <a
+          key={projeto.id}
+          href={projeto.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+        >
+          <img
+            src={projeto.imagem}
+            alt={projeto.titulo}
+            className="w-full h-48 object-cover"
+          />
+          <div className="p-4">
+            <h3 className="text-lg font-semibold">{projeto.titulo}</h3>
+            <p className="text-gray-600 text-sm mt-2">{projeto.descricao}</p>
+          </div>
+        </a>
+      ))
+    ) : (
+      <p className="text-center col-span-full text-gray-500">Nenhum projeto encontrado.</p>
+    )}
+  </div>
+</section>
     </main>
   );
 }
