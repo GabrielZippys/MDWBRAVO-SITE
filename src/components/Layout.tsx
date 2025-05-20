@@ -2,7 +2,6 @@
 
 import Header from '@/components/Header';
 import { ReactNode } from 'react';
-import '@/styles/globals.css'
 
 interface LayoutProps {
   children: ReactNode;
