@@ -4,25 +4,16 @@ import { useSession, signIn } from 'next-auth/react';
 import React, { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Dashboard from '@/components/Dashboard';
-import { getProjetosFromNotion } from '@/lib/notion';
-import { GetServerSideProps } from 'next';
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  const projetos = await getProjetosFromNotion();
-  console.log('Projetos carregados:', projetos);
-  return { props: { projetos } };
-};
-
-
+import { getProjetosFromNotion } from '@/lib/notion';  // ajuste o path se necessário
 
 export const getStaticProps: GetStaticProps = async () => {
   const projetos = await getProjetosFromNotion();
-  console.log('Projetos carregados:', projetos);
+  console.log('Projetos carregados (build):', projetos);
   return {
     props: {
       projetos,
     },
-    revalidate: 60,
+    revalidate: 60, // ISR: rebuild a cada 60s
   };
 };
 
@@ -211,27 +202,31 @@ export default function Home({ chamadosIniciais, projetos }: HomeProps) {
       <section id="projetos" className="bg-gray-100 py-12">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-8 text-center">Projetos</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {projetos.map(projeto => (
-              <a
-                key={projeto.id}
-                href={projeto.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block bg-white rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105"
-              >
-                <img
-                  src={projeto.imagem}
-                  alt={projeto.titulo}
-                  className="w-full h-48 object-cover"
-                />
-                <div className="p-4">
-                  <h3 className="text-lg font-semibold">{projeto.titulo}</h3>
-                  <p className="text-sm text-gray-600">{projeto.descricao}</p>
-                </div>
-              </a>
-            ))}
-          </div>
+          {projetos.length === 0 ? (
+            <p className="text-center text-gray-500">Nenhum projeto encontrado.</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {projetos.map((projeto) => (
+                <a
+                  key={projeto.id}
+                  href={projeto.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block bg-white rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105"
+                >
+                  <img
+                    src={projeto.imagem}
+                    alt={projeto.titulo}
+                    className="w-full h-48 object-cover"
+                  />
+                  <div className="p-4">
+                    <h3 className="text-lg font-semibold">{projeto.titulo}</h3>
+                    <p className="text-sm text-gray-600">{projeto.descricao}</p>
+                  </div>
+                </a>
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </main>
