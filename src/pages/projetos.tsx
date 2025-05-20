@@ -1,63 +1,57 @@
 // pages/projetos.tsx
-import { useEffect, useState } from 'react';
-import { getProjetosFromNotion } from "@/lib/notion";
-import { Card, CardContent } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { GetServerSideProps } from 'next';
+import { getProjetosFromNotion } from '@/lib/notion';
 
-interface Projeto {
+type Projeto = {
   id: string;
   nome: string;
   setor: string;
-  status?: string;
-  responsavel?: string;
-  descricao?: string;
-  [key: string]: any;
-}
+  status: string;
+  responsavel: string;
+  descricao: string;
+};
 
-export default function ProjetosPage() {
-  const [projetos, setProjetos] = useState<Projeto[]>([]);
-  const [projetoSelecionado, setProjetoSelecionado] = useState<Projeto | null>(null);
+const statusColors: Record<string, string> = {
+  'Planejamento': 'border-blue-500',
+  'Em andamento': 'border-yellow-500',
+  'Concluído': 'border-green-500',
+  'Em pausa': 'border-purple-500',
+  'Cancelado(a)': 'border-red-500',
+  'Backlog': 'border-gray-500',
+  'Sem status': 'border-gray-300',
+};
 
-  useEffect(() => {
-    async function fetchProjetos() {
-      const todosProjetos = await getProjetosFromNotion();
-      const filtrados = todosProjetos.filter((proj: Projeto) =>
-        proj.setor === 'Infra' || proj.setor === 'Infra&BI'
-      );
-      setProjetos(filtrados);
-    }
-    fetchProjetos();
-  }, []);
-
+export default function ProjetosPage({ projetos }: { projetos: Projeto[] }) {
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">Projetos - Infraestrutura</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <main className="min-h-screen bg-black text-white p-6">
+      <h1 className="text-4xl font-bold mb-8">Projetos</h1>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {projetos.map((projeto) => (
-          <Dialog key={projeto.id}>
-            <DialogTrigger asChild>
-              <Card
-                className="cursor-pointer hover:shadow-xl transition"
-                onClick={() => setProjetoSelecionado(projeto)}
-              >
-                <CardContent className="p-4">
-                  <h2 className="text-xl font-semibold mb-2">{projeto.nome}</h2>
-                  <p className="text-sm text-gray-600">Responsável: {projeto.responsavel}</p>
-                  <p className="text-sm text-gray-600">Status: {projeto.status}</p>
-                </CardContent>
-              </Card>
-            </DialogTrigger>
-            <DialogContent>
-              <h2 className="text-2xl font-bold mb-4">{projetoSelecionado?.nome}</h2>
-              <p className="mb-2"><strong>Setor:</strong> {projetoSelecionado?.setor}</p>
-              <p className="mb-2"><strong>Responsável:</strong> {projetoSelecionado?.responsavel}</p>
-              <p className="mb-2"><strong>Status:</strong> {projetoSelecionado?.status}</p>
-              <p className="mb-2"><strong>Descrição:</strong> {projetoSelecionado?.descricao}</p>
-              {/* Adicione mais campos conforme necessário */}
-            </DialogContent>
-          </Dialog>
+          <div
+            key={projeto.id}
+            className={`p-4 rounded-2xl shadow-lg bg-gray-900 border-l-4 ${statusColors[projeto.status] || 'border-white'}`}
+          >
+            <h2 className="text-xl font-semibold">{projeto.nome}</h2>
+            <p className="text-sm text-gray-400">{projeto.setor}</p>
+            <div className="mt-2 text-sm">
+              <p><strong>Status:</strong> {projeto.status}</p>
+              <p><strong>Responsável:</strong> {projeto.responsavel}</p>
+              {projeto.descricao && (
+                <p className="mt-2 text-gray-300">{projeto.descricao}</p>
+              )}
+            </div>
+          </div>
         ))}
       </div>
-    </div>
+    </main>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const projetos = await getProjetosFromNotion();
+  return {
+    props: {
+      projetos,
+    },
+  };
+};
