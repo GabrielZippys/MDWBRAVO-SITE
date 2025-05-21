@@ -1,31 +1,34 @@
-// lib/notion.ts
 import { Client } from '@notionhq/client';
-import { PageObjectResponse, UserObjectResponse } from '@notionhq/client/build/src/api-endpoints';
+import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 
 export const notion = new Client({ auth: process.env.NOTION_TOKEN! });
-const databaseId = process.env.NOTION_PROJECTS_DATABASE_ID || 'a2982b0a81ff4378a8d6159012d6cfa6';
+
+const databaseId =
+  process.env.NOTION_PROJECTS_DATABASE_ID || 'a2982b0a81ff4378a8d6159012d6cfa6';
 
 // Interface Projeto existente
 export interface Projeto {
   id: string;
   nome: string;
-  setor: string;
-  status: string;
-  responsavel: string;
   descricao: string;
   imagem: string | null;
   link: string | null;
+  status: string;
+  setor: string;
+  proprietario: string;
+  criadoEm: string;
+  resumo: string;
+  prioridade: string;
+  cliente: string;
+  responsavel: string;
 }
 
 // Função para obter nome do usuário de forma segura
 function getUserName(user: any): string {
   if (!user) return 'Sem responsável';
-  
-  // Verificar se é um UserObjectResponse completo que tem a propriedade name
-  if ('name' in user) {
-    return user.name || 'Sem responsável';
+  if ('name' in user && user.name) {
+    return user.name;
   }
-  
   return user.id ? `Usuário ${user.id}` : 'Sem responsável';
 }
 
@@ -40,93 +43,142 @@ function isValidUrl(url: string | null): boolean {
   }
 }
 
-// Versão corrigida da função getProjetosFromNotion
+// Função utilitária para extrair texto de rich_text com segurança
+function getRichTextValue(prop: any): string {
+  return prop?.type === 'rich_text' && prop.rich_text?.[0]?.plain_text
+    ? prop.rich_text[0].plain_text
+    : '';
+}
+
+// Type guard para propriedades do tipo 'select'
+function isSelectProperty(prop: any): prop is { type: 'select'; select: { name: string } | null } {
+  return prop?.type === 'select';
+}
+
+// Type guard para propriedades do tipo 'status'
+function isStatusProperty(prop: any): prop is { type: 'status'; status: { name: string } | null } {
+  return prop?.type === 'status';
+}
+
 export async function getProjetosFromNotion(): Promise<Projeto[]> {
   try {
     console.log('Iniciando busca de projetos no Notion, database ID:', databaseId);
-    
+
     const response = await notion.databases.query({
       database_id: databaseId,
-      // Sem filtro neste momento
     });
 
     console.log(`Encontrados ${response.results.length} resultados no Notion`);
-    
-    const pages = response.results.filter((page): page is PageObjectResponse => 'properties' in page);
+
+    const pages = response.results.filter(
+      (page): page is PageObjectResponse => 'properties' in page
+    );
 
     if (pages.length > 0) {
       const firstPage = pages[0];
-      console.log('Exemplo de propriedades disponíveis:', 
-        Object.keys(firstPage.properties).map(key => ({
+      console.log(
+        'Exemplo de propriedades disponíveis:',
+        Object.keys(firstPage.properties).map((key) => ({
           key,
-          type: (firstPage.properties[key] as any).type
+          type: (firstPage.properties[key] as any).type,
         }))
       );
     }
 
-    const projetos = pages.map((page) => {
+    const statusValidos = ['Planejamento', 'Em andamento', 'Em pausa'];
+    const setoresValidos = ['Infra', 'Infra & BI'];
+
+    const projetos: Projeto[] = pages.map((page) => {
       const titleProp = Object.values(page.properties).find(
         (prop: any) => prop.type === 'title'
       ) as any;
 
-      let nome = 'Sem nome';
-      if (titleProp?.type === 'title' && titleProp.title.length > 0) {
-        nome = titleProp.title[0].plain_text.trim();
-      }
+      const nome = titleProp?.title?.[0]?.plain_text?.trim() || 'Sem nome';
 
-      let descricao = '';
-      const descProp = page.properties.Descrição || Object.values(page.properties).find(
-        (prop: any) => prop.type === 'rich_text'
-      ) as any;
+      const descricao = getRichTextValue(page.properties.Descrição);
+      const resumo = getRichTextValue(page.properties.Resumo);
 
-      if (descProp?.type === 'rich_text' && descProp.rich_text.length > 0) {
-        descricao = descProp.rich_text[0].plain_text;
-      }
-
+      const imageProp =
+        page.properties['Arquivos e mídia'] || page.properties.Imagem;
       let imagem: string | null = null;
-      const imageProp = page.properties['Arquivos e mídia'] || 
-                        page.properties.Imagem ||
-                        Object.values(page.properties).find(
-                          (prop: any) => prop.type === 'files'
-                        ) as any;
 
       if (imageProp?.type === 'files' && imageProp.files.length > 0) {
         const file = imageProp.files[0];
-        if (file.type === 'file' && file.file?.url) {
-          imagem = file.file.url;
-        } else if (file.type === 'external' && file.external?.url) {
-          imagem = file.external.url;
-        }
+        if (file?.type === 'file') {
+  imagem = file.file.url;
+} else if (file?.type === 'external') {
+  imagem = file.external.url;
+}
+
       }
 
-      let link: string | null = null;
-      const linkProp = page.properties.Link || Object.values(page.properties).find(
-        (prop: any) => prop.type === 'url'
-      ) as any;
+      const linkProp = page.properties.Link as any;
+      const link = linkProp?.url && isValidUrl(linkProp.url) ? linkProp.url : null;
 
-      if (linkProp?.type === 'url' && isValidUrl(linkProp.url)) {
-        link = linkProp.url;
+      let status = 'Sem status';
+      const statusProp = page.properties.Status;
+      if (isStatusProperty(statusProp)) {
+        status = statusProp.status?.name || 'Sem status';
+      } else if (isSelectProperty(statusProp)) {
+        status = statusProp.select?.name || 'Sem status';
       }
 
-      const setorProp = page.properties.Setor as any;
-      const statusProp = page.properties.Status as any;
-      const responsavelProp = page.properties.Responsável as any;
+      const setorProp = page.properties.Setor;
+      const setor =
+        isSelectProperty(setorProp) && setorProp.select?.name
+          ? setorProp.select.name
+          : 'Indefinido';
+
+      const proprietarioProp = page.properties.Proprietário;
+      const proprietario =
+        isSelectProperty(proprietarioProp) && proprietarioProp.select?.name
+          ? proprietarioProp.select.name
+          : 'Indefinido';
+
+      const prioridadeProp = page.properties.Prioridade;
+      const prioridade =
+        isSelectProperty(prioridadeProp) && prioridadeProp.select?.name
+          ? prioridadeProp.select.name
+          : 'Sem prioridade';
+
+      const clienteProp = page.properties.Cliente;
+      const cliente =
+        isSelectProperty(clienteProp) && clienteProp.select?.name
+          ? clienteProp.select.name
+          : 'Sem cliente';
+
+      let responsavel = 'Sem responsável';
+const responsavelProp = page.properties.Responsável;
+if (responsavelProp?.type === 'people' && responsavelProp.people.length > 0) {
+  responsavel = getUserName(responsavelProp.people[0]);
+}
+
+
+      const criadoEm = page.created_time || '';
 
       return {
         id: page.id,
         nome,
-        setor: setorProp?.select?.name || 'Indefinido',
-        status: statusProp?.status?.name || 'Sem status',
-        responsavel: getUserName(responsavelProp?.people?.[0]),
         descricao,
         imagem,
-        link
+        link,
+        status,
+        setor,
+        proprietario,
+        criadoEm,
+        resumo,
+        prioridade,
+        cliente,
+        responsavel,
       };
     });
 
-    console.log(`Retornando ${projetos.length} projetos processados`);
-    return projetos;
+    const projetosFiltrados = projetos.filter(
+      (p) => statusValidos.includes(p.status) && setoresValidos.includes(p.setor)
+    );
 
+    console.log(`Retornando ${projetosFiltrados.length} projetos filtrados`);
+    return projetosFiltrados;
   } catch (error) {
     console.error('Erro ao buscar projetos do Notion:', error);
     return [];
