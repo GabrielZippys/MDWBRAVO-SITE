@@ -78,7 +78,7 @@ export async function getProjetosFromNotion(): Promise<Projeto[]> {
 
       sorts: [
         {
-          property: "Criado em",
+          property: "Data",
           direction: "descending"
         }
       ]
