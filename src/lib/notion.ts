@@ -45,17 +45,40 @@ export async function getProjetosFromNotion(): Promise<Projeto[]> {
   try {
     console.log('Iniciando busca de projetos no Notion, database ID:', databaseId);
     
-    const response = await notion.databases.query({ 
-      database_id: databaseId,
-      filter: {
+    const response = await notion.databases.query({
+  database_id: databaseId,
+  filter: {
+    or: [
+      {
         property: "Status",
         status: {
-          equals: "Concluído"
+          equals: "Em aberto"
         }
       },
+      {
+        property: "Status",
+        status: {
+          equals: "Designado"
+        }
+      },
+      {
+        property: "Status",
+        status: {
+          equals: "Interrompido"
+        }
+      },
+      {
+        property: "Status",
+        status: {
+          equals: "Realizando"
+        }
+      }
+    ]
+  },
+
       sorts: [
         {
-          property: "Última atualização",
+          property: "Criado em",
           direction: "descending"
         }
       ]
