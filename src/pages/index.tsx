@@ -4,16 +4,8 @@ import { useSession, signIn } from 'next-auth/react';
 import React, { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Dashboard from '@/components/Dashboard';
-import { getProjetosFromNotion } from '@/lib/notion'
 
-export const getStaticProps: GetStaticProps<HomeProps> = async () => {
-  const projetos = await getProjetosFromNotion()
-  console.log('Dados crus do Notion:', JSON.stringify(projetos, null, 2))
-  return {
-    props: { projetos },
-    revalidate: 60,
-  }
-}
+
 
 export type ChamadoType = {
   _id: string;
