@@ -5,14 +5,15 @@ import React, { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Dashboard from '@/components/Dashboard';
 import { getProjetosFromNotion } from '@/lib/notion'
-import ProjetosSection from '@/pages/ProjetosSection'
+import ProjetosSection from '@/components/ProjetosSection'
 
 export const getStaticProps: GetStaticProps<HomeProps> = async () => {
-  const projetos = await getProjetosFromNotion()
-  console.log('Dados crus do Notion:', JSON.stringify(projetos, null, 2))
-  return {
-    props: { projetos },
-    revalidate: 60,
+  try {
+    const projetos = await getProjetosFromNotion()
+    return { props: { projetos }, revalidate: 60 }
+  } catch (error) {
+    console.error('Erro ao buscar projetos:', error)
+    return { props: { projetos: [] } } 
   }
 }
 
