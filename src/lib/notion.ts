@@ -3,7 +3,7 @@ import { Client } from '@notionhq/client';
 import { PageObjectResponse, UserObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 
 export const notion = new Client({ auth: process.env.NOTION_TOKEN! });
-const databaseId = process.env.NOTION_DATABASE_ID || 'a2982b0a81ff4378a8d6159012d6cfa6';
+const databaseId = process.env.NOTION_PROJECTS_DATABASE_ID || 'a2982b0a81ff4378a8d6159012d6cfa6';
 
 // Interface Projeto existente
 export interface Projeto {
