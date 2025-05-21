@@ -77,11 +77,11 @@ export async function getProjetosFromNotion(): Promise<Projeto[]> {
   },
 
       sorts: [
-        {
-          property: "Data",
-          direction: "descending"
-        }
-      ]
+  {
+    property: "Criado em",
+    direction: "descending"
+  }
+]
     });
     
     console.log(`Encontrados ${response.results.length} resultados no Notion`);
