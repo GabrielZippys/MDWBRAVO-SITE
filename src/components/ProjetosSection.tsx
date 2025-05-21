@@ -16,7 +16,7 @@ export default function ProjetosSection({ projetos = [] }: ProjetosSectionProps)
     <section id="projetos" className="bg-gray-100 py-8 px-4">
       <h2 className="text-2xl font-bold text-center mb-6">Projetos em Destaque 🚀</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {(projetos || []).map(p => (
+        {projetos.map(p => (
           <a
             key={p.id}
             href={p.link ?? '#'}
@@ -24,7 +24,7 @@ export default function ProjetosSection({ projetos = [] }: ProjetosSectionProps)
             rel="noopener noreferrer"
             className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition-shadow"
           >
-            {p.imagem && (
+            {p.imagem ? (
               <img 
                 src={p.imagem} 
                 alt={p.nome} 
@@ -33,6 +33,10 @@ export default function ProjetosSection({ projetos = [] }: ProjetosSectionProps)
                   (e.target as HTMLImageElement).src = '/placeholder.jpg'
                 }}
               />
+            ) : (
+              <div className="w-full h-40 bg-gray-300 flex items-center justify-center text-gray-600 text-sm">
+                Sem imagem
+              </div>
             )}
             <div className="p-4">
               <h3 className="text-lg font-semibold">{p.nome}</h3>
