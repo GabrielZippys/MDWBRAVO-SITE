@@ -18,17 +18,10 @@ export interface Projeto {
 
 // lib/notion.ts
 function validateNotionPage(page: any): boolean {
-  try {
-    return (
-      page.object === 'page' &&
-      page.properties?.Nome?.title?.length > 0 &&
-      page.cover !== null &&
-      (page.cover?.external?.url || page.cover?.file?.url)
-    )
-  } catch (e) {
-    console.error('Erro na validação da página:', e)
-    return false
-  }
+  return (
+    page.object === 'page' &&
+    page.properties?.Nome?.title?.length > 0 
+  )
 }
 
 export async function getProjetosFromNotion(): Promise<Projeto[]> {

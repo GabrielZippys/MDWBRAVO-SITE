@@ -3,13 +3,15 @@ import { GetServerSideProps } from 'next';
 import { getProjetosFromNotion } from '@/lib/notion';
 
 type Projeto = {
-  id: string;
-  nome: string;
-  setor: string;
-  status: string;
-  responsavel: string;
-  descricao: string;
-};
+  id: string
+  nome: string
+  setor: string
+  status: string
+  responsavel: string
+  descricao: string
+  imagem: string | null 
+  link: string | null   
+}
 
 const statusColors: Record<string, string> = {
   'Planejamento': 'border-blue-500',
@@ -25,6 +27,18 @@ export default function ProjetosPage({ projetos }: { projetos: Projeto[] }) {
   return (
     <main className="min-h-screen bg-black text-white p-6">
       <h1 className="text-4xl font-bold mb-8">Projetos</h1>
+      
+      {/* Adicione mensagem para lista vazia */}
+      {projetos.length === 0 && (
+        <div className="text-center py-8 text-red-500">
+          Nenhum projeto encontrado. Verifique:
+          <ul className="list-disc mt-2 text-left inline-block">
+            <li>Conexão com o Notion</li>
+            <li>Propriedade "Nome" nos projetos</li>
+            <li>Compartilhamento do database com a integração</li>
+          </ul>
+        </div>
+      )}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {projetos.map((projeto) => (
           <div
