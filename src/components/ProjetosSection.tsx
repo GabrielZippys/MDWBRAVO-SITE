@@ -1,6 +1,5 @@
 // components/ProjetosSection.tsx
 import { Projeto } from '@/lib/notion';
-import Image from 'next/image';
 import Link from 'next/link';
 
 interface ProjetosSectionProps {
@@ -30,27 +29,6 @@ export default function ProjetosSection({ projetos = [] }: ProjetosSectionProps)
               key={projeto.id}
               className="bg-gray-700 shadow-md rounded-lg overflow-hidden hover:shadow-xl transition-shadow"
             >
-              {/* Área de imagem sem link */}
-              <div className="h-40 relative">
-                {projeto.imagem ? (
-                  // Verificar se a URL da imagem é válida
-                  <div className="w-full h-full bg-gray-600">
-                    <img
-                      src={projeto.imagem}
-                      alt={projeto.nome}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        console.log('Erro ao carregar imagem:', projeto.imagem);
-                        (e.target as HTMLImageElement).src = '/placeholder.jpg';
-                      }}
-                    />
-                  </div>
-                ) : (
-                  <div className="w-full h-full bg-gray-600 flex items-center justify-center text-gray-400">
-                    <span>Sem imagem</span>
-                  </div>
-                )}
-              </div>
               
               {/* Conteúdo do projeto */}
               <div className="p-4">
