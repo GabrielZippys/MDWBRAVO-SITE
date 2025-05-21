@@ -127,7 +127,6 @@ export async function getProjetosFromNotion(): Promise<Projeto[]> {
           : 'Indefinido';
 
      let proprietario: { nome: string }[] | null = null;
-
 const proprietarioProp = page.properties.Proprietário;
 if (proprietarioProp?.type === 'people' && proprietarioProp.people.length > 0) {
   proprietario = proprietarioProp.people.map((user: any) => ({
@@ -147,7 +146,7 @@ if (proprietarioProp?.type === 'people' && proprietarioProp.people.length > 0) {
           ? clienteProp.select.name
           : 'Sem cliente';
 
-      let responsavel = 'Sem responsável';
+let responsavel: string = 'Sem responsável';
 const responsavelProp = page.properties.Responsável;
 if (responsavelProp?.type === 'people' && responsavelProp.people.length > 0) {
   responsavel = getUserName(responsavelProp.people[0]);
