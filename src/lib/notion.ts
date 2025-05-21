@@ -16,13 +16,6 @@ export interface Projeto {
   link: string | null
 }
 
-// lib/notion.ts
-function validateNotionPage(page: any): boolean {
-  return (
-    page.object === 'page' &&
-    page.properties['BO-Câmeras no estoque, refeitório...']?.title?.length > 0 // Valida o título REAL
-  )
-}
 
 export async function getProjetosFromNotion(): Promise<Projeto[]> {
   const response = await notion.databases.query({ database_id: databaseId })
