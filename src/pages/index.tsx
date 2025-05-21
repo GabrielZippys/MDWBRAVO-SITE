@@ -4,19 +4,6 @@ import { useSession, signIn } from 'next-auth/react';
 import React, { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Dashboard from '@/components/Dashboard';
-import { getProjetosFromNotion } from "@/lib/notion";
-
-export const getStaticProps: GetStaticProps = async () => {
-  const projetos = await getProjetosFromNotion();
-  console.log('Projetos carregados (build):', projetos);
-  return {
-    props: {
-      projetos,
-    },
-    revalidate: 60, // ISR: rebuild a cada 60s
-  };
-};
-
 
 export type ChamadoType = {
   _id: string;
@@ -151,36 +138,13 @@ export default function Home({ chamadosIniciais, projetos }: HomeProps) {
     );
   }
 
-  return (
+   return (
     <main>
       <h1 className="titulo">Painel de Chamados🚨</h1>
 
+      {/* Filtros */}
       <div className="butaofiltro">
-        <select className="px-4 py-2 rounded border bg-white" value={filtroZona} onChange={(e) => setFiltroZona(e.target.value)}>
-          <option value="">Todas as Zonas</option>
-          {zonasUnicas.map(z => <option key={z} value={z}>{z}</option>)}
-        </select>
-
-        <select className="px-4 py-2 rounded border bg-white" value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)}>
-          <option value="">Todos os Status</option>
-          {statusUnicos.map(s => <option key={s} value={s}>{s}</option>)}
-        </select>
-
-        <select className="px-4 py-2 rounded border bg-white" value={filtroLoja} onChange={(e) => setFiltroLoja(e.target.value)}>
-          <option value="">Todas as Lojas</option>
-          {lojasUnicas.map(l => <option key={l} value={l}>{l}</option>)}
-        </select>
-
-        <select className="px-4 py-2 rounded border bg-white" value={filtroTipo} onChange={(e) => setFiltroTipo(e.target.value)}>
-          <option value="">Todos os Tipos</option>
-          {tiposUnicos.map(t => <option key={t} value={t}>{t}</option>)}
-        </select>
-
-        <select className="px-4 py-2 rounded border bg-white" value={filtroPrioridade} onChange={(e) => setFiltroPrioridade(e.target.value)}>
-          <option value="">Todas as Prioridades</option>
-          {prioridadesUnicas.map(p => <option key={p} value={p}>{p}</option>)}
-        </select>
-
+        {/* ... select de filtros ... */}
         <button className="btn-filtro limpar" onClick={() => {
           setFiltroZona('');
           setFiltroStatus('');
@@ -188,45 +152,41 @@ export default function Home({ chamadosIniciais, projetos }: HomeProps) {
           setFiltroTipo('');
           setFiltroPrioridade('');
         }}>🧹 Limpar Filtros</button>
-
         <button className="btn-filtro atualizar" onClick={fetchChamados}>🔄 Atualizar Chamados</button>
       </div>
 
+      {/* Dashboard e Mapa */}
       <Dashboard chamados={chamadosFiltrados} />
-
       <div className="mapa-container">
         <h2>Mapa Interativo</h2>
         <MapaDeChamados chamados={chamadosFiltrados} />
       </div>
 
-     <section id="projetos" className="bg-gray-100 py-8 px-4">
-  <h2 className="text-2xl font-bold text-center mb-6">Projetos em Destaque 🚀</h2>
-  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-    {projetos && projetos.length > 0 ? (
-      projetos.map((projeto) => (
-        <a
-          key={projeto.id}
-          href={projeto.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
-        >
-          <img
-            src={projeto.imagem}
-            alt={projeto.titulo}
-            className="w-full h-48 object-cover"
-          />
-          <div className="p-4">
-            <h3 className="text-lg font-semibold">{projeto.titulo}</h3>
-            <p className="text-gray-600 text-sm mt-2">{projeto.descricao}</p>
-          </div>
-        </a>
-      ))
-    ) : (
-      <p className="text-center col-span-full text-gray-500">Nenhum projeto encontrado.</p>
-    )}
-  </div>
-</section>
+      {/* Sessão de Projetos */}
+      <section id="projetos" className="bg-gray-100 py-8 px-4">
+        <h2 className="text-2xl font-bold text-center mb-6">Projetos em Destaque 🚀</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {projetos && projetos.length > 0 ? (
+            projetos.map((projeto) => (
+              <a
+                key={projeto.id}
+                href={projeto.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition-shadow"
+              >
+                <img src={projeto.imagem} alt={projeto.titulo} className="w-full h-40 object-cover" />
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold">{projeto.titulo}</h3>
+                  <p className="text-gray-600 text-sm">{projeto.descricao}</p>
+                </div>
+              </a>
+            ))
+          ) : (
+            <p className="text-center col-span-3 text-gray-500">Nenhum projeto disponível.</p>
+          )}
+        </div>
+      </section>
     </main>
   );
 }
