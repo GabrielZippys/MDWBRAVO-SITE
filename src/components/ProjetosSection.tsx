@@ -1,5 +1,5 @@
 import { Projeto } from '@/lib/notion';
-import styles from './ProjetosSection.module.css'; // importa o CSS modular
+import styles from '@/styles/ProjetosSection.module.css';
 
 interface ProjetosSectionProps {
   projetos: Projeto[];
