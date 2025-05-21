@@ -46,44 +46,14 @@ export async function getProjetosFromNotion(): Promise<Projeto[]> {
     console.log('Iniciando busca de projetos no Notion, database ID:', databaseId);
     
     const response = await notion.databases.query({
-  database_id: databaseId,
-  filter: {
-    or: [
-      {
-        property: "Status",
-        status: {
-          equals: "Em aberto"
-        }
-      },
-      {
-        property: "Status",
-        status: {
-          equals: "Designado"
-        }
-      },
-      {
-        property: "Status",
-        status: {
-          equals: "Interrompido"
-        }
-      },
-      {
-        property: "Status",
-        status: {
-          equals: "Realizando"
-        }
-      }
-    ]
-  },
-
+      database_id: databaseId,
+      // Sem filtro neste momento
     });
-    
+
     console.log(`Encontrados ${response.results.length} resultados no Notion`);
     
-    // Obter apenas páginas completas (com properties)
     const pages = response.results.filter((page): page is PageObjectResponse => 'properties' in page);
-    
-    // Debug: examinar a primeira página para entender sua estrutura
+
     if (pages.length > 0) {
       const firstPage = pages[0];
       console.log('Exemplo de propriedades disponíveis:', 
@@ -93,37 +63,33 @@ export async function getProjetosFromNotion(): Promise<Projeto[]> {
         }))
       );
     }
-    
+
     const projetos = pages.map((page) => {
-      // Encontrar a propriedade de título (qualquer propriedade do tipo 'title')
       const titleProp = Object.values(page.properties).find(
         (prop: any) => prop.type === 'title'
       ) as any;
-      
-      // Obter o nome do projeto
+
       let nome = 'Sem nome';
       if (titleProp?.type === 'title' && titleProp.title.length > 0) {
         nome = titleProp.title[0].plain_text.trim();
       }
-      
-      // Obter descrição segura
+
       let descricao = '';
       const descProp = page.properties.Descrição || Object.values(page.properties).find(
         (prop: any) => prop.type === 'rich_text'
       ) as any;
-      
+
       if (descProp?.type === 'rich_text' && descProp.rich_text.length > 0) {
         descricao = descProp.rich_text[0].plain_text;
       }
-      
-      // Obter imagem segura
+
       let imagem: string | null = null;
       const imageProp = page.properties['Arquivos e mídia'] || 
                         page.properties.Imagem ||
                         Object.values(page.properties).find(
                           (prop: any) => prop.type === 'files'
                         ) as any;
-      
+
       if (imageProp?.type === 'files' && imageProp.files.length > 0) {
         const file = imageProp.files[0];
         if (file.type === 'file' && file.file?.url) {
@@ -132,69 +98,37 @@ export async function getProjetosFromNotion(): Promise<Projeto[]> {
           imagem = file.external.url;
         }
       }
-      
-      // Obter link seguro
+
       let link: string | null = null;
       const linkProp = page.properties.Link || Object.values(page.properties).find(
         (prop: any) => prop.type === 'url'
       ) as any;
-      
-      if (linkProp?.type === 'url' && linkProp.url) {
-        link = isValidUrl(linkProp.url) ? linkProp.url : null;
+
+      if (linkProp?.type === 'url' && isValidUrl(linkProp.url)) {
+        link = linkProp.url;
       }
-      
-      // Obter responsável
-      let responsavel = 'Sem responsável';
-      const respProp = page.properties.Responsável || Object.values(page.properties).find(
-        (prop: any) => prop.type === 'people'
-      ) as any;
-      
-      if (respProp?.type === 'people' && respProp.people.length > 0) {
-        responsavel = getUserName(respProp.people[0]);
-      }
-      
-      // Obter setor
-      let setor = 'Desconhecido';
-      const setorProp = page.properties.Setor || Object.values(page.properties).find(
-        (prop: any) => prop.type === 'select'
-      ) as any;
-      
-      if (setorProp?.type === 'select' && setorProp.select) {
-        setor = setorProp.select.name || 'Desconhecido';
-      }
-      
-      // Obter status
-      let status = 'Desconhecido';
-      const statusProp = page.properties.Status;
-      if (statusProp?.type === 'status' && statusProp.status) {
-        status = statusProp.status.name || 'Desconhecido';
-      } else if (statusProp?.type === 'select' && statusProp.select) {
-        status = statusProp.select.name || 'Desconhecido';
-      }
-      
+
+      const setorProp = page.properties.Setor as any;
+      const statusProp = page.properties.Status as any;
+      const responsavelProp = page.properties.Responsável as any;
+
       return {
         id: page.id,
         nome,
-        setor,
-        status,
-        responsavel,
+        setor: setorProp?.select?.name || 'Indefinido',
+        status: statusProp?.status?.name || 'Sem status',
+        responsavel: getUserName(responsavelProp?.people?.[0]),
         descricao,
         imagem,
         link
       };
-    })
-    .filter(projeto => 
-      // Remover projetos sem nome ou com nomes genéricos
-      projeto.nome !== 'Sem nome' && 
-      projeto.nome.trim() !== '' &&
-      !projeto.nome.includes('Acesso Restrito')
-    );
-    
+    });
+
     console.log(`Retornando ${projetos.length} projetos processados`);
     return projetos;
-    
+
   } catch (error) {
-    console.error('Erro ao buscar dados do Notion:', error);
-    return []; // Retornar array vazio em caso de erro
+    console.error('Erro ao buscar projetos do Notion:', error);
+    return [];
   }
 }
