@@ -201,7 +201,7 @@ export default function Home({ projetos }: HomeProps) {
   <h2 className="text-2xl font-bold text-center mb-6">Projetos em Destaque 🚀</h2>
   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
     {projetos
-      .filter(p => p.nome !== 'Sem nome' && p.imagem) // Filtra projetos válidos
+      //.filter(p => p.nome !== 'Sem nome' && p.imagem) // Filtra projetos válidos
       .map(p => (
         <a
           key={p.id}

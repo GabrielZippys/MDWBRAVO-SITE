@@ -20,7 +20,7 @@ export interface Projeto {
 function validateNotionPage(page: any): boolean {
   return (
     page.object === 'page' &&
-    page.properties['BO-Câmeras no estoque, refeitório...']?.title?.length > 0
+    page.properties['BO-Câmeras no estoque, refeitório...']?.title?.length > 0 // Valida o título REAL
   )
 }
 
@@ -28,19 +28,15 @@ export async function getProjetosFromNotion(): Promise<Projeto[]> {
   const response = await notion.databases.query({ database_id: databaseId })
   return response.results.map((page: any) => ({
     id: page.id,
-    // Corrigido para usar a propriedade de título correta
+    // Corrigir para o nome REAL da propriedade título no quadro
     nome: page.properties['BO-Câmeras no estoque, refeitório...']?.title?.[0]?.plain_text ?? 'Sem nome',
-    // Corrigido para usar "Setor" conforme sua base
+    // Restante das propriedades
     setor: page.properties.Setor?.select?.name ?? 'Desconhecido',
-    // Corrigido para mapear o status corretamente
     status: page.properties.Status?.select?.name ?? 'Sem status',
-    // Corrigido para usar "Proprietário" ao invés de "Responsável"
-    responsavel: page.properties.Proprietário?.people?.[0]?.name ?? 'Sem responsável',
-    // Corrigido para usar "Resumo" ao invés de "Descrição"
-    descricao: page.properties.Resumo?.rich_text?.[0]?.plain_text ?? '',
-    // Usando "Arquivos e mídia" para imagens
+    responsavel: page.properties.Responsável?.people?.[0]?.name ?? 'Sem responsável',
+    descricao: page.properties.Descrição?.rich_text?.[0]?.plain_text ?? '',
+    // Usar a propriedade de arquivos/mídia CORRETA
     imagem: page.properties['Arquivos e mídia']?.files?.[0]?.file?.url ?? null,
-    // Adicione outras propriedades conforme necessário
-    link: null // Ajuste se tiver propriedade de link
+    link: page.properties.Link?.url ?? null
   }))
 }
