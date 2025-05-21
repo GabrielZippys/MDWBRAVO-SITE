@@ -17,7 +17,7 @@ export interface Projeto {
   cliente: string;
   criadoEm: string;
   link?: string;
-  proprietario: { nome: string } | { nome: string }[] | null;
+  proprietario: { nome: string }[] | null;
 }
 
 // Função para obter nome do usuário de forma segura
