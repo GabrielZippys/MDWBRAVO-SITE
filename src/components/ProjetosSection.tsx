@@ -13,7 +13,7 @@ export default function ProjetosSection({ projetos = [] }: ProjetosSectionProps)
     (p) => statusValidos.includes(p.status) && setoresValidos.includes(p.setor)
   );
 
-   return (
+  return (
     <section id="projetos" className={styles.projetosSection}>
       <h2 className={styles.titulo}>Projetos em Destaque 🚀</h2>
 
@@ -29,12 +29,9 @@ export default function ProjetosSection({ projetos = [] }: ProjetosSectionProps)
               <ul className={styles.detalhes}>
                 <li>
                   <strong>Proprietário:</strong>{' '}
-                <li><strong>Proprietário:</strong> {
-  Array.isArray(projeto.proprietario)
-    ? projeto.proprietario.map((p: any) => p.nome).join(', ')
-    : projeto.proprietario?.nome || '—'
-}</li>
-
+                  {Array.isArray(projeto.proprietario)
+                    ? projeto.proprietario.map((p) => p.nome).join(', ')
+                    : projeto.proprietario?.nome || '—'}
                 </li>
                 <li><strong>Status:</strong> {projeto.status}</li>
                 <li><strong>Setor:</strong> {projeto.setor}</li>

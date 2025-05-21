@@ -17,7 +17,7 @@ export interface Projeto {
   cliente: string;
   criadoEm: string;
   link?: string;
-  proprietario: { nome: string }[] | null;
+proprietario: { nome: string } | null;
 }
 
 // Função para obter nome do usuário de forma segura
@@ -126,13 +126,14 @@ export async function getProjetosFromNotion(): Promise<Projeto[]> {
           ? setorProp.select.name
           : 'Indefinido';
 
-     let proprietario: { nome: string }[] | null = null;
+let proprietario: { nome: string } | null = null;
 const proprietarioProp = page.properties.Proprietário;
 if (proprietarioProp?.type === 'people' && proprietarioProp.people.length > 0) {
-  proprietario = proprietarioProp.people.map((user: any) => ({
-    nome: getUserName(user),
-  }));
+  proprietario = {
+    nome: getUserName(proprietarioProp.people[0]),
+  };
 }
+
 
       const prioridadeProp = page.properties.Prioridade;
       const prioridade =
