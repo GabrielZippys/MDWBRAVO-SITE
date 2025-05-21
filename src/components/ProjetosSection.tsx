@@ -29,9 +29,12 @@ export default function ProjetosSection({ projetos = [] }: ProjetosSectionProps)
               <ul className={styles.detalhes}>
                 <li>
                   <strong>Proprietário:</strong>{' '}
-                 {Array.isArray(projeto.proprietario)
-  ? projeto.proprietario.join(', ')
-  : projeto.proprietario || '—'}
+                <li><strong>Proprietário:</strong> {
+  Array.isArray(projeto.proprietario)
+    ? projeto.proprietario.map((p: any) => p.nome).join(', ')
+    : projeto.proprietario?.nome || '—'
+}</li>
+
                 </li>
                 <li><strong>Status:</strong> {projeto.status}</li>
                 <li><strong>Setor:</strong> {projeto.setor}</li>

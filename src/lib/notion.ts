@@ -10,17 +10,14 @@ const databaseId =
 export interface Projeto {
   id: string;
   nome: string;
-  descricao: string;
-  imagem: string | null;
-  link: string | null;
+  resumo: string;
   status: string;
   setor: string;
-  proprietario: string;
-  criadoEm: string;
-  resumo: string;
   prioridade: string;
   cliente: string;
-  responsavel: string;
+  criadoEm: string;
+  link?: string;
+  proprietario: { nome: string } | { nome: string }[] | null;
 }
 
 // Função para obter nome do usuário de forma segura
@@ -129,11 +126,14 @@ export async function getProjetosFromNotion(): Promise<Projeto[]> {
           ? setorProp.select.name
           : 'Indefinido';
 
-      const proprietarioProp = page.properties.Proprietário;
-      const proprietario =
-        isSelectProperty(proprietarioProp) && proprietarioProp.select?.name
-          ? proprietarioProp.select.name
-          : 'Indefinido';
+     let proprietario: { nome: string }[] | null = null;
+
+const proprietarioProp = page.properties.Proprietário;
+if (proprietarioProp?.type === 'people' && proprietarioProp.people.length > 0) {
+  proprietario = proprietarioProp.people.map((user: any) => ({
+    nome: getUserName(user),
+  }));
+}
 
       const prioridadeProp = page.properties.Prioridade;
       const prioridade =
