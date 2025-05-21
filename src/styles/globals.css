@@ -1768,3 +1768,106 @@ header {
   transform: scale(1) !important;
   animation: none !important;
 }
+
+
+.projetosSection {
+  background-color: #1f2937;
+  padding: 3rem 1.5rem;
+  color: white;
+}
+
+.titulo {
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.nenhumProjeto {
+  text-align: center;
+  color: #cbd5e0;
+}
+
+.projetosGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+}
+
+@media (min-width: 640px) {
+  .projetosGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .projetosGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.projetoCard {
+  background-color: #374151;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.projetoCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+}
+
+.projetoCard h3 {
+  color: #93c5fd;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.resumo {
+  color: #d1d5db;
+  font-size: 0.875rem;
+  font-style: italic;
+  margin-bottom: 1rem;
+}
+
+.detalhes {
+  color: #e5e7eb;
+  font-size: 0.875rem;
+  list-style: none;
+  padding: 0;
+  margin-bottom: 1rem;
+}
+
+.detalhes li {
+  margin-bottom: 0.3rem;
+}
+
+.linkArea {
+  margin-top: 1rem;
+}
+
+.linkArea a {
+  display: inline-block;
+  background-color: #2563eb;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.linkArea a:hover {
+  background-color: #1e40af;
+}
+
+.semLink {
+  display: inline-block;
+  background-color: #4b5563;
+  color: #d1d5db;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+}
