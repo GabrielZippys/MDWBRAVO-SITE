@@ -1,5 +1,6 @@
 // components/Dashboard.tsx
 'use client';
+// ... (outras importações e código permanecem os mesmos)
 import { getZona } from '@/utils/classifyZone';
 import {
   BarChart,
@@ -15,7 +16,7 @@ import {
 } from 'recharts';
 import { useState, useMemo, ChangeEvent, useCallback } from 'react';
 
-// Types
+// Types (permanecem os mesmos)
 type Chamado = {
   _id: string;
   notionId: string;
@@ -31,14 +32,14 @@ type DashboardProps = {
   chamados: Chamado[];
 };
 
-// --- Constants ---
+// Constants (permanecem os mesmos)
 const CORES_GRAFICOS = [
   '#a8dadc', '#f4a261', '#2a9d8f', '#e76f51',
   '#457b9d', '#ffb4a2', '#d4a373', '#e9c46a',
   '#264653', '#fca311'
 ];
 
-// --- Helper Functions ---
+// Helper Functions (permanecem os mesmos)
 const getZonaFromLoja = (loja: string): string => getZona(loja);
 
 const generateNotionPageLink = (notionPageId: string | undefined | null): string | null => {
@@ -47,27 +48,26 @@ const generateNotionPageLink = (notionPageId: string | undefined | null): string
   return `https://www.notion.so/${cleanId}`;
 };
 
-// --- Component ---
+
 export default function Dashboard({ chamados }: DashboardProps) {
-  // --- State for Filters ---
+  // State, Memos, Handlers (permanecem os mesmos)
   const [filtroZona, setFiltroZona] = useState<string>('');
   const [filtroStatus, setFiltroStatus] = useState<string>('');
   const [filtroTipo, setFiltroTipo] = useState<string>('');
 
-  // --- Memoized Derived Data for Filters & Charts ---
   const zonasUnicas = useMemo(() => {
     const todasAsLojas = chamados.map(c => c.loja);
-    const lojasUnicas = Array.from(new Set(todasAsLojas)); // Corrigido aqui
-    const zonasCalculadas = Array.from(new Set(lojasUnicas.map(loja => getZonaFromLoja(loja)).filter(Boolean))); // Corrigido aqui
+    const lojasUnicas = Array.from(new Set(todasAsLojas));
+    const zonasCalculadas = Array.from(new Set(lojasUnicas.map(loja => getZonaFromLoja(loja)).filter(Boolean)));
     return ['Todos', ...zonasCalculadas].sort();
   }, [chamados]);
 
   const statusUnicos = useMemo(() => (
-    ['Todos', ...Array.from(new Set(chamados.map(c => c.status).filter(Boolean)))].sort() // Corrigido aqui
+    ['Todos', ...Array.from(new Set(chamados.map(c => c.status).filter(Boolean)))].sort()
   ), [chamados]);
 
   const tiposUnicos = useMemo(() => (
-    ['Todos', ...Array.from(new Set(chamados.map(c => c.tipo).filter(Boolean)))].sort() // Corrigido aqui
+    ['Todos', ...Array.from(new Set(chamados.map(c => c.tipo).filter(Boolean)))].sort()
   ), [chamados]);
 
   const chamadosFiltrados = useMemo(() => {
@@ -78,7 +78,6 @@ export default function Dashboard({ chamados }: DashboardProps) {
     );
   }, [chamados, filtroZona, filtroStatus, filtroTipo]);
 
-  // --- Data Aggregation for Charts ---
   const agruparDadosParaGrafico = useCallback((
     data: Chamado[],
     campo: keyof Omit<Chamado, '_id' | 'notionId' | 'titulo' | 'loja' | 'dataCriacao'> | 'zona'
@@ -89,7 +88,6 @@ export default function Dashboard({ chamados }: DashboardProps) {
       if (campo === 'zona') {
         chave = getZonaFromLoja(chamado.loja);
       } else {
-        // Acessando a propriedade de forma segura
         const valorDoCampo = chamado[campo as keyof Chamado];
         chave = typeof valorDoCampo === 'string' ? valorDoCampo : String(valorDoCampo) || 'Não Definido';
       }
@@ -105,26 +103,50 @@ export default function Dashboard({ chamados }: DashboardProps) {
   const dadosPorZona = useMemo(() => agruparDadosParaGrafico(chamadosFiltrados, 'zona'), [chamadosFiltrados, agruparDadosParaGrafico]);
   const dadosPorPrioridade = useMemo(() => agruparDadosParaGrafico(chamadosFiltrados, 'prioridade'), [chamadosFiltrados, agruparDadosParaGrafico]);
 
-  // --- Event Handlers for Filters ---
   const handleFilterChange = (setter: React.Dispatch<React.SetStateAction<string>>) => (e: ChangeEvent<HTMLSelectElement>) => {
     setter(e.target.value === 'Todos' ? '' : e.target.value);
   };
 
-  // --- Render ---
   return (
     <div className="dashboardContainer p-4 md:p-6 lg:p-8 bg-gray-900 text-white min-h-screen">
+      {/* Seção de Filtros (permanece a mesma) */}
+      <div className="filtrosContainer grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6 p-4 bg-gray-800 rounded-lg shadow-lg">
+        <div>
+          <label htmlFor="filtroZona" className="block text-sm font-medium text-gray-300 mb-1">Filtrar por Zona:</label>
+          <select id="filtroZona" value={filtroZona || 'Todos'} onChange={handleFilterChange(setFiltroZona)} className="filtro-select">
+            {zonasUnicas.map(zona => <option key={zona} value={zona}>{zona}</option>)}
+          </select>
+        </div>
+        <div>
+          <label htmlFor="filtroStatus" className="block text-sm font-medium text-gray-300 mb-1">Filtrar por Status:</label>
+          <select id="filtroStatus" value={filtroStatus || 'Todos'} onChange={handleFilterChange(setFiltroStatus)} className="filtro-select">
+            {statusUnicos.map(status => <option key={status} value={status}>{status}</option>)}
+          </select>
+        </div>
+        <div>
+          <label htmlFor="filtroTipo" className="block text-sm font-medium text-gray-300 mb-1">Filtrar por Tipo:</label>
+          <select id="filtroTipo" value={filtroTipo || 'Todos'} onChange={handleFilterChange(setFiltroTipo)} className="filtro-select">
+            {tiposUnicos.map(tipo => <option key={tipo} value={tipo}>{tipo}</option>)}
+          </select>
+        </div>
+      </div>
 
       {/* Summary Statistics */}
       <div className="summaryStats mb-6 p-4 bg-gray-800 rounded-lg shadow-lg">
-        <h2 className="text-xl font-semibold text-blue-400 mb-2">Resumo dos Chamados</h2>
-        <p className="text-gray-300">Exibindo <span className="font-bold text-blue-300">{chamadosFiltrados.length}</span> de <span className="font-bold">{chamados.length}</span> chamados.</p>
+        {/* MODIFICADO AQUI 👇 */}
+        <h2 className="titulo2 font-semibold">Resumo dos Chamados</h2>
+        <p className="text-gray-300 text-center mt-1"> {/* Adicionado text-center e margem para o parágrafo também */}
+            Exibindo <span className="font-bold text-blue-300">{chamadosFiltrados.length}</span> de <span className="font-bold">{chamados.length}</span> chamados.
+        </p>
       </div>
 
       {/* Tabela de Chamados */}
       <div className="table-container mb-8 bg-gray-800 p-2 sm:p-4 rounded-lg shadow-lg overflow-x-auto">
-        <h2 className="text-xl font-semibold text-blue-400 mb-4 px-2">Lista de Chamados</h2>
+        {/* MODIFICADO AQUI 👇 */}
+        <h2 className="titulo2 font-semibold">Lista de Chamados</h2>
         {chamadosFiltrados.length > 0 ? (
-          <table className="tabela-chamados w-full">
+          <table className="tabela-chamados w-full mt-4"> {/* Adicionada margem superior à tabela */}
+            {/* Conteúdo da tabela permanece o mesmo */}
             <thead>
               <tr>
                 <th>ID Notion</th>
@@ -182,11 +204,11 @@ export default function Dashboard({ chamados }: DashboardProps) {
         )}
       </div>
 
-      {/* Seção de Gráficos */}
+      {/* Seção de Gráficos (permanece a mesma) */}
       <div className="Graficos grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Chamados por Status */}
         <div className="graphic-container bg-gray-800 p-4 rounded-lg shadow-lg">
-          <h3 className="titulo2 text-lg font-semibold text-blue-400 mb-3">Chamados por Status</h3>
+          <h3 className="titulo2 text-lg font-semibold text-blue-400 mb-3">Chamados por Status</h3> {/* Este já usa .titulo2 mas tem classes Tailwind adicionais */}
           {dadosPorStatus.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={dadosPorStatus} margin={{ top: 5, right: 0, left: -25, bottom: 5 }}>
@@ -201,7 +223,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
 
         {/* Chamados por Tipo */}
         <div className="graphic-container bg-gray-800 p-4 rounded-lg shadow-lg">
-          <h3 className="titulo2 text-lg font-semibold text-green-400 mb-3">Chamados por Tipo</h3>
+          <h3 className="titulo2 text-lg font-semibold text-green-400 mb-3">Chamados por Tipo</h3> {/* Este já usa .titulo2 */}
           {dadosPorTipo.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={dadosPorTipo} margin={{ top: 5, right: 0, left: -25, bottom: 5 }}>
@@ -216,7 +238,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
 
         {/* Chamados por Zona (Pie Chart) */}
         <div className="graphic-container bg-gray-800 p-4 rounded-lg shadow-lg">
-          <h3 className="titulo2 text-lg font-semibold text-teal-400 mb-3">Chamados por Zona</h3>
+          <h3 className="titulo2 text-lg font-semibold text-teal-400 mb-3">Chamados por Zona</h3> {/* Este já usa .titulo2 */}
           {dadosPorZona.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
@@ -228,7 +250,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
                   cy="50%"
                   outerRadius={100}
                   labelLine={false}
-                  label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => { // removi 'index' não utilizado
+                  label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
                     const RADIAN = Math.PI / 180;
                     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
                     const x = cx + radius * Math.cos(-midAngle * RADIAN);
@@ -240,7 +262,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
                     ) : null;
                   }}
                 >
-                  {dadosPorZona.map((_entry, index) => ( // renomeei 'entry' para '_entry' pois não é usado
+                  {dadosPorZona.map((_entry, index) => (
                     <Cell key={`cell-${index}`} fill={CORES_GRAFICOS[index % CORES_GRAFICOS.length]} />
                   ))}
                 </Pie>
@@ -255,7 +277,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
 
         {/* Chamados por Prioridade (Novo Gráfico) */}
         <div className="graphic-container bg-gray-800 p-4 rounded-lg shadow-lg">
-          <h3 className="titulo2 text-lg font-semibold text-amber-400 mb-3">Chamados por Prioridade</h3>
+          <h3 className="titulo2 text-lg font-semibold text-amber-400 mb-3">Chamados por Prioridade</h3> {/* Este já usa .titulo2 */}
           {dadosPorPrioridade.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
                <BarChart data={dadosPorPrioridade} layout="vertical" margin={{ top: 5, right: 20, left: 20, bottom: 5 }}>
@@ -264,7 +286,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
                 <Tooltip wrapperClassName="tooltip-recharts" />
                 <Legend wrapperStyle={{fontSize: "12px"}}/>
                 <Bar dataKey="valor" fill="#f59e0b" radius={[0, 4, 4, 0]} barSize={20}>
-                   {dadosPorPrioridade.map((_entry, index) => ( // renomeei 'entry' para '_entry'
+                   {dadosPorPrioridade.map((_entry, index) => (
                     <Cell key={`cell-${index}`} fill={CORES_GRAFICOS[index % CORES_GRAFICOS.length]} />
                   ))}
                 </Bar>
