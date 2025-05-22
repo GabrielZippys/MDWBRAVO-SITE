@@ -113,27 +113,6 @@ export default function Dashboard({ chamados }: DashboardProps) {
   // --- Render ---
   return (
     <div className="dashboardContainer p-4 md:p-6 lg:p-8 bg-gray-900 text-white min-h-screen">
-      {/* Seção de Filtros */}
-      <div className="filtrosContainer grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6 p-4 bg-gray-800 rounded-lg shadow-lg">
-        <div>
-          <label htmlFor="filtroZona" className="block text-sm font-medium text-gray-300 mb-1">Filtrar por Zona:</label>
-          <select id="filtroZona" value={filtroZona || 'Todos'} onChange={handleFilterChange(setFiltroZona)} className="filtro-select">
-            {zonasUnicas.map(zona => <option key={zona} value={zona}>{zona}</option>)}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="filtroStatus" className="block text-sm font-medium text-gray-300 mb-1">Filtrar por Status:</label>
-          <select id="filtroStatus" value={filtroStatus || 'Todos'} onChange={handleFilterChange(setFiltroStatus)} className="filtro-select">
-            {statusUnicos.map(status => <option key={status} value={status}>{status}</option>)}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="filtroTipo" className="block text-sm font-medium text-gray-300 mb-1">Filtrar por Tipo:</label>
-          <select id="filtroTipo" value={filtroTipo || 'Todos'} onChange={handleFilterChange(setFiltroTipo)} className="filtro-select">
-            {tiposUnicos.map(tipo => <option key={tipo} value={tipo}>{tipo}</option>)}
-          </select>
-        </div>
-      </div>
 
       {/* Summary Statistics */}
       <div className="summaryStats mb-6 p-4 bg-gray-800 rounded-lg shadow-lg">
