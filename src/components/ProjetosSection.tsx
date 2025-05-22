@@ -13,6 +13,15 @@ export default function ProjetosSection({ projetos = [] }: ProjetosSectionProps)
     (p) => statusValidos.includes(p.status) && setoresValidos.includes(p.setor)
   );
 
+  // Função auxiliar para validar a URL do projeto
+  const isNotionLinkValid = (url: string | undefined | null): boolean => {
+    if (!url) {
+      return false;
+    }
+    // Permite URLs HTTP, HTTPS e links diretos do aplicativo Notion
+    return url.startsWith('http://') || url.startsWith('https://') || url.startsWith('notion://');
+  };
+
   return (
     <section id="projetos" className={styles.projetosSection}>
       <h2 className={styles.titulo}>Projetos em Destaque 🚀</h2>
@@ -46,7 +55,7 @@ export default function ProjetosSection({ projetos = [] }: ProjetosSectionProps)
                     hour: '2-digit',
                     minute: '2-digit',
                     hour12: false,
-                    timeZone: 'America/Sao_Paulo',
+                    timeZone: 'America/Sao_Paulo', // Mantido o timezone
                   })}
                 </li>
               </ul>
@@ -58,10 +67,13 @@ export default function ProjetosSection({ projetos = [] }: ProjetosSectionProps)
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={(e) => {
-                      if (!projeto.link?.startsWith('http')) {
-                        e.preventDefault();
-                        alert('Link inválido ou não disponível');
+                      if (!isNotionLinkValid(projeto.link)) {
+                        e.preventDefault(); // Impede a navegação se o link não for válido
+                        alert(
+                          'O link para este projeto no Notion parece ser inválido ou não está configurado corretamente.'
+                        );
                       }
+                      // Se for válido, o comportamento padrão do link (navegar) prossegue
                     }}
                   >
                     Acessar Projeto
