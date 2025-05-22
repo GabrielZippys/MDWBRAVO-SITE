@@ -1,7 +1,7 @@
 /* styles/ProjetosSection.module.css */
 
 /* Variáveis Globais do Módulo */
-:root {
+:global(:root) {
   /* Cores Primárias e de Texto */
   --color-background-section: #1e293b; /* Azul petróleo escuro */
   --color-text-light-primary: #e2e8f0; /* Cinza claro para textos sobre fundo escuro */
@@ -37,13 +37,13 @@
   --card-background-hover: rgba(255, 255, 255, 1);
   --card-border-color: rgba(255, 255, 255, 0.3);
   --card-border-color-hover: rgba(255, 255, 255, 0.6);
-  --card-backdrop-blur: 20px; /* Reduzido para melhor performance em alguns casos */
+  --card-backdrop-blur: 20px; 
   --card-border-radius: 48px;
-  --card-padding: 2.75rem; /* Ajustado levemente */
+  --card-padding: 2.75rem; 
 
-  /* Sombras (mais suaves) */
+  /* Sombras */
   --shadow-card: 0 20px 40px rgba(0, 0, 0, 0.15),
-                  0 0 30px rgba(var(--color-accent-primary-rgb), 0.08), /* Usar RGB para opacidade */
+                  0 0 30px rgba(var(--color-accent-primary-rgb), 0.08), 
                   0 0 0 1px rgba(255, 255, 255, 0.15) inset;
   --shadow-card-hover: 0 35px 70px rgba(0, 0, 0, 0.2),
                        0 0 50px rgba(var(--color-accent-primary-rgb), 0.15),
@@ -55,7 +55,7 @@
                               0 0 25px rgba(var(--color-accent-secondary-rgb), 0.3);
 
   /* Tipografia */
-  --font-size-title: clamp(2.25rem, 4.5vw, 3.75rem); /* Levemente ajustado */
+  --font-size-title: clamp(2.25rem, 4.5vw, 3.75rem); 
   --font-size-card-title: 1.6rem;
   --font-size-resumo: 1.05rem;
   --font-size-detalhes: 0.95rem;
@@ -67,9 +67,10 @@
   --transition-easing-cubic: cubic-bezier(0.175, 0.885, 0.32, 1.275);
   --transition-easing-smooth: ease-in-out;
 
-  /* RGB values for RGBA shadows (exemplo, precisa definir para cada cor de acento se usada assim) */
+  /* Valores RGB para sombras RGBA */
   --color-accent-primary-rgb: 59, 130, 246;
   --color-accent-secondary-rgb: 139, 92, 246;
+  --color-text-muted-rgb: 71, 85, 105; 
 }
 
 /* Container principal da seção */
