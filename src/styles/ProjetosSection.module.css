@@ -1,13 +1,15 @@
+/* styles/ProjetosSection.module.css */
+
 /* Container principal da seção */
 .projetosSection {
   padding: 4rem 2rem;
-  background: #1e293b;
+  background: #1e293b; /* Azul petróleo escuro profundo */
   min-height: 100vh;
   position: relative;
-  overflow: hidden;
+  overflow: hidden; /* Importante para conter pseudo-elementos e animações */
 }
 
-/* Efeito de partículas de fundo */
+/* Efeito de partículas de fundo (mais sutil e lento) */
 .projetosSection::before {
   content: '';
   position: absolute;
@@ -15,71 +17,78 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: 
-    radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
-    radial-gradient(circle farthest-corner at 40% 40%, rgba(59, 130, 246, 0.05) 0%, transparent 80%);
-  animation: backgroundShift 15s ease-in-out infinite;
+  background-image:
+    radial-gradient(circle at 15% 85%, rgba(59, 130, 246, 0.08) 0%, transparent 45%), /* Reduzida opacidade e tamanho */
+    radial-gradient(circle at 85% 15%, rgba(139, 92, 246, 0.06) 0%, transparent 45%), /* Reduzida opacidade e tamanho */
+    radial-gradient(circle farthest-corner at 35% 35%, rgba(59, 130, 246, 0.04) 0%, transparent 70%); /* Reduzida opacidade e tamanho */
+  animation: backgroundShift 25s ease-in-out infinite; /* Mais lento */
   z-index: 0;
 }
 
 @keyframes backgroundShift {
-  0%, 100% { transform: scale(1) rotate(0deg); }
-  50% { transform: scale(1.1) rotate(1deg); }
+  0%, 100% { transform: scale(1) rotate(0deg) translate(0, 0); }
+  33% { transform: scale(1.05) rotate(0.3deg) translate(5px, -5px); } /* Rotação e movimento mais sutis */
+  66% { transform: scale(0.95) rotate(-0.3deg) translate(-5px, 5px); } /* Rotação e movimento mais sutis */
 }
 
-/* Título principal */
+/* Título principal (flutuação mais suave) */
 .titulo {
-  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-size: clamp(2.25rem, 5vw, 3.75rem); /* Levemente ajustado para melhor hierarquia */
   font-weight: 800;
   text-align: center;
-  margin-bottom: 3rem;
-  background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 50%, #cbd5e1 100%);
+  margin-bottom: 3.5rem; /* Mais espaço para respiro */
+  background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 60%, #cbd5e1 100%); /* Gradiente ajustado */
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  text-fill-color: transparent; /* Adicionado para compatibilidade */
   position: relative;
   z-index: 1;
-  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  animation: titleFloat 6s ease-in-out infinite;
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.25); /* Sombra mais suave */
+  animation: titleFloat 7s ease-in-out infinite; /* Mais lento e suave */
 }
 
 @keyframes titleFloat {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+  50% { transform: translateY(-7px); } /* Translação mais sutil */
 }
 
 /* Grid de projetos */
 .projetosGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-  gap: 2rem;
-  max-width: 2000px;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); /* Levemente ajustado */
+  gap: 2.5rem; /* Aumentado para mais espaçamento */
+  max-width: 1800px; /* Ajustado para grandes telas */
   margin: 0 auto;
   position: relative;
   z-index: 1;
 }
 
-/* Card do projeto */
+/* Card do projeto (blur mais sutil, animações refinadas) */
 .projetoCard {
-  background: rgba(255, 255, 255, 0.98);
-  backdrop-filter: blur(30px);
-  border: 2px solid rgba(255, 255, 255, 0.4);
-  border-radius: 48px;
-  padding: 3rem;
+  background: rgba(255, 255, 255, 0.97); /* Levemente mais opaco */
+  backdrop-filter: blur(20px); /* Reduzido para performance e sutileza */
+  border: 1.5px solid rgba(255, 255, 255, 0.3); /* Borda mais fina e sutil */
+  border-radius: 40px; /* Levemente menor para um look mais clean */
+  padding: 2.75rem; /* Ajustado */
   position: relative;
   overflow: hidden;
-  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 
-    0 30px 60px rgba(0, 0, 0, 0.25),
-    0 0 50px rgba(59, 130, 246, 0.1),
-    0 0 0 1px rgba(255, 255, 255, 0.2) inset;
-  animation: cardSlideIn 0.8s ease-out forwards, cardFloat 8s ease-in-out infinite;
+  transition:
+    transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), /* Easing mais suave */
+    box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
+    border-color 0.4s ease-out,
+    background 0.4s ease-out;
+  box-shadow:
+    0 20px 45px rgba(0, 0, 0, 0.18), /* Sombra principal mais suave */
+    0 0 30px rgba(59, 130, 246, 0.08), /* Sombra de brilho mais sutil */
+    0 0 0 1px rgba(255, 255, 255, 0.15) inset; /* Borda interna sutil */
+  animation: cardSlideIn 0.7s ease-out 0.1s forwards, /* Delay padrão no cardSlideIn */
+             cardFloat 10s ease-in-out infinite; /* Duração base da flutuação */
   opacity: 0;
-  transform: translateY(50px);
+  transform: translateY(40px);
 }
 
-/* Animação de entrada dos cards */
+/* Animação de entrada dos cards (mantida) */
 @keyframes cardSlideIn {
   to {
     opacity: 1;
@@ -87,63 +96,34 @@
   }
 }
 
-/* Animação de flutuação dos cards */
+/* Animação de flutuação dos cards (mais suave, 2D com leve rotação Z) */
 @keyframes cardFloat {
-  0%, 100% { 
-    transform: translateY(0px) rotateX(0deg) rotateY(0deg); 
-  }
-  20% { 
-    transform: translateY(-12px) rotateX(3deg) rotateY(1deg); 
-  }
-  40% { 
-    transform: translateY(-18px) rotateX(0deg) rotateY(-2deg); 
-  }
-  60% { 
-    transform: translateY(-15px) rotateX(-2deg) rotateY(1deg); 
-  }
-  80% { 
-    transform: translateY(-8px) rotateX(1deg) rotateY(0deg); 
-  }
+  0%, 100% { transform: translateY(0px) rotateZ(0deg); }
+  25% { transform: translateY(-7px) rotateZ(-0.25deg); } /* Movimento e rotação mais sutis */
+  50% { transform: translateY(0px) rotateZ(0deg); }
+  75% { transform: translateY(-7px) rotateZ(0.25deg); } /* Movimento e rotação mais sutis */
 }
 
-/* Delay progressivo para cada card com diferentes tempos de flutuação */
-.projetoCard:nth-child(1) { 
-  animation-delay: 0.1s; 
-  animation: cardSlideIn 0.8s ease-out 0.1s forwards, cardFloat 8s ease-in-out 1s infinite;
-}
-.projetoCard:nth-child(2) { 
-  animation-delay: 0.2s; 
-  animation: cardSlideIn 0.8s ease-out 0.2s forwards, cardFloat 9s ease-in-out 1.5s infinite;
-}
-.projetoCard:nth-child(3) { 
-  animation-delay: 0.3s; 
-  animation: cardSlideIn 0.8s ease-out 0.3s forwards, cardFloat 7s ease-in-out 2s infinite;
-}
-.projetoCard:nth-child(4) { 
-  animation-delay: 0.4s; 
-  animation: cardSlideIn 0.8s ease-out 0.4s forwards, cardFloat 8.5s ease-in-out 2.5s infinite;
-}
-.projetoCard:nth-child(5) { 
-  animation-delay: 0.5s; 
-  animation: cardSlideIn 0.8s ease-out 0.5s forwards, cardFloat 7.5s ease-in-out 3s infinite;
-}
-.projetoCard:nth-child(6) { 
-  animation-delay: 0.6s; 
-  animation: cardSlideIn 0.8s ease-out 0.6s forwards, cardFloat 9.5s ease-in-out 3.5s infinite;
-}
+/* Delay progressivo e variação na duração da flutuação */
+.projetoCard:nth-child(1) { animation-delay: 0.1s; animation-duration: 0.7s, 10s; }
+.projetoCard:nth-child(2) { animation-delay: 0.2s; animation-duration: 0.7s, 11.5s; } /* Duração variada */
+.projetoCard:nth-child(3) { animation-delay: 0.3s; animation-duration: 0.7s, 9s; }   /* Duração variada */
+.projetoCard:nth-child(4) { animation-delay: 0.4s; animation-duration: 0.7s, 10.5s; }
+.projetoCard:nth-child(5) { animation-delay: 0.5s; animation-duration: 0.7s, 9.5s; }
+.projetoCard:nth-child(6) { animation-delay: 0.6s; animation-duration: 0.7s, 11s; }
 
-/* Efeito hover do card */
+/* Efeito hover do card (mais elegante e estável) */
 .projetoCard:hover {
-  transform: translateY(-25px) scale(1.05) rotateX(8deg) rotateY(-3deg);
-  box-shadow: 
-    0 50px 100px rgba(0, 0, 0, 0.3),
-    0 0 80px rgba(59, 130, 246, 0.2),
-    0 0 0 2px rgba(255, 255, 255, 0.6) inset;
-  border-color: rgba(255, 255, 255, 0.7);
-  background: rgba(255, 255, 255, 1);
+  transform: translateY(-12px) scale(1.03); /* Menos translação, sem rotação 3D para mais estabilidade */
+  box-shadow:
+    0 35px 70px rgba(0, 0, 0, 0.2), /* Sombra mais pronunciada no hover */
+    0 0 50px rgba(59, 130, 246, 0.15),
+    0 0 0 1.5px rgba(255, 255, 255, 0.5) inset;
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 1); /* Totalmente opaco no hover */
 }
 
-/* Efeito de borda animada */
+/* Efeito de borda animada (mais lenta e sutil) */
 .projetoCard::before {
   content: '';
   position: absolute;
@@ -151,15 +131,17 @@
   left: 0;
   right: 0;
   bottom: 0;
-  border-radius: 48px;
-  padding: 3px;
+  border-radius: 40px; /* Consistente com o card */
+  padding: 2.5px; /* Espessura da borda animada */
   background: linear-gradient(45deg, #3b82f6, #8b5cf6, #06b6d4, #10b981, #f59e0b, #ef4444, #3b82f6);
   background-size: 400% 400%;
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  animation: borderRotate 6s linear infinite;
+  -webkit-mask-composite: destination-out; /* Para Safari */
+  mask-composite: exclude; /* Padrão */
+  animation: borderRotate 8s linear infinite; /* Mais lenta */
   opacity: 0;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.4s ease-out;
+  z-index: -1; /* Para ficar atrás do conteúdo do card */
 }
 
 .projetoCard:hover::before {
@@ -174,14 +156,15 @@
 
 /* Título do projeto */
 .projetoCard h3 {
-  font-size: 1.75rem;
-  font-weight: 800;
-  margin-bottom: 1.25rem;
-  background: linear-gradient(135deg, #1e293b 0%, #3b82f6 50%, #8b5cf6 100%);
+  font-size: 1.65rem; /* Levemente ajustado */
+  font-weight: 700; /* Um pouco menos "bold" que 800 */
+  margin-bottom: 1.1rem;
+  background: linear-gradient(135deg, #1e293b 0%, #306bb8 50%, #7e4fe1 100%); /* Gradiente levemente ajustado */
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  transition: all 0.4s ease;
+  text-fill-color: transparent; /* Padrão */
+  transition: transform 0.3s ease-out; /* Transição específica */
   position: relative;
 }
 
@@ -191,99 +174,101 @@
   bottom: -5px;
   left: 0;
   width: 0;
-  height: 3px;
+  height: 2.5px; /* Mais fina */
   background: linear-gradient(135deg, #3b82f6, #8b5cf6);
   border-radius: 2px;
-  transition: width 0.4s ease;
+  transition: width 0.4s ease-out; /* Easing suave */
 }
 
 .projetoCard:hover h3 {
-  transform: translateX(8px) scale(1.02);
+  transform: translateX(4px); /* Translação mais sutil */
 }
 
 .projetoCard:hover h3::after {
-  width: 60%;
+  width: 55%; /* Ajustado */
 }
 
 /* Resumo do projeto */
 .resumo {
-  color: #475569;
-  font-size: 1.1rem;
-  line-height: 1.7;
-  margin-bottom: 2rem;
+  color: #4a5568; /* Tom de cinza ligeiramente diferente */
+  font-size: 1.05rem; /* Ajustado */
+  line-height: 1.65; /* Bom espaçamento */
+  margin-bottom: 1.75rem;
   position: relative;
-  padding: 1.5rem;
-  background: rgba(59, 130, 246, 0.03);
-  border-radius: 20px;
-  border-left: 5px solid transparent;
-  border-image: linear-gradient(135deg, #3b82f6, #8b5cf6) 1;
-  transition: all 0.3s ease;
+  padding: 1.25rem;
+  background: rgba(59, 130, 246, 0.025); /* Fundo mais sutil */
+  border-radius: 16px; /* Borda mais suave */
+  border-left: 4px solid transparent; /* Borda inicial transparente */
+  border-image: linear-gradient(160deg, #3b82f6, #8b5cf6) 1; /* Angulo do gradiente ajustado */
+  transition: all 0.3s ease-out;
 }
 
 .projetoCard:hover .resumo {
-  background: rgba(59, 130, 246, 0.08);
-  transform: translateX(5px);
-  border-left-width: 6px;
+  background: rgba(59, 130, 246, 0.06);
+  transform: translateX(3px); /* Movimento sutil */
+  border-left-width: 5px;
 }
 
 /* Lista de detalhes */
 .detalhes {
   list-style: none;
   padding: 0;
-  margin: 0 0 2rem 0;
+  margin: 0 0 1.75rem 0;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.8rem; /* Espaçamento entre itens */
 }
 
 .detalhes li {
   display: flex;
   align-items: center;
-  font-size: 1rem;
+  font-size: 0.95rem; /* Levemente menor para mais densidade se necessário */
   color: #334155;
-  padding: 1rem 1.5rem;
-  background: rgba(148, 163, 184, 0.05);
-  border-radius: 16px;
-  border: 1px solid rgba(59, 130, 246, 0.1);
-  transition: all 0.4s ease;
-  opacity: 0.9;
+  padding: 0.8rem 1.25rem;
+  background: rgba(148, 163, 184, 0.04); /* Fundo bem sutil */
+  border-radius: 12px; /* Borda suave */
+  border: 1px solid rgba(59, 130, 246, 0.08); /* Borda sutil */
+  transition: all 0.3s ease-out; /* Easing suave */
   position: relative;
-  overflow: hidden;
+  overflow: hidden; /* Garante que o ::before não escape */
 }
 
 .detalhes li::before {
   content: '';
   position: absolute;
   left: 0;
-  top: 0;
-  width: 4px;
-  height: 100%;
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-  transition: width 0.3s ease;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3.5px; /* Largura da barrinha */
+  height: 60%; /* Altura da barrinha */
+  background: linear-gradient(160deg, #3b82f6, #8b5cf6); /* Consistente */
+  border-radius: 0 3px 3px 0; /* Levemente arredondado */
+  transition: width 0.3s ease-out, height 0.3s ease-out;
 }
 
 .projetoCard:hover .detalhes li {
-  opacity: 1;
-  transform: translateX(5px);
   color: #1e293b;
-  background: rgba(59, 130, 246, 0.08);
-  border-color: rgba(59, 130, 246, 0.2);
+  background: rgba(59, 130, 246, 0.07);
+  border-color: rgba(59, 130, 246, 0.18);
+  transform: translateX(3px); /* Movimento sutil */
 }
 
 .projetoCard:hover .detalhes li::before {
-  width: 8px;
+  width: 6px; /* Barrinha expande no hover */
+  height: 75%;
 }
 
 .detalhes li strong {
   color: #1e293b;
-  margin-right: 0.75rem;
-  font-weight: 700;
-  min-width: 120px;
+  margin-right: 0.65rem;
+  font-weight: 600; /* Peso da fonte */
+  min-width: 110px; /* Alinhamento */
 }
 
-/* Área do link */
+/* Área do link (mantendo a proeminência com pequenos ajustes) */
 .linkArea {
-  margin-top: auto;
+  margin-top: auto; /* Empurra para o final do card */
+  padding-top: 1rem; /* Espaço antes do botão */
   display: flex;
   justify-content: center;
 }
@@ -292,181 +277,208 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 1rem 2rem;
+  gap: 0.6rem; /* Espaço entre texto e ícone */
+  padding: 0.9rem 1.8rem; /* Padding do botão */
   background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #06b6d4 100%);
   color: white;
   text-decoration: none;
-  border-radius: 25px;
+  border-radius: 30px; /* Botão bem arredondado */
   font-weight: 700;
-  font-size: 1rem;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  font-size: 0.95rem; /* Tamanho da fonte */
+  transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1); /* Easing suave */
   position: relative;
   overflow: hidden;
-  box-shadow: 
-    0 8px 25px rgba(59, 130, 246, 0.4),
-    0 0 20px rgba(139, 92, 246, 0.2);
+  box-shadow:
+    0 7px 22px rgba(59, 130, 246, 0.35), /* Sombra ajustada */
+    0 0 18px rgba(139, 92, 246, 0.18);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px; /* Espaçamento entre letras */
 }
 
-.linkArea a::after {
+.linkArea a::after { /* Ícone foguete */
   content: '🚀';
-  transition: transform 0.3s ease;
+  display: inline-block; /* Para permitir transform */
+  transition: transform 0.3s ease-out;
 }
 
 .linkArea a:hover::after {
-  transform: translateX(5px) rotate(15deg);
+  transform: translateX(4px) rotate(12deg); /* Movimento mais sutil */
 }
 
-.linkArea a::before {
+.linkArea a::before { /* Efeito de brilho no hover */
   content: '';
   position: absolute;
   top: 0;
-  left: -100%;
-  width: 100%;
+  left: -150%; /* Começa fora da tela */
+  width: 60%; /* Largura do brilho */
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s ease;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+  transform: skewX(-25deg); /* Inclinação do brilho */
+  transition: left 0.5s ease-in-out; /* Animação mais suave */
 }
 
 .linkArea a:hover {
-  transform: translateY(-5px) scale(1.08);
-  box-shadow: 
-    0 20px 50px rgba(59, 130, 246, 0.7),
-    0 0 30px rgba(139, 92, 246, 0.4);
-  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #0891b2 100%);
+  transform: translateY(-4px) scale(1.06); /* Elevação e escala sutis */
+  box-shadow:
+    0 16px 40px rgba(59, 130, 246, 0.5), /* Sombra mais forte no hover */
+    0 0 25px rgba(139, 92, 246, 0.3);
+  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #0891b2 100%); /* Gradiente mais escuro no hover */
 }
 
 .linkArea a:hover::before {
-  left: 100%;
+  left: 150%; /* Move o brilho através do botão */
 }
 
-.linkArea a:active {
-  transform: translateY(0);
+.linkArea a:active { /* Feedback de clique */
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
 }
 
-/* Sem link disponível */
+/* Sem link disponível (estilo mais sutil) */
 .semLink {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 1rem 2rem;
-  background: rgba(71, 85, 105, 0.08);
-  color: #475569;
-  border-radius: 25px;
+  gap: 0.6rem;
+  padding: 0.9rem 1.8rem;
+  background: rgba(71, 85, 105, 0.06); /* Fundo mais sutil */
+  color: #64748b; /* Cor do texto mais suave */
+  border-radius: 30px;
   font-weight: 600;
-  font-size: 1rem;
-  border: 2px dashed rgba(71, 85, 105, 0.2);
+  font-size: 0.95rem;
+  border: 2px dashed rgba(71, 85, 105, 0.15); /* Borda tracejada mais sutil */
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
 }
 
 .semLink::after {
   content: '🔒';
 }
 
-/* Nenhum projeto encontrado */
+/* Nenhum projeto encontrado (visual mais integrado) */
 .nenhumProjeto {
   text-align: center;
-  font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.9);
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(10px);
-  padding: 3rem 2rem;
-  border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  max-width: 500px;
-  margin: 0 auto;
+  font-size: 1.15rem; /* Ajustado */
+  color: rgba(255, 255, 255, 0.85); /* Cor do texto */
+  background: rgba(255, 255, 255, 0.04); /* Fundo muito sutil */
+  backdrop-filter: blur(8px); /* Blur suave */
+  padding: 2.5rem 1.5rem; /* Padding interno */
+  border-radius: 20px; /* Borda arredondada */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Borda sutil */
+  max-width: 480px; /* Largura máxima */
+  margin: 2rem auto; /* Centralizado com margem */
   position: relative;
   z-index: 1;
 }
 
-/* Responsividade */
+/* Responsividade (mantendo ajustes e adicionando consistência) */
 @media (max-width: 768px) {
   .projetosSection {
-    padding: 2rem 1rem;
+    padding: 3rem 1rem; /* Padding ajustado */
   }
-  
   .projetosGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* Uma coluna */
     gap: 2rem;
   }
-  
   .projetoCard {
     padding: 2rem;
-    border-radius: 36px;
+    border-radius: 32px; /* Ajuste consistente */
   }
-  
   .titulo {
-    font-size: 2rem;
-    margin-bottom: 2rem;
+    font-size: clamp(2rem, 6vw, 2.8rem); /* Ajuste responsivo do título */
+    margin-bottom: 2.5rem;
   }
-  
   .detalhes li {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
     padding: 1rem;
   }
-  
   .detalhes li strong {
-    min-width: auto;
+    min-width: auto; /* Remove largura mínima no mobile */
   }
-  
-  .linkArea a {
-    padding: 0.875rem 1.75rem;
+  .linkArea a, .semLink { /* Consistência para botões/links */
+    padding: 0.8rem 1.6rem;
     font-size: 0.9rem;
   }
 }
 
 @media (max-width: 480px) {
   .projetosSection {
-    padding: 1.5rem 0.75rem;
+    padding: 2rem 0.75rem;
   }
-  
   .projetoCard {
-    padding: 1.5rem;
-    border-radius: 28px;
+    padding: 1.75rem 1.5rem; /* Padding ajustado */
+    border-radius: 28px; /* Ajuste consistente */
   }
-  
   .titulo {
-    font-size: 1.75rem;
+    font-size: clamp(1.75rem, 7vw, 2.25rem); /* Ajuste responsivo do título */
   }
-  
   .resumo {
-    padding: 1rem;
-    border-radius: 16px;
+    padding: 1.25rem;
+    border-radius: 12px;
+  }
+   .projetoCard h3 {
+    font-size: 1.45rem;
+  }
+  .detalhes li {
+    font-size: 0.9rem;
   }
 }
 
-/* Melhorias para acessibilidade */
+/* Melhorias para acessibilidade (preservadas e expandidas) */
 @media (prefers-reduced-motion: reduce) {
   .projetosSection,
+  .projetosSection::before, /* Inclui a animação de fundo */
   .projetoCard,
   .titulo,
-  .linkArea a {
+  .linkArea a,
+  .projetoCard::before { /* Inclui a borda animada */
     animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
+    animation-iteration-count: 1 !important; /* Executa apenas uma vez, efetivamente parando */
     transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important; /* Remove qualquer delay */
   }
 }
 
-/* Estados de foco para acessibilidade */
+/* Estados de foco para acessibilidade (melhorado) */
 .linkArea a:focus-visible {
-  outline: 2px solid #3b82f6;
-  outline-offset: 2px;
+  outline: 3px solid #3b82f6;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px #1e293b, 0 0 0 7px #3b82f6; /* Destaque de foco mais visível */
 }
 
-/* Efeito de loading para quando os projetos estão carregando */
+/* Adicionado foco para o card se ele se tornar interativo como um todo */
+.projetoCard:focus-visible {
+  outline: 3px solid #3b82f6;
+  outline-offset: 3px;
+  box-shadow:
+    0 0 0 4px #1e293b, 0 0 0 7px #3b82f6, /* Foco principal */
+    0 35px 70px rgba(0, 0, 0, 0.2),      /* Mantém a sombra do hover para consistência */
+    0 0 50px rgba(59, 130, 246, 0.15),
+    0 0 0 1.5px rgba(255, 255, 255, 0.5) inset;
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 1);
+}
+
+
+/* Efeito de loading para quando os projetos estão carregando (shimmer mais suave) */
 .projetoCard.loading {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-  background-size: 200% 100%;
-  animation: shimmer 2s infinite;
+  background: linear-gradient(100deg,
+    rgba(255,255,255,0.05) 20%, /* Cores mais sutis para o shimmer no tema escuro */
+    rgba(255,255,255,0.15) 50%,
+    rgba(255,255,255,0.05) 80%);
+  background-size: 300% 100%; /* Aumentado para uma varredura mais longa */
+  animation: shimmer 2.5s infinite linear; /* Animação mais suave */
+  border-color: rgba(255,255,255,0.1); /* Borda sutil durante o loading */
+}
+
+.projetoCard.loading > * { /* Esconde conteúdo real de forma mais suave */
+  opacity: 0.15;
+  transition: opacity 0.3s ease-out;
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% { background-position: 150% 0; } /* Começa mais fora */
+  100% { background-position: -150% 0; } /* Termina mais fora, varrendo completamente */
 }
