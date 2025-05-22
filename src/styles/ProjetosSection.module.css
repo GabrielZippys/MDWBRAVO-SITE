@@ -1,12 +1,12 @@
-/* styles/ProjetosSection.module.css */
+/* src/styles/ProjetosSection.module.css */
 
-/* AS VARIÁVEIS GLOBAIS FORAM MOVIDAS PARA @/styles/globals.css */
+/* AS VARIÁVEIS GLOBAIS ESTÃO DEFINIDAS EM @/styles/globals.css */
 /* ESTE ARQUIVO AGORA SÓ CONTÉM AS CLASSES ESPECÍFICAS DESTE MÓDULO */
 
 /* Container principal da seção */
 .projetosSection {
-  padding: var(--padding-section, 4rem 2rem); /* Garanta que --padding-section esteja em globals.css ou defina um fallback */
-  background: var(--color-background-section);
+  padding: var(--padding-section, 4rem 2rem); /* Usando variável global ou fallback */
+  background: var(--color-background-section); /* Usando variável global */
   min-height: 100vh;
   position: relative;
   overflow: hidden;
@@ -20,7 +20,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: 
+  background-image:
     radial-gradient(circle at 15% 85%, rgba(var(--color-accent-primary-rgb), 0.08) 0%, transparent 45%),
     radial-gradient(circle at 85% 15%, rgba(var(--color-accent-secondary-rgb), 0.06) 0%, transparent 45%),
     radial-gradient(circle farthest-corner at 35% 35%, rgba(var(--color-accent-primary-rgb), 0.04) 0%, transparent 70%);
@@ -39,12 +39,12 @@
   font-size: var(--font-size-title);
   font-weight: 800;
   text-align: center;
-  margin-bottom: 3.5rem; /* Aumentado para mais respiro */
+  margin-bottom: 3.5rem;
   background: var(--gradient-title);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  text-fill-color: transparent; /* Padrão */
+  text-fill-color: transparent;
   position: relative;
   z-index: 1;
   text-shadow: var(--shadow-title);
@@ -53,15 +53,15 @@
 
 @keyframes titleFloat {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-8px); } /* Mais sutil */
+  50% { transform: translateY(-8px); }
 }
 
 /* Grid de projetos */
 .projetosGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); /* Ajustado minmax */
-  gap: 2.5rem; /* Aumentado o espaçamento */
-  max-width: 1800px; /* Ajustado */
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 2.5rem;
+  max-width: 1800px;
   margin: 0 auto;
   position: relative;
   z-index: 1;
@@ -71,12 +71,12 @@
 .projetoCard {
   background: var(--card-background);
   backdrop-filter: blur(var(--card-backdrop-blur));
-  border: 1.5px solid var(--card-border-color); /* Espessura da borda */
+  border: 1.5px solid var(--card-border-color);
   border-radius: var(--card-border-radius);
   padding: var(--card-padding);
   position: relative;
   overflow: hidden;
-  transition: 
+  transition:
     transform var(--transition-duration-normal) var(--transition-easing-cubic),
     box-shadow var(--transition-duration-normal) var(--transition-easing-smooth),
     border-color var(--transition-duration-normal) var(--transition-easing-smooth),
@@ -94,7 +94,6 @@
   }
 }
 
-/* Animação de flutuação dos cards (mais suave e natural) */
 @keyframes cardFloat {
   0%, 100% { transform: translateY(0px) rotateZ(0deg); }
   25% { transform: translateY(-8px) rotateZ(-0.2deg); }
@@ -102,21 +101,18 @@
   75% { transform: translateY(-8px) rotateZ(0.2deg); }
 }
 
-/* Delay progressivo para cada card com diferentes tempos de flutuação */
 .projetoCard:nth-child(1) { animation-delay: 0.1s; animation-name: cardSlideIn, cardFloat; animation-duration: 0.7s, 10s; animation-timing-function: ease-out, var(--transition-easing-smooth); animation-fill-mode: forwards, infinite; animation-delay: 0.1s, 1s; }
 .projetoCard:nth-child(2) { animation-delay: 0.2s; animation-name: cardSlideIn, cardFloat; animation-duration: 0.7s, 11s; animation-timing-function: ease-out, var(--transition-easing-smooth); animation-fill-mode: forwards, infinite; animation-delay: 0.2s, 1.5s; }
 .projetoCard:nth-child(3) { animation-delay: 0.3s; animation-name: cardSlideIn, cardFloat; animation-duration: 0.7s, 9s; animation-timing-function: ease-out, var(--transition-easing-smooth); animation-fill-mode: forwards, infinite; animation-delay: 0.3s, 2s; }
-/* Adicione mais :nth-child se necessário, variando a duração da flutuação */
 
-/* Efeito hover do card (mais sutil e elegante) */
+
 .projetoCard:hover {
-  transform: translateY(-15px) scale(1.03); /* Rotação removida para mais estabilidade */
+  transform: translateY(-15px) scale(1.03);
   box-shadow: var(--shadow-card-hover);
   border-color: var(--card-border-color-hover);
   background: var(--card-background-hover);
 }
 
-/* Efeito de borda animada */
 .projetoCard::before {
   content: '';
   position: absolute;
@@ -124,17 +120,17 @@
   left: 0;
   right: 0;
   bottom: 0;
-  border-radius: var(--card-border-radius); /* Consistência */
-  padding: 2.5px; /* Espessura da borda animada */
+  border-radius: var(--card-border-radius);
+  padding: 2.5px;
   background: var(--gradient-animated-border);
   background-size: 400% 400%;
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: destination-out; /* Para Safari */
+  -webkit-mask-composite: destination-out;
   mask-composite: exclude;
-  animation: borderRotate 8s linear infinite; /* Mais lenta */
+  animation: borderRotate 8s linear infinite;
   opacity: 0;
   transition: opacity var(--transition-duration-normal) var(--transition-easing-smooth);
-  z-index: -1; /* Para não interferir com o conteúdo */
+  z-index: -1;
 }
 
 .projetoCard:hover::before {
@@ -147,10 +143,9 @@
   100% { background-position: 0% 50%; }
 }
 
-/* Título do projeto */
 .projetoCard h3 {
   font-size: var(--font-size-card-title);
-  font-weight: 700; /* Ajustado para melhor leitura */
+  font-weight: 700;
   margin-bottom: 1rem;
   background: var(--gradient-card-title);
   -webkit-background-clip: text;
@@ -164,33 +159,32 @@
 .projetoCard h3::after {
   content: '';
   position: absolute;
-  bottom: -6px; /* Ajustado */
+  bottom: -6px;
   left: 0;
   width: 0;
-  height: 2.5px; /* Ajustado */
-  background: var(--gradient-card-title); /* Consistente com o texto */
+  height: 2.5px;
+  background: var(--gradient-card-title);
   border-radius: 2px;
   transition: width var(--transition-duration-normal) var(--transition-easing-smooth);
 }
 
 .projetoCard:hover h3 {
-  transform: translateX(5px); /* Mais sutil */
+  transform: translateX(5px);
 }
 
 .projetoCard:hover h3::after {
-  width: 50%; /* Ajustado */
+  width: 50%;
 }
 
-/* Resumo do projeto */
 .resumo {
   color: var(--color-text-muted);
   font-size: var(--font-size-resumo);
-  line-height: 1.65; /* Ajustado */
+  line-height: 1.65;
   margin-bottom: 1.75rem;
   position: relative;
   padding: 1.25rem;
-  background: rgba(var(--color-accent-primary-rgb), 0.025); /* Mais sutil */
-  border-radius: 16px; /* Menor */
+  background: rgba(var(--color-accent-primary-rgb), 0.025);
+  border-radius: 16px;
   border-left: 4px solid transparent;
   border-image: linear-gradient(180deg, var(--color-accent-primary), var(--color-accent-secondary)) 1;
   transition: all var(--transition-duration-fast) var(--transition-easing-smooth);
@@ -202,14 +196,13 @@
   border-left-width: 5px;
 }
 
-/* Lista de detalhes */
 .detalhes {
   list-style: none;
   padding: 0;
   margin: 0 0 1.75rem 0;
   display: flex;
   flex-direction: column;
-  gap: 0.8rem; /* Ajustado */
+  gap: 0.8rem;
 }
 
 .detalhes li {
@@ -218,8 +211,8 @@
   font-size: var(--font-size-detalhes);
   color: var(--color-text-dark-secondary);
   padding: 0.8rem 1.25rem;
-  background: rgba(148, 163, 184, 0.04); /* Mais sutil */
-  border-radius: 12px; /* Menor */
+  background: rgba(148, 163, 184, 0.04);
+  border-radius: 12px;
   border: 1px solid rgba(var(--color-accent-primary-rgb), 0.08);
   transition: all var(--transition-duration-fast) var(--transition-easing-smooth);
   position: relative;
@@ -231,10 +224,10 @@
   left: 0;
   top: 50%;
   transform: translateY(-50%);
-  width: 3px; /* Mais fino */
-  height: 60%; /* Ajustado */
+  width: 3px;
+  height: 60%;
   background: linear-gradient(180deg, var(--color-accent-primary), var(--color-accent-secondary));
-  border-radius: 0 3px 3px 0; /* Arredondado na ponta */
+  border-radius: 0 3px 3px 0;
   transition: width var(--transition-duration-fast) var(--transition-easing-smooth), height var(--transition-duration-fast) var(--transition-easing-smooth);
 }
 
@@ -253,14 +246,13 @@
 .detalhes li strong {
   color: var(--color-text-dark-primary);
   margin-right: 0.6rem;
-  font-weight: 600; /* Levemente reduzido */
-  min-width: 110px; /* Ajustado */
+  font-weight: 600;
+  min-width: 110px;
 }
 
-/* Área do link */
 .linkArea {
-  margin-top: auto; /* Mantém no final */
-  padding-top: 1rem; /* Espaço antes do botão */
+  margin-top: auto;
+  padding-top: 1rem;
   display: flex;
   justify-content: center;
 }
@@ -270,11 +262,11 @@
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
-  padding: 0.9rem 1.8rem; /* Ajustado */
+  padding: 0.9rem 1.8rem;
   background: var(--gradient-link-button);
   color: white;
   text-decoration: none;
-  border-radius: 30px; /* Mais arredondado */
+  border-radius: 30px;
   font-weight: 700;
   font-size: var(--font-size-button);
   transition: all var(--transition-duration-normal) var(--transition-easing-cubic);
@@ -282,53 +274,52 @@
   overflow: hidden;
   box-shadow: var(--shadow-link-button);
   text-transform: uppercase;
-  letter-spacing: 0.75px; /* Aumentado para legibilidade */
+  letter-spacing: 0.75px;
 }
 
 .linkArea a::after {
   content: '🚀';
-  display: inline-block; /* Para transform funcionar corretamente */
+  display: inline-block;
   transition: transform var(--transition-duration-fast) var(--transition-easing-smooth);
 }
 
 .linkArea a:hover::after {
-  transform: translateX(4px) rotate(10deg); /* Mais sutil */
+  transform: translateX(4px) rotate(10deg);
 }
 
-.linkArea a::before { /* Efeito de brilho no hover */
+.linkArea a::before {
   content: '';
   position: absolute;
   top: 0;
-  left: -150%; /* Começa mais longe */
-  width: 70%; /* Brilho mais focado */
+  left: -150%;
+  width: 70%;
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-  transform: skewX(-25deg); /* Efeito de brilho inclinado */
+  transform: skewX(-25deg);
   transition: left var(--transition-duration-normal) var(--transition-easing-smooth);
 }
 
 .linkArea a:hover {
-  transform: translateY(-4px) scale(1.05); /* Mais sutil */
+  transform: translateY(-4px) scale(1.05);
   box-shadow: var(--shadow-link-button-hover);
   background: var(--gradient-link-button-hover);
 }
 
 .linkArea a:hover::before {
-  left: 150%; /* Move através do botão */
+  left: 150%;
 }
 
 .linkArea a:active {
-  transform: translateY(-1px) scale(1.02); /* Feedback de clique */
+  transform: translateY(-1px) scale(1.02);
 }
 
-/* Sem link disponível */
 .semLink {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
   padding: 0.9rem 1.8rem;
-  background: rgba(var(--color-text-muted-rgb, 71, 85, 105), 0.08); /* Usar variável se definida ou fallback */
+  background: rgba(var(--color-text-muted-rgb, 71, 85, 105), 0.08);
   color: var(--color-text-muted);
   border-radius: 30px;
   font-weight: 600;
@@ -342,58 +333,46 @@
   content: '🔒';
 }
 
-/* Nenhum projeto encontrado */
 .nenhumProjeto {
   text-align: center;
-  font-size: 1.1rem; /* Ajustado */
+  font-size: 1.1rem;
   color: var(--color-text-light-primary);
-  background: rgba(255, 255, 255, 0.05); /* Mais sutil */
-  backdrop-filter: blur(5px); /* Suave */
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(5px);
   padding: 2.5rem 1.5rem;
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   max-width: 450px;
-  margin: 2rem auto; /* Adicionado margem vertical */
+  margin: 2rem auto;
   position: relative;
   z-index: 1;
 }
 
-/* Responsividade */
 @media (max-width: 768px) {
-  /* Removido :root daqui, pois as variáveis globais devem estar em globals.css */
-  /* Se precisar de ajustes específicos para o módulo em mobile, defina-os nas classes */
   .projetosSection {
-    padding: 3rem 1rem; /* Ajustado */
+    padding: 3rem 1rem;
   }
-  
   .projetosGrid {
     grid-template-columns: 1fr;
     gap: 2rem;
   }
-    
   .titulo {
     margin-bottom: 2.5rem;
-    /* Para ajustar o tamanho do título em mobile, você pode usar var() com fallback ou redefinir aqui
-       se --font-size-title já não for responsivo o suficiente com clamp() */
-    /* font-size: clamp(1.8rem, 4vw, 2.5rem); */ /* Exemplo, se --font-size-title não bastar */
+    /* font-size: clamp(1.8rem, 4vw, 2.5rem); */ /* Ajuste se necessário, via var global é melhor */
   }
-
   .projetoCard {
-    border-radius: var(--card-border-radius-mobile, 36px); /* Exemplo de variável específica para mobile ou fallback */
+    border-radius: var(--card-border-radius-mobile, 36px);
     padding: var(--card-padding-mobile, 1.75rem);
   }
-  
   .detalhes li {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.4rem;
     padding: 0.9rem;
   }
-  
   .detalhes li strong {
     min-width: auto;
   }
-  
   .linkArea a, .semLink {
     padding: 0.8rem 1.5rem;
     font-size: 0.85rem;
@@ -401,16 +380,13 @@
 }
 
 @media (max-width: 480px) {
-  /* Removido :root daqui */
   .projetosSection {
     padding: 2rem 0.75rem;
   }
-
   .projetoCard {
     border-radius: var(--card-border-radius-sm-mobile, 28px);
     padding: var(--card-padding-sm-mobile, 1.25rem);
   }
-
   .projetoCard h3 {
     font-size: 1.35rem;
   }
@@ -424,44 +400,41 @@
   }
 }
 
-/* Melhorias para acessibilidade */
 @media (prefers-reduced-motion: reduce) {
   .projetosSection,
   .projetoCard,
   .titulo,
   .linkArea a,
-  .projetosSection::before { /* Inclui a animação de fundo */
+  .projetosSection::before {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-    transition-delay: 0ms !important; /* Garante que não haja delay */
+    transition-delay: 0ms !important;
   }
 }
 
-/* Estados de foco para acessibilidade */
 .linkArea a:focus-visible,
-.projetoCard:focus-visible { /* Adicionado foco ao card também */
+.projetoCard:focus-visible {
   outline: 3px solid var(--color-accent-primary);
   outline-offset: 3px;
-  box-shadow: 0 0 0 4px var(--color-background-section), 0 0 0 7px var(--color-accent-primary); /* Destaque mais visível */
+  box-shadow: 0 0 0 4px var(--color-background-section), 0 0 0 7px var(--color-accent-primary);
 }
 
-/* Efeito de loading para quando os projetos estão carregando */
 .projetoCard.loading {
-  background: linear-gradient(100deg, 
-    rgba(255,255,255,0.05) 20%, 
-    rgba(255,255,255,0.15) 50%, 
+  background: linear-gradient(100deg,
+    rgba(255,255,255,0.05) 20%,
+    rgba(255,255,255,0.15) 50%,
     rgba(255,255,255,0.05) 80%);
-  background-size: 300% 100%; /* Maior para animação mais suave */
-  animation: shimmer 2.5s infinite linear; /* Mais suave */
+  background-size: 300% 100%;
+  animation: shimmer 2.5s infinite linear;
   border-color: rgba(255,255,255,0.1);
 }
 
-.projetoCard.loading > * { /* Esconde conteúdo real durante o shimmer */
+.projetoCard.loading > * {
   opacity: 0.2;
 }
 
 @keyframes shimmer {
-  0% { background-position: 150% 0; } /* Começa mais deslocado */
-  100% { background-position: -150% 0; } /* Termina mais deslocado */
+  0% { background-position: 150% 0; }
+  100% { background-position: -150% 0; }
 }
