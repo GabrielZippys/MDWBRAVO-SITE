@@ -112,7 +112,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
            {/* Summary Statistics */}
       <div className="summaryStats mb-6 p-4 bg-gray-800 rounded-lg shadow-lg">
         {/* MODIFICADO AQUI 👇 */}
-        <h2 className="titulo2 font-semibold">Resumo dos Chamados</h2>
+         <h2 className="titulo2 font-semibold">Lista de Chamados</h2>
         <p className="text-gray-300 text-center mt-1"> {/* Adicionado text-center e margem para o parágrafo também */}
             Exibindo <span className="font-bold text-blue-300">{chamadosFiltrados.length}</span> de <span className="font-bold">{chamados.length}</span> chamados.
         </p>
@@ -121,7 +121,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
       {/* Tabela de Chamados */}
       <div className="table-container mb-8 bg-gray-800 p-2 sm:p-4 rounded-lg shadow-lg overflow-x-auto">
         {/* MODIFICADO AQUI 👇 */}
-        <h2 className="titulo2 font-semibold">Lista de Chamados</h2>
+       
         {chamadosFiltrados.length > 0 ? (
           <table className="tabela-chamados w-full mt-4"> {/* Adicionada margem superior à tabela */}
             {/* Conteúdo da tabela permanece o mesmo */}
