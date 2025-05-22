@@ -1760,3 +1760,117 @@ header {
     @apply bg-background text-foreground;
   }
 }
+
+/* Adicione ao seu globals.css ou arquivo de estilos principal */
+
+/* Estilos para os selects de filtro */
+.filtro-select {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background-color: #374151; /* bg-gray-700 */
+  color: #e5e7eb; /* text-gray-200 */
+  border: 1px solid #4b5563; /* border-gray-600 */
+  border-radius: 0.375rem; /* rounded-md */
+  font-size: 0.875rem; /* text-sm */
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.filtro-select:focus {
+  outline: none;
+  border-color: #60a5fa; /* border-blue-400 */
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3); /* ring-blue-400 ring-opacity-30 */
+}
+
+/* Estilos para tooltips do Recharts (exemplo) */
+.tooltip-recharts {
+  background-color: rgba(31, 41, 55, 0.9) !important; /* bg-gray-800 com opacidade */
+  border: 1px solid #4b5563 !important; /* border-gray-600 */
+  border-radius: 0.375rem !important; /* rounded-md */
+  padding: 0.5rem 0.75rem !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.tooltip-recharts .recharts-tooltip-label {
+  color: #e5e7eb !important; /* text-gray-200 */
+  font-weight: 600 !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.tooltip-recharts .recharts-tooltip-item {
+  color: #d1d5db !important; /* text-gray-300 */
+  font-size: 0.875rem !important;
+}
+
+/* Badges de Status (exemplo - você já tem data-status no seu CSS, adapte conforme necessário) */
+/* Supondo que você tenha algo como:
+   [data-status="em-aberto"] { background-color: red; color: white; }
+   [data-status="designado"] { background-color: orange; color: black; }
+*/
+.status-badge[data-status="emaberto"], /* Adapte os seletores conforme seu CSS */
+.status-badge[data-status="aberto"] {
+  background-color: #ef4444; /* red-500 */
+  color: #fef2f2; /* red-50 */
+}
+.status-badge[data-status="designado"] {
+  background-color: #f59e0b; /* amber-500 */
+  color: #fffbeb; /* amber-50 */
+}
+.status-badge[data-status="realizando"],
+.status-badge[data-status="emandamento"] {
+  background-color: #22c55e; /* green-500 */
+  color: #f0fdf4; /* green-50 */
+}
+.status-badge[data-status="concluido"],
+.status-badge[data-status="concluído"] {
+  background-color: #3b82f6; /* blue-500 */
+  color: #eff6ff; /* blue-50 */
+}
+.status-badge[data-status="interrompido"],
+.status-badge[data-status="empausa"] {
+  background-color: #a855f7; /* purple-500 */
+  color: #faf5ff; /* purple-50 */
+}
+.status-badge[data-status="pendente"] {
+  background-color: #6b7280; /* gray-500 */
+  color: #f3f4f6; /* gray-100 */
+}
+
+/* Badges de Prioridade */
+.prioridade-badge[data-prioridade="alta"],
+.prioridade-badge[data-prioridade="alta-🔥"] {
+  background-color: #dc2626; /* red-600 */
+  color: #fee2e2; /* red-100 */
+}
+.prioridade-badge[data-prioridade="media"],
+.prioridade-badge[data-prioridade="média"] {
+  background-color: #f97316; /* orange-500 */
+  color: #ffedd5; /* orange-100 */
+}
+.prioridade-badge[data-prioridade="baixa"] {
+  background-color: #22c55e; /* green-500 */
+  color: #dcfce7; /* green-100 */
+}
+.prioridade-badge[data-prioridade="nao-definida"] {
+  background-color: #6b7280; /* gray-500 */
+  color: #f3f4f6; /* gray-100 */
+}
+
+/* Estilos básicos para a tabela (adapte ao seu .tabela-chamados se necessário) */
+.tabela-chamados th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #9ca3af; /* text-gray-400 */
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid #4b5563; /* border-gray-600 */
+}
+.tabela-chamados td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #374151; /* border-gray-700 */
+  color: #d1d5db; /* text-gray-300 */
+}
+.tabela-chamados tbody tr:last-child td {
+  border-bottom: none;
+}
