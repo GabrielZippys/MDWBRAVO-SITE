@@ -332,7 +332,10 @@
 
 /* Melhorias para acessibilidade */
 @media (prefers-reduced-motion: reduce) {
-  * {
+  .projetosSection,
+  .projetoCard,
+  .titulo,
+  .linkArea a {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
