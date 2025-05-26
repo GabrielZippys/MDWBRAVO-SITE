@@ -153,7 +153,7 @@ export async function getProjetosFromNotion(): Promise<Projeto[]> {
       // Conforme sua info: coluna "Descrição do Problema" é tipo 'title'
       // <<<< CONFIRME O NOME "Descrição do Problema" E O TIPO 'title' NO SEU LOG >>>>
       const nomeProp = properties['Descrição do Problema'];
-      const nome: string = getTitleValue(nomeProp) || 'Sem Título';
+      const nome: string = getTitleValue(nomeProp) || 'Descrição do Problema';
 
       // NÚMERO DO CHAMADO (ID de Exibição)
       let numeroChamado: string | null = null;
