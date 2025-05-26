@@ -152,10 +152,10 @@ export default function Dashboard({ chamados }: DashboardProps) {
             <thead>
               <tr>
                 {/* AQUI: Ajuste final com larguras balanceadas */}
-                <th onClick={() => requestSort('notionId')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors w-28">ID Notion{renderSortArrow('notionId')}</th>
-                <th onClick={() => requestSort('titulo')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors w-2/5">Título{renderSortArrow('titulo')}</th>
+                <th onClick={() => requestSort('notionId')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors w-29">ID Notion{renderSortArrow('notionId')}</th>
+                <th onClick={() => requestSort('titulo')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors w-3/5">Título{renderSortArrow('titulo')}</th>
                 <th onClick={() => requestSort('loja')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors w-24">Loja{renderSortArrow('loja')}</th>
-                <th onClick={() => requestSort('status')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors w-36">Status{renderSortArrow('status')}</th>
+                <th onClick={() => requestSort('status')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors w-40">Status{renderSortArrow('status')}</th>
                 <th onClick={() => requestSort('tipo')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors w-48">Tipo{renderSortArrow('tipo')}</th>
                 <th onClick={() => requestSort('zona')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors w-32">Zona{renderSortArrow('zona')}</th>
                 <th onClick={() => requestSort('prioridade')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors w-28">Prioridade{renderSortArrow('prioridade')}</th>
