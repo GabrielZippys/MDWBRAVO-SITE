@@ -6,7 +6,7 @@ import {
   PieChart, Pie, Cell, Legend,
 } from 'recharts';
 import { useState, useMemo, useCallback } from 'react';
-import type { Projeto } from '@/lib/notion';
+import type { Projeto } from '@/lib/notion'; // Importa a interface Projeto correta
 
 // Usando Projeto diretamente como o tipo para os itens da lista de chamados
 type Chamado = Projeto;
@@ -32,7 +32,7 @@ const generateNotionPageLink = (pageId: string | undefined | null): string | nul
   return `https://www.notion.so/${cleanId}`;
 };
 
-// Chaves ordenáveis, incluindo numeroChamado e nome (que era título)
+// Chaves ordenáveis, incluindo numeroChamado e nome
 type SortableChamadoKey = 
   | keyof Pick<Chamado, 'numeroChamado' | 'nome' | 'loja' | 'status' | 'tipo' | 'prioridade' | 'criadoEm' | 'setor' | 'cliente'> 
   | 'zona';
@@ -63,9 +63,9 @@ export default function Dashboard({ chamados }: DashboardProps) {
         if (sortConfig.key === 'criadoEm') {
           const dateA = new Date(valA as string).getTime();
           const dateB = new Date(valB as string).getTime();
-          if (isNaN(dateA) && isNaN(dateB)) return 0; // Ambas inválidas
-          if (isNaN(dateA)) return 1; // Datas inválidas vão para o final
-          if (isNaN(dateB)) return -1; // Datas inválidas vão para o final
+          if (isNaN(dateA) && isNaN(dateB)) return 0;
+          if (isNaN(dateA)) return 1; 
+          if (isNaN(dateB)) return -1;
           if (dateA < dateB) return sortConfig.direction === 'asc' ? -1 : 1;
           if (dateA > dateB) return sortConfig.direction === 'asc' ? 1 : -1;
           return 0;
@@ -73,7 +73,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
           if (valA < valB) return sortConfig.direction === 'asc' ? -1 : 1;
           if (valA > valB) return sortConfig.direction === 'asc' ? 1 : -1;
           return 0;
-        } else { // Comparação de string
+        } else { 
           const strA = String(valA).toLowerCase();
           const strB = String(valB).toLowerCase();
           if (strA < strB) return sortConfig.direction === 'asc' ? -1 : 1;
@@ -98,7 +98,6 @@ export default function Dashboard({ chamados }: DashboardProps) {
         const valorDoCampo = chamado[campo as keyof Chamado];
         chave = typeof valorDoCampo === 'string' ? valorDoCampo : String(valorDoCampo);
       }
-      // Trata chaves nulas ou undefined como "Não Definido" APÓS a tentativa de conversão para String
       chave = chave || 'Não Definido';
       contagem[chave] = (contagem[chave] || 0) + 1;
     });
@@ -140,53 +139,53 @@ export default function Dashboard({ chamados }: DashboardProps) {
         {chamadosOrdenados.length > 0 ? (
           <table className="tabela-chamados w-full mt-4 table-fixed"> 
             <colgroup>
-              <col className="w-[100px] sm:w-[110px]" /> {/* ID Notion (numeroChamado) */}
-              <col className="w-2/5 xl:w-3/5" />      {/* Título (nome) */}
-              <col className="w-[90px] sm:w-[100px]" />  {/* Loja */}
-              <col className="w-[120px] sm:w-[140px]" /> {/* Status */}
-              <col className="w-[110px] sm:w-[120px] md:w-[100px]" /> {/* Tipo - MAIS ESTREITO */}
-              <col className="w-[100px] sm:w-[120px]" /> {/* Zona */}
-              <col className="w-[90px] sm:w-[110px]" />  {/* Prioridade */}
-              <col className="w-[110px] sm:w-[120px]" /> {/* Criado em */}
+              <col className="w-24 md:w-28" /> {/* ID Notion (numeroChamado) */}
+              <col className="w-2/5 lg:w-1/2" /> {/* Título (nome) - AUMENTADA */}
+              <col className="w-20 md:w-24" /> {/* Loja */}
+              <col className="w-32 md:w-36" /> {/* Status */}
+              <col className="w-28 md:w-24" /> {/* Tipo - DIMINUÍDA */}
+              <col className="w-28 md:w-32" /> {/* Zona */}
+              <col className="w-24 md:w-28" /> {/* Prioridade */}
+              <col className="w-28 md:w-32" /> {/* Criado em */}
             </colgroup>
             <thead>
               <tr>
                 <th onClick={() => requestSort('numeroChamado')} 
-                    className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">
+                    className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors text-left">
                   ID Notion{renderSortArrow('numeroChamado')}
                 </th>
                 <th onClick={() => requestSort('nome')} 
-                    className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">
+                    className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors text-left">
                   Título{renderSortArrow('nome')}
                 </th>
                 <th onClick={() => requestSort('loja')} 
-                    className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">
+                    className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors text-left">
                   Loja{renderSortArrow('loja')}
                 </th>
                 <th onClick={() => requestSort('status')} 
-                    className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">
+                    className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors text-left">
                   Status{renderSortArrow('status')}
                 </th>
                 <th onClick={() => requestSort('tipo')} 
-                    className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">
+                    className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors text-left">
                   Tipo{renderSortArrow('tipo')}
                 </th>
                 <th onClick={() => requestSort('zona')} 
-                    className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">
+                    className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors text-left">
                   Zona{renderSortArrow('zona')}
                 </th>
                 <th onClick={() => requestSort('prioridade')} 
-                    className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">
+                    className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors text-left">
                   Prioridade{renderSortArrow('prioridade')}
                 </th>
                 <th onClick={() => requestSort('criadoEm')} 
-                    className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">
+                    className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors text-left">
                   Criado em{renderSortArrow('criadoEm')}
                 </th>
               </tr>
             </thead>
             <tbody>
-              {chamadosOrdenados.map((chamado) => {
+              {chamadosOrdenados.map((chamado) => { // chamado é do tipo Projeto
                 const notionLink = generateNotionPageLink(chamado.pageId);
                 return (
                   <tr key={chamado.pageId} className="hover:bg-gray-700/50 transition-colors duration-150">
@@ -197,11 +196,11 @@ export default function Dashboard({ chamados }: DashboardProps) {
                           {chamado.numeroChamado}
                         </a>
                       ) : (
-                        chamado.numeroChamado || 'N/A'
+                        chamado.numeroChamado || 'N/A' // Exibe N/A se numeroChamado for null
                       )}
                     </td>
                     <td className="text-xs sm:text-sm p-2 align-top truncate hover:whitespace-normal" title={chamado.nome}>
-                      {chamado.nome}
+                      {chamado.nome} {/* Usa chamado.nome para o título */}
                     </td>
                     <td className="text-xs sm:text-sm p-2 align-top truncate">{chamado.loja || 'N/A'}</td>
                     <td className="p-2 align-top">
@@ -237,8 +236,9 @@ export default function Dashboard({ chamados }: DashboardProps) {
         )}
       </div>
       
-      {/* Seção de Gráficos (sem alterações significativas aqui, mas certifique-se que os campos existem em Chamado/Projeto) */}
+      {/* Seção de Gráficos (certifique-se que os campos como 'tipo', 'setor' existem em Projeto) */}
       <div className="Graficos grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* ... gráficos ... */}
         {/* Chamados por Status */}
         <div className="graphic-container bg-gray-800 p-4 rounded-lg shadow-lg">
           <h3 className="titulo2 text-lg font-semibold text-blue-400 mb-3">Chamados por Status</h3>
