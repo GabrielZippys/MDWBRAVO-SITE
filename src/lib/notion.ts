@@ -1,6 +1,4 @@
 // lib/notion.ts
-
-// lib/notion.ts
 import { Client } from '@notionhq/client';
 import {
   PageObjectResponse,
@@ -9,32 +7,34 @@ import {
   RichTextItemResponse,
   UserObjectResponse,
   PartialUserObjectResponse
+  // DatePropertyValue não é necessário importar diretamente
 } from '@notionhq/client/build/src/api-endpoints';
 
-// O restante do seu código...
-
+// Tipo para um valor de propriedade individual de PageObjectResponse.properties
 type PagePropertyValue = PageObjectResponse['properties'][string];
 
+// Inicializa o cliente do Notion
 export const notion = new Client({ auth: process.env.NOTION_TOKEN! });
 
+// ID da sua base de dados de projetos no Notion
 const databaseId =
-  process.env.NOTION_PROJECTS_DATABASE_ID || 'a2982b0a81ff4378a8d6159012d6cfa6'; // Confirmado que este ID está sendo usado
+  process.env.NOTION_PROJECTS_DATABASE_ID || 'a2982b0a81ff4378a8d6159012d6cfa6'; // Confirme se este é o ID correto
 
-// --- Interface Projeto Atualizada para usar 'null' para valores opcionais ---
+// --- Interface Projeto Atualizada ---
 export interface Projeto {
-  pageId: string;
-  displayableIssueId: string | null; // Alterado de undefined para null
+  pageId: string;                   // UUID da página do Notion (para gerar o link direto)
+  displayableIssueId: string | null; // Virá da coluna "ID" do Notion
   nome: string;
-  resumo: string | null;             // Alterado
+  resumo: string | null;
   status: string;
   setor: string;
   prioridade: string;
-  cliente: string | null;            // Alterado (era rich_text)
-  criadoEm: string;                  // page.created_time é sempre uma string
-  link: string | null;               // Alterado
+  cliente: string | null;
+  criadoEm: string;
+  link: string | null;
   proprietario: { nome: string } | null;
-  loja: string | null;               // Alterado
-  tipo: string | null;               // Alterado
+  loja: string | null;
+  tipo: string | null;               // Virá da coluna "Tipo" do Notion
 }
 
 // --- Funções Auxiliares ---
@@ -58,7 +58,7 @@ function getRichTextValue(prop: PagePropertyValue | undefined): string | null {
   if (prop?.type === 'rich_text' && prop.rich_text.length > 0 && prop.rich_text[0]?.plain_text) {
     return prop.rich_text[0].plain_text.trim();
   }
-  return null; // Retorna null se vazio ou tipo incorreto
+  return null;
 }
 
 function getSelectValue(prop: PagePropertyValue | undefined): string | null {
@@ -78,10 +78,10 @@ function getStatusValue(prop: PagePropertyValue | undefined): string | null {
 function getUniqueIdValue(prop: PagePropertyValue | undefined): string | null {
   if (prop?.type === 'unique_id' && prop.unique_id) {
     const { prefix, number } = prop.unique_id;
-    if (number === null) return null;
+    if (number === null) return null; // ID pode ainda não ter sido gerado pelo Notion
     return prefix ? `${prefix}-${number}` : String(number);
   }
-  return null; // Retorna null se não for unique_id ou não tiver valor
+  return null;
 }
 
 function getUrlValue(prop: PagePropertyValue | undefined): string | null {
@@ -98,11 +98,10 @@ function getDateValue(prop: PagePropertyValue | undefined): string | null {
     return null;
 }
 
-
 // --- Função Principal para Buscar Projetos ---
 export async function getProjetosFromNotion(): Promise<Projeto[]> {
-  if (!databaseId || databaseId === 'SEU_DATABASE_ID_AQUI') { // Verifique se o ID não é o placeholder
-    console.error("ERRO: NOTION_PROJECTS_DATABASE_ID não está configurado.");
+  if (!databaseId || databaseId === 'SEU_DATABASE_ID_AQUI') {
+    console.error("ERRO: NOTION_PROJECTS_DATABASE_ID não está configurado ou está com valor placeholder.");
     return [];
   }
 
@@ -119,7 +118,7 @@ export async function getProjetosFromNotion(): Promise<Projeto[]> {
     if (pages.length > 0) {
       const firstPageProperties = pages[0].properties;
       console.log(
-        'Propriedades da primeira página (CONFIRA AQUI OS NOMES EXATOS):',
+        'Propriedades da primeira página (CONFIRA OS NOMES EXATOS AQUI PARA "ID", "Tipo", "Loja" e outros):',
         Object.keys(firstPageProperties).map((key) => ({
           key,
           type: (firstPageProperties[key] as PagePropertyValue).type,
@@ -133,47 +132,50 @@ export async function getProjetosFromNotion(): Promise<Projeto[]> {
     const projetos: Projeto[] = pages.map((page) => {
       const properties = page.properties;
 
-      // Use 'Nome do projeto' conforme seu log
+      // Nome do projeto (conforme seu log anterior)
       const titleProp = properties['Nome do projeto'] as Extract<PagePropertyValue, { type: 'title' }> | undefined;
       const nome = titleProp?.title?.[0]?.plain_text?.trim() || 'Sem nome';
 
-      // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-      // IMPORTANTE: Verifique se você TEM uma coluna "Issue Id" no Notion.
-      // Se tiver, use o nome exato dela aqui. Se não tiver, displayableIssueId será null.
-      const displayableIssueId = getUniqueIdValue(properties['Issue Id']) || null;
-      // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+      // ID de exibição (usando "ID" como nome da coluna, conforme sua imagem)
+      // <<<< IMPORTANTE: CONFIRME SE O NOME É "ID" MAIÚSCULO E SE O TIPO É 'unique_id' NO LOG >>>>
+      const displayableIssueId = getUniqueIdValue(properties['ID']) || null;
 
-      // Mapeando conforme seu log
+      // Tipo (usando "Tipo" como nome da coluna, conforme sua imagem)
+      // <<<< IMPORTANTE: CONFIRME O NOME E O TIPO DESTA PROPRIEDADE NO LOG (select, status, rich_text?) >>>>
+      const tipo = getSelectValue(properties['Tipo']) || 
+                   getStatusValue(properties['Tipo']) || 
+                   getRichTextValue(properties['Tipo']) || 
+                   null;
+
+      // Loja (MANTENHA O PLACEHOLDER OU SUBSTITUA PELO NOME CORRETO DO SEU LOG)
+      // <<<< IMPORTANTE: CONFIRME O NOME E O TIPO DESTA PROPRIEDADE NO LOG >>>>
+      const loja = getSelectValue(properties['LojaNomeExatoNoNotion']) || 
+                   getRichTextValue(properties['LojaNomeExatoNoNotion']) || 
+                   null;
+
+      // Demais propriedades (conforme seu log anterior ou nomes corretos)
       const resumo = getRichTextValue(properties['Resumo']) || null;
       const status = getStatusValue(properties['Status']) || getSelectValue(properties['Status']) || 'Sem status';
       const setor = getSelectValue(properties['Setor']) || 'Indefinido';
       const prioridade = getSelectValue(properties['Prioridade']) || 'Sem prioridade';
-      const cliente = getRichTextValue(properties['Cliente']) || null; // Cliente é rich_text no seu log
+      const cliente = getRichTextValue(properties['Cliente']) || null; // Cliente era rich_text no seu log
 
       let proprietario: { nome: string } | null = null;
       const proprietarioProp = properties['Proprietário'];
       if (proprietarioProp?.type === 'people' && proprietarioProp.people.length > 0) {
         proprietario = { nome: getUserName(proprietarioProp.people[0]) };
       }
+      
+      const link = getUrlValue(properties['Link']) || null; // Se tiver uma coluna "Link"
 
-      // Link - Se você tiver uma propriedade 'Link' do tipo URL
-      const link = getUrlValue(properties['Link']) || null;
-
-      // Loja e Tipo - Se estas colunas existirem no seu Notion
-      // Verifique os nomes exatos no log e substitua 'LojaNomeExatoNoNotion' e 'TipoNomeExatoNoNotion'
-      const loja = getSelectValue(properties['LojaNomeExatoNoNotion']) || getRichTextValue(properties['LojaNomeExatoNoNotion']) || null;
-      const tipo = getSelectValue(properties['TipoNomeExatoNoNotion']) || getRichTextValue(properties['TipoNomeExatoNoNotion']) || null;
-
-      // Criado Em: Pode usar page.created_time ou a propriedade 'Criado em' do tipo date
-      // page.created_time é mais simples se for o tempo de criação da página
+      // Usando page.created_time para 'criadoEm' é geralmente mais confiável
       const criadoEm = page.created_time;
-      // Se quiser usar a propriedade 'Criado em' do tipo 'date':
-      // const criadoEmDateProp = getDateValue(properties['Criado em']);
-      // const criadoEm = criadoEmDateProp || page.created_time;
+      // Se você tem uma coluna "Criado em" e prefere usá-la:
+      // const criadoEm = getDateValue(properties['Criado em']) || page.created_time;
 
 
       return {
-        pageId: page.id,
+        pageId: page.id, // UUID da página, para o link direto
         displayableIssueId,
         nome,
         resumo,
