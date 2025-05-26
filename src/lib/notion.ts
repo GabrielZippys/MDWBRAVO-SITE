@@ -9,21 +9,17 @@ import {
   PartialUserObjectResponse
 } from '@notionhq/client/build/src/api-endpoints';
 
-// Tipo para um valor de propriedade individual de PageObjectResponse.properties
 type PagePropertyValue = PageObjectResponse['properties'][string];
 
-// Inicializa o cliente do Notion
 export const notion = new Client({ auth: process.env.NOTION_TOKEN! });
 
-// ID da sua base de dados de projetos no Notion
 const databaseId =
   process.env.NOTION_PROJECTS_DATABASE_ID || 'a2982b0a81ff4378a8d6159012d6cfa6';
 
-// --- Interface Projeto Atualizada ---
 export interface Projeto {
-  pageId: string;                   // UUID da página do Notion (para gerar o link direto)
-  // displayableIssueId foi removido
-  nome: string;
+  pageId: string;
+  // displayableIssueId foi removido conforme sua solicitação anterior
+  nome: string; // Virá da coluna "Descrição do Problema"
   resumo: string | null;
   status: string;
   setor: string;
@@ -36,7 +32,7 @@ export interface Projeto {
   tipo: string | null;
 }
 
-// --- Funções Auxiliares (mantidas como antes) ---
+// --- Funções Auxiliares (sem alterações aqui) ---
 function getUserName(user: UserObjectResponse | PartialUserObjectResponse | undefined): string {
   if (!user) return 'Sem responsável';
   if ('name' in user && user.name) return user.name;
@@ -70,9 +66,6 @@ function getStatusValue(prop: PagePropertyValue | undefined): string | null {
   return null;
 }
 
-// getNotionUniqueIdValue e getNumberValueAsString não são mais estritamente necessários
-// se não estivermos extraindo o displayableIssueId dessa forma, mas podem ser úteis para outros campos.
-// Vou mantê-los caso você precise para outras propriedades numéricas ou IDs.
 function getNotionUniqueIdValue(prop: PagePropertyValue | undefined): string | null {
   if (prop?.type === 'unique_id' && prop.unique_id) {
     const { prefix, number } = prop.unique_id;
@@ -106,7 +99,7 @@ function getDateValue(prop: PagePropertyValue | undefined): string | null {
 // --- Função Principal para Buscar Projetos ---
 export async function getProjetosFromNotion(): Promise<Projeto[]> {
   if (!databaseId || databaseId === 'SEU_DATABASE_ID_AQUI') {
-    console.error("ERRO: NOTION_PROJECTS_DATABASE_ID não está configurado ou está com valor placeholder.");
+    console.error("ERRO: NOTION_PROJECTS_DATABASE_ID não está configurado.");
     return [];
   }
 
@@ -135,10 +128,16 @@ export async function getProjetosFromNotion(): Promise<Projeto[]> {
     const projetos: Projeto[] = pages.map((page) => {
       const properties = page.properties;
 
-      const titleProp = properties['Nome do projeto'] as Extract<PagePropertyValue, { type: 'title' }> | undefined;
-      const nome = titleProp?.title?.[0]?.plain_text?.trim() || 'Sem nome';
+      // <<<< MODIFICADO AQUI: Buscando 'nome' da propriedade "Descrição do Problema" >>>>
+      // Verifique no seu console.log qual é o TIPO da propriedade "Descrição do Problema".
+      // Se for 'title':
+      // const titleProp = properties['Descrição do Problema'] as Extract<PagePropertyValue, { type: 'title' }> | undefined;
+      // const nome = titleProp?.title?.[0]?.plain_text?.trim() || 'Sem nome';
+      // Se for 'rich_text' (mais provável para uma descrição):
+      const nome = getRichTextValue(properties['Descrição do Problema']) || 
+                   ( (properties['Nome do projeto'] as Extract<PagePropertyValue, { type: 'title' }>)?.title?.[0]?.plain_text?.trim() ) || // Fallback para "Nome do projeto"
+                   'Sem nome';
 
-      // Bloco de extração do displayableIssueId foi REMOVIDO
 
       // <<<< IMPORTANTE: VERIFIQUE OS NOMES DAS SUAS COLUNAS "Tipo" e "Loja" NO LOG >>>>
       const tipoProperty = properties['Tipo']; // Use o nome exato do seu log
@@ -147,11 +146,13 @@ export async function getProjetosFromNotion(): Promise<Projeto[]> {
                    getRichTextValue(tipoProperty) || 
                    null;
 
-      const lojaProperty = properties['LojaNomeExatoNoNotion']; // SUBSTITUA PELO NOME EXATO DO SEU LOG
+      // <<<< SUBSTITUA 'LojaNomeExatoNoNotion' PELO NOME EXATO DO SEU LOG >>>>
+      const lojaProperty = properties['Loja']; 
       const loja = getSelectValue(lojaProperty) || 
                    getRichTextValue(lojaProperty) || 
                    null;
 
+      // Mapeamento das outras propriedades (verifique os nomes se necessário)
       const resumo = getRichTextValue(properties['Resumo']) || null;
       const status = getStatusValue(properties['Status']) || getSelectValue(properties['Status']) || 'Sem status';
       const setor = getSelectValue(properties['Setor']) || 'Indefinido';
@@ -171,9 +172,8 @@ export async function getProjetosFromNotion(): Promise<Projeto[]> {
       const criadoEm = criadoEmFormatado || page.created_time;
 
       return {
-        pageId: page.id, // Mantido para o link da página
-        // displayableIssueId foi removido do objeto retornado
-        nome,
+        pageId: page.id,
+        nome, 
         resumo,
         status,
         setor,
