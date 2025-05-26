@@ -153,7 +153,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
               <tr>
                 {/* Alterações aqui: Adicionando classes de largura (w-*) */}
                 <th onClick={() => requestSort('notionId')} className="w-24 cursor-pointer group p-2 hover:bg-gray-700 transition-colors">ID Notion{renderSortArrow('notionId')}</th>
-                <th onClick={() => requestSort('titulo')} className="w-40 cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Título{renderSortArrow('titulo')}</th>
+                <th onClick={() => requestSort('titulo')} className="w-60 cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Título{renderSortArrow('titulo')}</th>
                 <th onClick={() => requestSort('loja')} className="w-32 cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Loja{renderSortArrow('loja')}</th>
                 <th onClick={() => requestSort('status')} className="w-36 cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Status{renderSortArrow('status')}</th>
                 {/* AQUI: Coluna "Tipo" com largura definida */}
