@@ -112,19 +112,17 @@ export async function getProjetosFromNotion(): Promise<Projeto[]> {
       (page): page is PageObjectResponse => 'properties' in page && page.object === 'page'
     );
 
-    if (pages.length > 0) {
-      const firstPageProperties = pages[0].properties;
-      console.log(
-        '--- DEBUG: Propriedades da Primeira Página (Notion) ---',
-        Object.keys(firstPageProperties).map((key) => ({
-          key,
-          type: (firstPageProperties[key] as PagePropertyValue).type,
-          // Adicione o valor para facilitar a depuração:
-          // value: JSON.stringify((firstPageProperties[key] as PagePropertyValue)) 
-        }))
-      );
-      console.log('--- FIM DEBUG ---');
-    } else {
+   if (pages.length > 0) {
+  const firstPageProperties = pages[0].properties;
+  console.log(
+    '--- DEBUG: Propriedades da Primeira Página (Notion) ---', // PROCURE POR ESTA LINHA NO LOG
+    Object.keys(firstPageProperties).map((key) => ({
+      key, // Este é o nome EXATO da propriedade
+      type: (firstPageProperties[key] as PagePropertyValue).type, // Este é o TIPO da propriedade
+    }))
+  );
+  console.log('--- FIM DEBUG ---');
+}else {
       console.warn("Nenhuma página válida encontrada na resposta do Notion.");
       return [];
     }
@@ -138,20 +136,20 @@ export async function getProjetosFromNotion(): Promise<Projeto[]> {
       // --- EXTRAÇÃO DO displayableIssueId ---
       // Verifique o 'type' da sua propriedade "ID" no console.log acima.
       let displayableIssueId: string | null = null;
-      const idProperty = properties['ID']; // << CONFIRME SE O NOME É "ID" (maiúsculo)
+const idProperty = properties['NOME_EXATO_DA_COLUNA_ID_NO_LOG']; // << SUBSTITUA AQUI
 
-      if (idProperty) {
-        if (idProperty.type === 'unique_id') { // Se for o tipo "ID" nativo do Notion
-          displayableIssueId = getNotionUniqueIdValue(idProperty);
-        } else if (idProperty.type === 'number') { // Se for uma coluna do tipo "Número"
-          displayableIssueId = getNumberValueAsString(idProperty);
-        } else if (idProperty.type === 'rich_text' || idProperty.type === 'title') { // Se for uma coluna de Texto ou Título
-          displayableIssueId = getRichTextValue(idProperty);
-        } else {
-          console.warn(`Propriedade "ID" tem tipo inesperado: ${idProperty.type} para a página ${page.id}`);
-        }
-      }
-      displayableIssueId = displayableIssueId || null; // Garante que seja null se não encontrado
+if (idProperty) {
+  if (idProperty.type === 'unique_id') {
+    displayableIssueId = getNotionUniqueIdValue(idProperty);
+  } else if (idProperty.type === 'number') {
+    displayableIssueId = getNumberValueAsString(idProperty);
+  } else if (idProperty.type === 'rich_text' || idProperty.type === 'title') {
+    displayableIssueId = getRichTextValue(idProperty);
+  } else {
+    console.warn(`Propriedade para displayableIssueId ('${/*Nome que você usou aqui*/ 'NOME_EXATO_DA_COLUNA_ID_NO_LOG'}') tem tipo inesperado: ${idProperty.type} para a página ${page.id}`);
+  }
+}
+displayableIssueId = displayableIssueId || null; // Garante que seja null se não encontrado
 
       // --- FIM DA EXTRAÇÃO DO displayableIssueId ---
 
