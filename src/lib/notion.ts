@@ -14,23 +14,22 @@ type PagePropertyValue = PageObjectResponse['properties'][string];
 export const notion = new Client({ auth: process.env.NOTION_TOKEN! });
 
 const databaseId =
-  process.env.NOTION_PROJECTS_DATABASE_ID || 'a2982b0a81ff4378a8d6159012d6cfa6';
+  process.env.NOTION_PROJECTS_DATABASE_ID || 'a2982b0a81ff4378a8d6159012d6cfa6'; // Confirme seu Database ID
 
-// --- Interface Projeto (conforme você definiu) ---
 export interface Projeto {
   pageId: string;
-  numeroChamado: string | null; // Para a coluna "Nº ID" ou "ID" do Notion
-  nome: string;
-  resumo: string | null;
+  numeroChamado: string | null; // Para a coluna "Nº ID" ou similar que você quer exibir
+  nome: string;                 // Virá de "Descrição do Problema" ou "Nome do projeto"
+  loja: string | null;
   status: string;
+  tipo: string | null;
+  resumo: string | null;
   setor: string;
   prioridade: string;
   cliente: string | null;
   criadoEm: string;
   link: string | null;
   proprietario: { nome: string } | null;
-  loja: string | null;
-  tipo: string | null;
 }
 
 // --- Funções Auxiliares ---
@@ -129,41 +128,50 @@ export async function getProjetosFromNotion(): Promise<Projeto[]> {
     const projetos: Projeto[] = pages.map((page) => {
       const properties = page.properties;
 
-      // Nome do projeto (prioriza "Descrição do Problema", depois "Nome do projeto")
-      // <<<< CONFIRME O NOME E TIPO DE "Descrição do Problema" NO SEU LOG >>>>
-      let nome = getRichTextValue(properties['Descrição do Problema']);
-      if (!nome) {
-        const titlePropFromNomeProjeto = properties['Nome do projeto'] as Extract<PagePropertyValue, { type: 'title' }> | undefined;
-        nome = titlePropFromNomeProjeto?.title?.[0]?.plain_text?.trim() || 'Sem nome';
+      // NOME (Título principal do chamado)
+      // Verifique no log se "Descrição do Problema" existe e seu tipo.
+      // Se "Descrição do Problema" for a propriedade 'title', use a primeira lógica.
+      // Se for 'rich_text', a segunda é melhor.
+      let nome: string | null = null;
+      const descricaoProblemaProp = properties['Descrição do Problema']; // << NOME DA SUA COLUNA DE TÍTULO/DESCRIÇÃO PRINCIPAL
+      const nomeDoProjetoProp = properties['Nome do projeto'] as Extract<PagePropertyValue, { type: 'title' }> | undefined; // Fallback
+
+      if (descricaoProblemaProp && descricaoProblemaProp.type === 'title') {
+        nome = descricaoProblemaProp.title?.[0]?.plain_text?.trim();
+      } else if (descricaoProblemaProp && descricaoProblemaProp.type === 'rich_text') {
+        nome = getRichTextValue(descricaoProblemaProp);
+      }
+      // Fallback para "Nome do projeto" se "Descrição do Problema" não for encontrada ou estiver vazia
+      if (!nome && nomeDoProjetoProp) {
+        nome = nomeDoProjetoProp.title?.[0]?.plain_text?.trim();
       }
       nome = nome || 'Sem nome';
 
-      // --- EXTRAÇÃO DO numeroChamado (o ID de exibição) ---
+
+      // NÚMERO DO CHAMADO (ID de Exibição)
       let numeroChamado: string | null = null;
-      // <<<< IMPORTANTE: Substitua 'NOME_DA_SUA_COLUNA_DE_ID_NO_LOG' pelo nome EXATO da sua coluna "Nº ID" ou "ID" que aparece no LOG. >>>>
-      // <<<< E verifique o TIPO dela no log para escolher a função de extração correta. >>>>
-      const idProperty = properties['NOME_DA_SUA_COLUNA_DE_ID_NO_LOG']; 
+      // <<<< IMPORTANTE: SUBSTITUA 'NOME_DA_COLUNA_ID_NO_SEU_LOG' PELO NOME EXATO DA SUA COLUNA "Nº ID" (ou similar) QUE APARECE NO LOG. >>>>
+      const idProperty = properties['NOME_DA_COLUNA_ID_NO_SEU_LOG']; 
       if (idProperty) {
-        if (idProperty.type === 'unique_id') {
+        if (idProperty.type === 'unique_id') { // Tipo "ID" do Notion
           numeroChamado = getNotionUniqueIdValue(idProperty);
-        } else if (idProperty.type === 'number') {
+        } else if (idProperty.type === 'number') { // Tipo "Número"
           numeroChamado = getNumberValueAsString(idProperty);
-        } else if (idProperty.type === 'rich_text' || idProperty.type === 'title') {
+        } else if (idProperty.type === 'rich_text' || idProperty.type === 'title') { // Tipo "Texto" ou "Título"
           numeroChamado = getRichTextValue(idProperty);
         } else {
-          console.warn(`Propriedade para numeroChamado ('${ 'NOME_DA_SUA_COLUNA_DE_ID_NO_LOG' }') tem tipo inesperado: ${idProperty.type} na página ${page.id}.`);
+          console.warn(`Propriedade para numeroChamado ('${'NOME_DA_COLUNA_ID_NO_SEU_LOG'}') tem tipo inesperado: ${idProperty.type} na página ${page.id}.`);
         }
       }
-      numeroChamado = numeroChamado || null; // Garante null se não encontrado
-      // --- FIM DA EXTRAÇÃO DO numeroChamado ---
+      numeroChamado = numeroChamado || null;
 
-      // Tipo
-      // <<<< IMPORTANTE: Substitua 'NOME_DA_COLUNA_TIPO_NO_LOG' pelo nome EXATO e verifique o TIPO >>>>
-      const tipoProperty = properties['NOME_DA_COLUNA_TIPO_NO_LOG'];
+      // TIPO
+      // <<<< IMPORTANTE: SUBSTITUA 'NOME_DA_COLUNA_TIPO_NO_SEU_LOG' PELO NOME EXATO E VERIFIQUE O TIPO >>>>
+      const tipoProperty = properties['NOME_DA_COLUNA_TIPO_NO_SEU_LOG'];
       const tipo = getSelectValue(tipoProperty) || getStatusValue(tipoProperty) || getRichTextValue(tipoProperty) || null;
 
-      // Loja
-      // <<<< IMPORTANTE: Substitua 'NOME_DA_COLUNA_LOJA_NO_LOG' pelo nome EXATO e verifique o TIPO >>>>
+      // LOJA
+      // <<<< IMPORTANTE: SUBSTITUA 'NOME_DA_COLUNA_LOJA_NO_SEU_LOG' PELO NOME EXATO E VERIFIQUE O TIPO >>>>
       const lojaProperty = properties['NOME_DA_COLUNA_LOJA_NO_LOG']; 
       const loja = getSelectValue(lojaProperty) || getRichTextValue(lojaProperty) || null;
 
@@ -188,7 +196,7 @@ export async function getProjetosFromNotion(): Promise<Projeto[]> {
 
       return {
         pageId: page.id,
-        numeroChamado, // Adicionado
+        numeroChamado,
         nome,
         resumo,
         status,
@@ -198,8 +206,8 @@ export async function getProjetosFromNotion(): Promise<Projeto[]> {
         criadoEm,
         link,
         proprietario,
-        loja,      // Adicionado
-        tipo,      // Adicionado
+        loja,
+        tipo,
       };
     });
 
