@@ -16,24 +16,24 @@ export const notion = new Client({ auth: process.env.NOTION_TOKEN! });
 const databaseId =
   process.env.NOTION_PROJECTS_DATABASE_ID || 'a2982b0a81ff4378a8d6159012d6cfa6';
 
-// --- Interface Projeto Atualizada ---
+// --- Interface Projeto (conforme você definiu) ---
 export interface Projeto {
-  pageId: string;                   // UUID da página do Notion (para gerar o link direto)
-  numeroChamado: string | null;     // Para a coluna "Nº ID" do Notion
-  nome: string;                     // Virá da coluna "Descrição do Problema"
+  pageId: string;
+  numeroChamado: string | null; // Para a coluna "Nº ID" ou "ID" do Notion
+  nome: string;
   resumo: string | null;
   status: string;
-  setor: string;                    // Verifique se este campo existe no seu Notion ou se é derivado
+  setor: string;
   prioridade: string;
   cliente: string | null;
   criadoEm: string;
   link: string | null;
   proprietario: { nome: string } | null;
-  loja: string | null;              // Virá da coluna "Loja"
-  tipo: string | null;              // Virá da coluna "Tipo" (confirme nome e tipo no log)
+  loja: string | null;
+  tipo: string | null;
 }
 
-// --- Funções Auxiliares (sem alterações aqui) ---
+// --- Funções Auxiliares ---
 function getUserName(user: UserObjectResponse | PartialUserObjectResponse | undefined): string {
   if (!user) return 'Sem responsável';
   if ('name' in user && user.name) return user.name;
@@ -129,23 +129,20 @@ export async function getProjetosFromNotion(): Promise<Projeto[]> {
     const projetos: Projeto[] = pages.map((page) => {
       const properties = page.properties;
 
-      // Nome principal do chamado (Título)
-      // A imagem mostra "Descrição do Problema" como o título principal visual.
-      // O log anterior mostrava "Nome do projeto" como type: 'title'.
-      // Vamos priorizar "Descrição do Problema" se existir, e depois "Nome do projeto".
+      // Nome do projeto (prioriza "Descrição do Problema", depois "Nome do projeto")
       // <<<< CONFIRME O NOME E TIPO DE "Descrição do Problema" NO SEU LOG >>>>
       let nome = getRichTextValue(properties['Descrição do Problema']);
-      if (!nome) { // Fallback se "Descrição do Problema" não for encontrado ou estiver vazio
-        const titleProp = properties['Nome do projeto'] as Extract<PagePropertyValue, { type: 'title' }> | undefined;
-        nome = titleProp?.title?.[0]?.plain_text?.trim() || 'Sem nome';
+      if (!nome) {
+        const titlePropFromNomeProjeto = properties['Nome do projeto'] as Extract<PagePropertyValue, { type: 'title' }> | undefined;
+        nome = titlePropFromNomeProjeto?.title?.[0]?.plain_text?.trim() || 'Sem nome';
       }
       nome = nome || 'Sem nome';
 
-
-      // --- EXTRAÇÃO DO "Nº ID" ---
+      // --- EXTRAÇÃO DO numeroChamado (o ID de exibição) ---
       let numeroChamado: string | null = null;
-      // <<<< USE O NOME EXATO DA COLUNA "Nº ID" DO SEU LOG E VERIFIQUE O TIPO >>>>
-      const idProperty = properties['Nº ID']; // Baseado na sua imagem
+      // <<<< IMPORTANTE: Substitua 'NOME_DA_SUA_COLUNA_DE_ID_NO_LOG' pelo nome EXATO da sua coluna "Nº ID" ou "ID" que aparece no LOG. >>>>
+      // <<<< E verifique o TIPO dela no log para escolher a função de extração correta. >>>>
+      const idProperty = properties['NOME_DA_SUA_COLUNA_DE_ID_NO_LOG']; 
       if (idProperty) {
         if (idProperty.type === 'unique_id') {
           numeroChamado = getNotionUniqueIdValue(idProperty);
@@ -154,45 +151,44 @@ export async function getProjetosFromNotion(): Promise<Projeto[]> {
         } else if (idProperty.type === 'rich_text' || idProperty.type === 'title') {
           numeroChamado = getRichTextValue(idProperty);
         } else {
-          console.warn(`Propriedade para numeroChamado ('Nº ID') tem tipo inesperado: ${idProperty.type} na página ${page.id}.`);
+          console.warn(`Propriedade para numeroChamado ('${ 'NOME_DA_SUA_COLUNA_DE_ID_NO_LOG' }') tem tipo inesperado: ${idProperty.type} na página ${page.id}.`);
         }
       }
-      numeroChamado = numeroChamado || null;
-      // --- FIM DA EXTRAÇÃO DO "Nº ID" ---
+      numeroChamado = numeroChamado || null; // Garante null se não encontrado
+      // --- FIM DA EXTRAÇÃO DO numeroChamado ---
 
-      // Tipo (conforme sua imagem mostra existir "Tipo", mas confirme o nome exato no log)
-      // <<<< CONFIRME O NOME "Tipo" E SEU TIPO NO LOG >>>>
-      const tipoProperty = properties['Tipo'];
+      // Tipo
+      // <<<< IMPORTANTE: Substitua 'NOME_DA_COLUNA_TIPO_NO_LOG' pelo nome EXATO e verifique o TIPO >>>>
+      const tipoProperty = properties['NOME_DA_COLUNA_TIPO_NO_LOG'];
       const tipo = getSelectValue(tipoProperty) || getStatusValue(tipoProperty) || getRichTextValue(tipoProperty) || null;
 
-      // Loja (conforme sua imagem)
-      // <<<< CONFIRME O NOME "Loja" E SEU TIPO NO LOG >>>>
-      const lojaProperty = properties['Loja']; 
+      // Loja
+      // <<<< IMPORTANTE: Substitua 'NOME_DA_COLUNA_LOJA_NO_LOG' pelo nome EXATO e verifique o TIPO >>>>
+      const lojaProperty = properties['NOME_DA_COLUNA_LOJA_NO_LOG']; 
       const loja = getSelectValue(lojaProperty) || getRichTextValue(lojaProperty) || null;
 
-      // Demais propriedades (ajuste os nomes conforme seu log, se necessário)
+      // Demais propriedades (verifique os nomes se necessário, conforme seu log anterior)
       const resumo = getRichTextValue(properties['Resumo']) || null;
       const status = getStatusValue(properties['Status']) || getSelectValue(properties['Status']) || 'Sem status';
-      const setor = getSelectValue(properties['Setor']) || 'Indefinido'; // Seu log mostra 'Setor'
-      const prioridade = getSelectValue(properties['Prioridade']) || 'Sem prioridade'; // Seu log mostra 'Prioridade'
-      const cliente = getRichTextValue(properties['Cliente']) || null; // Seu log mostra 'Cliente'
+      const setor = getSelectValue(properties['Setor']) || 'Indefinido';
+      const prioridade = getSelectValue(properties['Prioridade']) || 'Sem prioridade';
+      const cliente = getRichTextValue(properties['Cliente']) || null;
 
       let proprietario: { nome: string } | null = null;
-      const proprietarioProp = properties['Proprietário']; // Seu log mostra 'Proprietário'
+      const proprietarioProp = properties['Proprietário'];
       if (proprietarioProp?.type === 'people' && proprietarioProp.people.length > 0) {
         proprietario = { nome: getUserName(proprietarioProp.people[0]) };
       }
       
-      const link = getUrlValue(properties['Link']) || null; // Se tiver uma coluna "Link"
+      const link = getUrlValue(properties['Link']) || null;
       
-      // Usando a propriedade "Criado em" do seu log (tipo 'date') ou fallback
-      const criadoEmDateProp = properties['Criado em']; 
+      const criadoEmDateProp = properties['Criado em'];
       const criadoEmFormatado = getDateValue(criadoEmDateProp);
       const criadoEm = criadoEmFormatado || page.created_time;
 
       return {
         pageId: page.id,
-        numeroChamado, // Novo campo para o "Nº ID"
+        numeroChamado, // Adicionado
         nome,
         resumo,
         status,
@@ -202,8 +198,8 @@ export async function getProjetosFromNotion(): Promise<Projeto[]> {
         criadoEm,
         link,
         proprietario,
-        loja,
-        tipo,
+        loja,      // Adicionado
+        tipo,      // Adicionado
       };
     });
 
