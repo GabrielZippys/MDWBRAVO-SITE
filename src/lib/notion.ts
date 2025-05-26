@@ -22,7 +22,7 @@ const databaseId =
 // --- Interface Projeto Atualizada ---
 export interface Projeto {
   pageId: string;                   // UUID da página do Notion (para gerar o link direto)
-  displayableIssueId: string | null; // Virá da coluna "ID" do Notion (ex: "456")
+  displayableID: string | null; // Virá da coluna "ID" do Notion (ex: "456")
   nome: string;
   resumo: string | null;
   status: string;
@@ -139,28 +139,28 @@ export async function getProjetosFromNotion(): Promise<Projeto[]> {
       const titleProp = properties['Nome do projeto'] as Extract<PagePropertyValue, { type: 'title' }> | undefined;
       const nome = titleProp?.title?.[0]?.plain_text?.trim() || 'Sem nome';
 
-      // --- EXTRAÇÃO DO displayableIssueId ---
+      // --- EXTRAÇÃO DO displayableID ---
       // Baseado na sua informação de que a coluna se chama "ID" e contém números.
       // Verifique o 'type' da sua propriedade "ID" no console.log.
-      let displayableIssueId: string | null = null;
+      let displayableID: string | null = null;
       // <<<< IMPORTANTE: Use o nome EXATO da sua coluna "ID" aqui >>>>
       const idProperty = properties['ID']; 
 
       if (idProperty) {
         if (idProperty.type === 'unique_id') { // Se for o tipo "ID" nativo do Notion
-          displayableIssueId = getNotionUniqueIdValue(idProperty);
+          displayableID = getNotionUniqueIdValue(idProperty);
         } else if (idProperty.type === 'number') { // Se for uma coluna do tipo "Número"
-          displayableIssueId = getNumberValueAsString(idProperty);
+          displayableID = getNumberValueAsString(idProperty);
         } else if (idProperty.type === 'rich_text' || idProperty.type === 'title') { // Se for uma coluna de Texto ou Título
-          displayableIssueId = getRichTextValue(idProperty);
+          displayableID = getRichTextValue(idProperty);
         } else {
           // Se for outro tipo, você pode logar um aviso ou tentar outra extração.
           // O console.log acima ajudará a identificar o tipo correto.
           console.warn(`Propriedade 'ID' (ou o nome que você usar) tem tipo inesperado: ${idProperty.type} para a página ${page.id}. Verifique o mapeamento.`);
         }
       }
-      displayableIssueId = displayableIssueId || null;
-      // --- FIM DA EXTRAÇÃO DO displayableIssueId ---
+      displayableID = displayableID || null;
+      // --- FIM DA EXTRAÇÃO DO displayableID ---
 
       // Tipo (conforme sua imagem: "Tipo")
       // <<<< IMPORTANTE: Verifique o nome e o TIPO desta propriedade no log (select, status, rich_text?) >>>>
@@ -200,7 +200,7 @@ export async function getProjetosFromNotion(): Promise<Projeto[]> {
 
       return {
         pageId: page.id,
-        displayableIssueId,
+        displayableID,
         nome,
         resumo,
         status,
