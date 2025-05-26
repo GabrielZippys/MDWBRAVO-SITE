@@ -1,4 +1,4 @@
-import { Projeto } from '@/lib/notion'; // Agora Projeto deve ter 'pageId'
+import { Projeto } from '@/lib/notion'; // Agora Projeto deve ter 'ID'
 import styles from '@/styles/ProjetosSection.module.css';
 
 interface ProjetosSectionProps {
@@ -15,15 +15,15 @@ export default function ProjetosSection({ projetos = [] }: ProjetosSectionProps)
 
   /**
    * Gera um link para uma página do Notion usando o ID da página.
-   * @param pageId O ID da página do Notion (pode conter hifens).
+   * @param ID O ID da página do Notion (pode conter hifens).
    * @returns A URL completa para a página do Notion, ou null se o ID não for fornecido.
    */
-  const generateNotionPageLink = (pageId: string | undefined | null): string | null => {
-    if (!pageId) {
+  const generateNotionPageLink = (ID: string | undefined | null): string | null => {
+    if (!ID) {
       return null;
     }
     // Remove hifens do ID para o formato de URL do Notion
-    const cleanId = pageId.replace(/-/g, '');
+    const cleanId = ID.replace(/-/g, '');
     return `https://www.notion.so/${cleanId}`;
   };
 
@@ -36,12 +36,12 @@ export default function ProjetosSection({ projetos = [] }: ProjetosSectionProps)
       ) : (
         <div className={styles.projetosGrid}>
           {projetosFiltrados.map((projeto) => {
-            // MODIFICADO AQUI: Usar projeto.pageId
-            const notionPageUrl = generateNotionPageLink(projeto.pageId);
+            // MODIFICADO AQUI: Usar projeto.ID
+            const notionPageUrl = generateNotionPageLink(projeto.ID);
 
             return (
-              // MODIFICADO AQUI: Usar projeto.pageId como chave
-              <div key={projeto.pageId} className={styles.projetoCard}>
+              // MODIFICADO AQUI: Usar projeto.ID como chave
+              <div key={projeto.ID} className={styles.projetoCard}>
                 <h3>{projeto.nome}</h3>
                 <p className={styles.resumo}>{projeto.resumo}</p>
 

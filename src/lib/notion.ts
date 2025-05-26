@@ -21,7 +21,7 @@ const databaseId =
 
 // --- Interface Projeto Atualizada ---
 export interface Projeto {
-  pageId: string;                   // UUID da página do Notion (para gerar o link direto)
+  ID: string;                   // UUID da página do Notion (para gerar o link direto)
   displayableID: string | null; // Virá da coluna "ID" do Notion (ex: "456")
   nome: string;
   resumo: string | null;
@@ -199,7 +199,7 @@ export async function getProjetosFromNotion(): Promise<Projeto[]> {
 
 
       return {
-        pageId: page.id,
+        ID: page.id,
         displayableID,
         nome,
         resumo,
