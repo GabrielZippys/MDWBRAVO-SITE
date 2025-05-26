@@ -2,8 +2,7 @@
 import { Client } from '@notionhq/client';
 import {
   PageObjectResponse,
-  PartialPageObjectResponse,
-  PartialDatabaseObjectResponse,
+  // ... outras importações ...
   RichTextItemResponse,
   UserObjectResponse,
   PartialUserObjectResponse
@@ -16,24 +15,23 @@ export const notion = new Client({ auth: process.env.NOTION_TOKEN! });
 const databaseId =
   process.env.NOTION_PROJECTS_DATABASE_ID || 'a2982b0a81ff4378a8d6159012d6cfa6';
 
-// --- Interface Projeto (conforme você definiu) ---
 export interface Projeto {
   pageId: string;
-  numeroChamado: string | null; // Para a coluna "Nº ID" ou "ID" do Notion
-  nome: string;
-  resumo: string | null;
+  nome: string; // Virá de "Descrição do Problema" ou "Nome do projeto"
+  loja: string | null;
   status: string;
+  tipo: string | null;
+  // displayableIssueId foi removido
+  resumo: string | null;
   setor: string;
   prioridade: string;
   cliente: string | null;
-  criadoEm: string;
+  criadoEm: string; // Deve ser uma string de data válida
   link: string | null;
   proprietario: { nome: string } | null;
-  loja: string | null;
-  tipo: string | null;
 }
 
-// --- Funções Auxiliares ---
+// --- Funções Auxiliares (mantenha todas como estavam na última versão) ---
 function getUserName(user: UserObjectResponse | PartialUserObjectResponse | undefined): string {
   if (!user) return 'Sem responsável';
   if ('name' in user && user.name) return user.name;
@@ -67,21 +65,9 @@ function getStatusValue(prop: PagePropertyValue | undefined): string | null {
   return null;
 }
 
-function getNotionUniqueIdValue(prop: PagePropertyValue | undefined): string | null {
-  if (prop?.type === 'unique_id' && prop.unique_id) {
-    const { prefix, number } = prop.unique_id;
-    if (number === null) return null;
-    return prefix ? `${prefix}-${number}` : String(number);
-  }
-  return null;
-}
-
-function getNumberValueAsString(prop: PagePropertyValue | undefined): string | null {
-  if (prop?.type === 'number' && prop.number !== null) {
-    return String(prop.number);
-  }
-  return null;
-}
+// getNotionUniqueIdValue e getNumberValueAsString podem ser removidos se não estiver usando para um ID de exibição
+// function getNotionUniqueIdValue(prop: PagePropertyValue | undefined): string | null { /* ... */ }
+// function getNumberValueAsString(prop: PagePropertyValue | undefined): string | null { /* ... */ }
 
 function getUrlValue(prop: PagePropertyValue | undefined): string | null {
   if (prop?.type === 'url' && prop.url && isValidUrl(prop.url)) {
@@ -129,45 +115,28 @@ export async function getProjetosFromNotion(): Promise<Projeto[]> {
     const projetos: Projeto[] = pages.map((page) => {
       const properties = page.properties;
 
-      // Nome do projeto (prioriza "Descrição do Problema", depois "Nome do projeto")
-      // <<<< CONFIRME O NOME E TIPO DE "Descrição do Problema" NO SEU LOG >>>>
-      let nome = getRichTextValue(properties['Descrição do Problema']);
-      if (!nome) {
-        const titlePropFromNomeProjeto = properties['Nome do projeto'] as Extract<PagePropertyValue, { type: 'title' }> | undefined;
-        nome = titlePropFromNomeProjeto?.title?.[0]?.plain_text?.trim() || 'Sem nome';
+      // NOME / TÍTULO
+      // <<<< 1. VERIFIQUE SE "Descrição do Problema" EXISTE NO LOG E QUAL SEU TIPO >>>>
+      // <<<<    Se for 'title', use a lógica de titleProp. Se for 'rich_text', use getRichTextValue. >>>>
+      let nomePrincipal = getRichTextValue(properties['Descrição do Problema']);
+      if (!nomePrincipal) {
+        const fallbackTitleProp = properties['Nome do projeto'] as Extract<PagePropertyValue, { type: 'title' }> | undefined;
+        nomePrincipal = fallbackTitleProp?.title?.[0]?.plain_text?.trim() || 'Título não encontrado';
       }
-      nome = nome || 'Sem nome';
 
-      // --- EXTRAÇÃO DO numeroChamado (o ID de exibição) ---
-      let numeroChamado: string | null = null;
-      // <<<< IMPORTANTE: Substitua 'NOME_DA_SUA_COLUNA_DE_ID_NO_LOG' pelo nome EXATO da sua coluna "Nº ID" ou "ID" que aparece no LOG. >>>>
-      // <<<< E verifique o TIPO dela no log para escolher a função de extração correta. >>>>
-      const idProperty = properties['NOME_DA_SUA_COLUNA_DE_ID_NO_LOG']; 
-      if (idProperty) {
-        if (idProperty.type === 'unique_id') {
-          numeroChamado = getNotionUniqueIdValue(idProperty);
-        } else if (idProperty.type === 'number') {
-          numeroChamado = getNumberValueAsString(idProperty);
-        } else if (idProperty.type === 'rich_text' || idProperty.type === 'title') {
-          numeroChamado = getRichTextValue(idProperty);
-        } else {
-          console.warn(`Propriedade para numeroChamado ('${ 'NOME_DA_SUA_COLUNA_DE_ID_NO_LOG' }') tem tipo inesperado: ${idProperty.type} na página ${page.id}.`);
-        }
-      }
-      numeroChamado = numeroChamado || null; // Garante null se não encontrado
-      // --- FIM DA EXTRAÇÃO DO numeroChamado ---
-
-      // Tipo
-      // <<<< IMPORTANTE: Substitua 'NOME_DA_COLUNA_TIPO_NO_LOG' pelo nome EXATO e verifique o TIPO >>>>
-      const tipoProperty = properties['NOME_DA_COLUNA_TIPO_NO_LOG'];
-      const tipo = getSelectValue(tipoProperty) || getStatusValue(tipoProperty) || getRichTextValue(tipoProperty) || null;
-
-      // Loja
-      // <<<< IMPORTANTE: Substitua 'NOME_DA_COLUNA_LOJA_NO_LOG' pelo nome EXATO e verifique o TIPO >>>>
+      // LOJA
+      // <<<< 2. SUBSTITUA 'NOME_DA_COLUNA_LOJA_NO_LOG' PELO NOME EXATO DA SUA COLUNA "Loja" QUE APARECE NO LOG >>>>
+      // <<<<    E verifique o TIPO dela para usar getSelectValue ou getRichTextValue >>>>
       const lojaProperty = properties['NOME_DA_COLUNA_LOJA_NO_LOG']; 
       const loja = getSelectValue(lojaProperty) || getRichTextValue(lojaProperty) || null;
 
-      // Demais propriedades (verifique os nomes se necessário, conforme seu log anterior)
+      // TIPO
+      // <<<< 3. SUBSTITUA 'NOME_DA_COLUNA_TIPO_NO_LOG' PELO NOME EXATO DA SUA COLUNA "Tipo" QUE APARECE NO LOG >>>>
+      // <<<<    E verifique o TIPO dela >>>>
+      const tipoProperty = properties['NOME_DA_COLUNA_TIPO_NO_LOG'];
+      const tipo = getSelectValue(tipoProperty) || getStatusValue(tipoProperty) || getRichTextValue(tipoProperty) || null;
+      
+      // Outras propriedades (nomes baseados no seu log anterior)
       const resumo = getRichTextValue(properties['Resumo']) || null;
       const status = getStatusValue(properties['Status']) || getSelectValue(properties['Status']) || 'Sem status';
       const setor = getSelectValue(properties['Setor']) || 'Indefinido';
@@ -182,31 +151,35 @@ export async function getProjetosFromNotion(): Promise<Projeto[]> {
       
       const link = getUrlValue(properties['Link']) || null;
       
-      const criadoEmDateProp = properties['Criado em'];
-      const criadoEmFormatado = getDateValue(criadoEmDateProp);
-      const criadoEm = criadoEmFormatado || page.created_time;
+      const criadoEmDateProp = properties['Criado em']; // Seu log mostrou { key: 'Criado em', type: 'date' }
+      let criadoEm = getDateValue(criadoEmDateProp); // Tenta pegar da propriedade "Criado em"
+      if (!criadoEm) { // Se não conseguir, usa o tempo de criação da página
+          criadoEm = page.created_time;
+      }
+      // Log para depurar a data
+      // console.log(`Página: ${page.id}, Propriedade 'Criado em': ${JSON.stringify(criadoEmDateProp)}, Valor Final de criadoEm: ${criadoEm}`);
+
 
       return {
         pageId: page.id,
-        numeroChamado, // Adicionado
-        nome,
+        nome: nomePrincipal, // Usando a nova lógica para nome
         resumo,
         status,
         setor,
         prioridade,
         cliente,
-        criadoEm,
+        criadoEm, // Usando a nova lógica para criadoEm
         link,
         proprietario,
-        loja,      // Adicionado
-        tipo,      // Adicionado
+        loja,
+        tipo,
       };
     });
 
     console.log(`Retornando ${projetos.length} projetos mapeados corretamente.`);
     return projetos;
 
-  } catch (error) {
+  } catch (error) { // ... (seu tratamento de erro) ...
     const e = error as any;
     const notionErrorBody = e.body ? JSON.parse(e.body) : null;
     console.error('Erro detalhado ao buscar projetos do Notion:', notionErrorBody || e.message, e.code ? `(Código: ${e.code})` : '');
