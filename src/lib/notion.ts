@@ -9,27 +9,31 @@ import {
   PartialUserObjectResponse
 } from '@notionhq/client/build/src/api-endpoints';
 
+// Tipo para um valor de propriedade individual de PageObjectResponse.properties
 type PagePropertyValue = PageObjectResponse['properties'][string];
 
+// Inicializa o cliente do Notion
 export const notion = new Client({ auth: process.env.NOTION_TOKEN! });
 
+// ID da sua base de dados de projetos no Notion
 const databaseId =
   process.env.NOTION_PROJECTS_DATABASE_ID || '1733f3feb9bb808794e9eb6681ecec06'; 
 
+// --- Interface Projeto ATUALIZADA ---
 export interface Projeto {
   pageId: string;
-  numeroChamado: string | null; 
-  nome: string; 
-  loja: string | null;
-  status: string;
-  tipo: string | null;
-  resumo: string | null;
-  setor: string;
-  prioridade: string;
-  cliente: string | null;
-  criadoEm: string;
-  link: string | null;
-  proprietario: { nome: string } | null;
+  numeroChamado: string | null;     // Da coluna "Nº ID"
+  nome: string;                     // Da coluna "Descrição do Problema"
+  loja: string | null;              // Da coluna "Loja"
+  status: string;                   // Da coluna "Status"
+  tipo: string | null;              // Da coluna "Tipo de Ticket"
+  resumo: string | null;            // CONFIRME NOME E TIPO NO LOG (ex: "Resumo")
+  setor: string;                    // CONFIRME NOME E TIPO NO LOG (ex: "Setor")
+  prioridade: string;               // Da coluna "Prioridade"
+  cliente: string | null;           // CONFIRME NOME E TIPO NO LOG (ex: "Cliente")
+  criadoEm: string;                 // Da coluna "Data de Criação"
+  link: string | null;              // CONFIRME NOME E TIPO NO LOG (ex: "Link"), se existir
+  proprietario: { nome: string } | null; // Da coluna "Atribuído para"
 }
 
 // --- Funções Auxiliares ---
@@ -49,13 +53,13 @@ function getRichTextValue(prop: PagePropertyValue | undefined): string | null {
   const text = prop?.type === 'rich_text' && prop.rich_text.length > 0 && prop.rich_text[0]?.plain_text
     ? prop.rich_text[0].plain_text.trim()
     : null;
-  return text === '' ? null : text;
+  return text === '' ? null : text; // String vazia também vira null
 }
 
 function getTitleValue(prop: PagePropertyValue | undefined): string | null {
     if (prop?.type === 'title' && prop.title.length > 0 && prop.title[0]?.plain_text) {
         const text = prop.title[0].plain_text.trim();
-        return text === '' ? null : text;
+        return text === '' ? null : text; // String vazia também vira null
     }
     return null;
 }
@@ -97,7 +101,16 @@ function getUrlValue(prop: PagePropertyValue | undefined): string | null {
   return null;
 }
 
+function getCreatedTimeValue(prop: PagePropertyValue | undefined): string | null {
+  // Para propriedades do tipo "Created time"
+  if (prop?.type === 'created_time' && prop.created_time) {
+    return prop.created_time;
+  }
+  return null;
+}
+
 function getDateValue(prop: PagePropertyValue | undefined): string | null {
+  // Para propriedades do tipo "Date"
   if (prop?.type === 'date' && prop.date?.start) {
     return prop.date.start;
   }
@@ -136,68 +149,75 @@ export async function getProjetosFromNotion(): Promise<Projeto[]> {
     const projetos: Projeto[] = pages.map((page) => {
       const properties = page.properties;
 
-      let nomeCalculado: string | null = null;
-      // <<<< 1. SUBSTITUA 'NOME_DA_SUA_COLUNA_DE_TITULO_PRINCIPAL_NO_LOG' PELO NOME EXATO DA SUA COLUNA QUE APARECE NO LOG >>>>
-      const nomeDaPropriedadePrincipal = 'NOME_DA_SUA_COLUNA_DE_TITULO_PRINCIPAL_NO_LOG'; 
-      const propPrincipalParaTitulo = properties[nomeDaPropriedadePrincipal];
+      // NOME (Título principal do chamado)
+      // Conforme sua info: coluna "Descrição do Problema" é tipo 'title'
+      // <<<< CONFIRME O NOME "Descrição do Problema" E O TIPO 'title' NO SEU LOG >>>>
+      const nomeProp = properties['Descrição do Problema'];
+      const nome: string = getTitleValue(nomeProp) || 'Sem Título';
 
-      if (propPrincipalParaTitulo) {
-        if (propPrincipalParaTitulo.type === 'title') {
-          nomeCalculado = getTitleValue(propPrincipalParaTitulo); 
-        } else if (propPrincipalParaTitulo.type === 'rich_text') {
-          nomeCalculado = getRichTextValue(propPrincipalParaTitulo);
-        }
-      }
-      if (!nomeCalculado) { 
-        // <<<< CONFIRME SE 'Nome do projeto' É A PROPRIEDADE 'title' NO SEU LOG ATUAL >>>>
-        const officialTitleProp = properties['Nome do projeto'] as Extract<PagePropertyValue, { type: 'title' }> | undefined;
-        nomeCalculado = getTitleValue(officialTitleProp); 
-      }
-      const nome: string = nomeCalculado || 'Sem Título';
-
+      // NÚMERO DO CHAMADO (ID de Exibição)
       let numeroChamado: string | null = null;
-      // <<<< 2. SUBSTITUA 'NOME_DA_SUA_COLUNA_NUMERO_ID_NO_LOG' PELO NOME EXATO DA SUA COLUNA "Nº ID" (OU SIMILAR) QUE APARECE NO LOG >>>>
-      const idProperty = properties['NOME_DA_SUA_COLUNA_NUMERO_ID_NO_LOG']; 
-      if (idProperty) {
-        if (idProperty.type === 'unique_id') { numeroChamado = getNotionUniqueIdValue(idProperty); }
-        else if (idProperty.type === 'number') { numeroChamado = getNumberValueAsString(idProperty); }
-        else if (idProperty.type === 'rich_text' || idProperty.type === 'title') { numeroChamado = getRichTextValue(idProperty) || getTitleValue(idProperty); }
-        else { console.warn(`Propriedade para numeroChamado ('${'NOME_DA_SUA_COLUNA_NUMERO_ID_NO_LOG'}') tem tipo inesperado: ${idProperty.type}`); }
+      // <<<< USE O NOME EXATO DA SUA COLUNA "Nº ID" QUE APARECE NO LOG >>>>
+      const idNumProperty = properties['Nº ID']; 
+      if (idNumProperty) {
+        if (idNumProperty.type === 'unique_id') { numeroChamado = getNotionUniqueIdValue(idNumProperty); }
+        else if (idNumProperty.type === 'number') { numeroChamado = getNumberValueAsString(idNumProperty); }
+        else if (idNumProperty.type === 'rich_text' || idNumProperty.type === 'title') { numeroChamado = getRichTextValue(idNumProperty) || getTitleValue(idNumProperty); }
+        else { console.warn(`Propriedade "Nº ID" tem tipo inesperado: ${idNumProperty.type} na página ${page.id}.`); }
       }
       numeroChamado = numeroChamado || null;
 
-      // <<<< 3. SUBSTITUA 'NOME_DA_COLUNA_TIPO_NO_LOG' PELO NOME EXATO E VERIFIQUE O TIPO NO LOG (Ex: 'Tipo' ou 'Tipo de Ticket') >>>>
-      const tipoProperty = properties['NOME_DA_COLUNA_TIPO_NO_LOG'];
-      const tipo = getSelectValue(tipoProperty) || getStatusValue(tipoProperty) || getRichTextValue(tipoProperty) || null;
-
-      // <<<< 4. SUBSTITUA 'NOME_DA_COLUNA_LOJA_NO_LOG' PELO NOME EXATO E VERIFIQUE O TIPO NO LOG (Ex: 'Loja') >>>>
-      const lojaProperty = properties['NOME_DA_COLUNA_LOJA_NO_LOG']; 
+      // LOJA
+      // <<<< USE O NOME EXATO "Loja" E VERIFIQUE O TIPO NO LOG (select, rich_text?) >>>>
+      const lojaProperty = properties['Loja']; 
       const loja = getSelectValue(lojaProperty) || getRichTextValue(lojaProperty) || null;
 
-      const resumo = getRichTextValue(properties['Resumo']) || null;
-      const status = getStatusValue(properties['Status']) || getSelectValue(properties['Status']) || 'Sem status';
-      const setor = getSelectValue(properties['Setor']) || 'Indefinido';
-      const prioridade = getSelectValue(properties['Prioridade']) || 'Sem prioridade';
-      const cliente = getRichTextValue(properties['Cliente']) || null;
+      // TIPO
+      // <<<< USE O NOME EXATO "Tipo de Ticket" E VERIFIQUE O TIPO NO LOG (select, status, rich_text?) >>>>
+      const tipoProperty = properties['Tipo de Ticket'];
+      const tipo = getSelectValue(tipoProperty) || getStatusValue(tipoProperty) || getRichTextValue(tipoProperty) || null;
+      
+      // STATUS
+      // <<<< USE O NOME EXATO "Status" E VERIFIQUE O TIPO NO LOG (status, select?) >>>>
+      const statusProperty = properties['Status'];
+      const status = getStatusValue(statusProperty) || getSelectValue(statusProperty) || 'Sem status';
 
+      // PRIORIDADE
+      // <<<< USE O NOME EXATO "Prioridade" E VERIFIQUE O TIPO NO LOG (provavelmente 'select') >>>>
+      const prioridadeProperty = properties['Prioridade'];
+      const prioridade = getSelectValue(prioridadeProperty) || 'Sem prioridade';
+
+      // PROPRIETÁRIO
+      // <<<< USE O NOME EXATO "Atribuído para" E VERIFIQUE O TIPO (deve ser 'people') >>>>
       let proprietario: { nome: string } | null = null;
-      // <<<< 5. SUBSTITUA 'Atribuído para' PELO NOME EXATO DA SUA COLUNA DE RESPONSÁVEL NO LOG >>>>
       const proprietarioProp = properties['Atribuído para']; 
       if (proprietarioProp?.type === 'people' && proprietarioProp.people.length > 0) {
         proprietario = { nome: getUserName(proprietarioProp.people[0]) };
       }
       
-      const link = getUrlValue(properties['Link']) || null;
-      
-      // <<<< 6. CONFIRME O NOME DA PROPRIEDADE 'Criado em' NO LOG >>>>
-      const criadoEmDateProp = properties['Criado em']; 
-      const criadoEmFormatado = getDateValue(criadoEmDateProp);
-      const criadoEm = criadoEmFormatado || page.created_time;
+      // CRIADO EM
+      // Conforme sua info: coluna "Data De Criação" é tipo "Criado em" (API type 'created_time')
+      // <<<< USE O NOME EXATO "Data De Criação" E VERIFIQUE O TIPO NO LOG (created_time ou date?) >>>>
+      let criadoEm: string;
+      const criadoEmProp = properties['Data De Criação'];
+      if (criadoEmProp?.type === 'created_time') {
+        criadoEm = getCreatedTimeValue(criadoEmProp) || page.created_time; // getCreatedTimeValue retorna string | null
+      } else if (criadoEmProp?.type === 'date') {
+        criadoEm = getDateValue(criadoEmProp) || page.created_time;
+      } else {
+        criadoEm = page.created_time; // Fallback final
+      }
+      criadoEm = criadoEm || new Date().toISOString(); // Garante que nunca seja null/undefined para o tipo string
 
-      // Objeto retornado AGORA INCLUI numeroChamado
+      // Campos opcionais ou que precisam de confirmação do nome no log
+      const resumo = getRichTextValue(properties['Resumo']) || null;         // << CONFIRME "Resumo"
+      const setor = getSelectValue(properties['Setor']) || 'Indefinido';     // << CONFIRME "Setor"
+      const cliente = getRichTextValue(properties['Cliente']) || null;     // << CONFIRME "Cliente"
+      const link = getUrlValue(properties['Link']) || null;                 // << CONFIRME "Link"
+
       return {
         pageId: page.id,
-        numeroChamado, // <<<< ADICIONADO AQUI
+        numeroChamado, // Incluído para o Dashboard
         nome,
         loja,
         status,

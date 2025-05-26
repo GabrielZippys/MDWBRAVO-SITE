@@ -139,14 +139,22 @@ export default function Dashboard({ chamados }: DashboardProps) {
         {chamadosOrdenados.length > 0 ? (
           <table className="tabela-chamados w-full mt-4 table-fixed"> 
             <colgroup>
-              <col className="w-24 md:w-28" /> {/* ID Notion (numeroChamado) */}
-              <col className="w-2/5 lg:w-1/2" /> {/* Título (nome) - AUMENTADA */}
-              <col className="w-20 md:w-24" /> {/* Loja */}
-              <col className="w-32 md:w-36" /> {/* Status */}
-              <col className="w-28 md:w-24" /> {/* Tipo - DIMINUÍDA */}
-              <col className="w-28 md:w-32" /> {/* Zona */}
-              <col className="w-24 md:w-28" /> {/* Prioridade */}
-              <col className="w-28 md:w-32" /> {/* Criado em */}
+              {/* Coluna ID Notion (numeroChamado) */}
+              <col className="w-24 md:w-28" /> 
+              {/* Título (nome) - AUMENTADA */}
+              <col className="w-2/5 lg:w-1/2" /> 
+              {/* Loja */}
+              <col className="w-20 md:w-24" /> 
+              {/* Status */}
+              <col className="w-32 md:w-36" /> 
+              {/* Tipo - DIMINUÍDA */}
+              <col className="w-28 md:w-24" /> 
+              {/* Zona */}
+              <col className="w-28 md:w-32" /> 
+              {/* Prioridade */}
+              <col className="w-24 md:w-28" /> 
+              {/* Criado em */}
+              <col className="w-28 md:w-32" /> 
             </colgroup>
             <thead>
               <tr>
@@ -185,22 +193,21 @@ export default function Dashboard({ chamados }: DashboardProps) {
               </tr>
             </thead>
             <tbody>
-              {chamadosOrdenados.map((chamado) => { // chamado é do tipo Projeto
+              {chamadosOrdenados.map((chamado) => { 
                 const notionLink = generateNotionPageLink(chamado.pageId);
                 return (
                   <tr key={chamado.pageId} className="hover:bg-gray-700/50 transition-colors duration-150">
                     <td className="font-mono text-xs sm:text-sm p-2 align-top truncate">
-                      {/* O link usa pageId, o texto é numeroChamado */}
                       {notionLink && chamado.numeroChamado ? (
                         <a href={notionLink} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 hover:underline">
                           {chamado.numeroChamado}
                         </a>
                       ) : (
-                        chamado.numeroChamado || 'N/A' // Exibe N/A se numeroChamado for null
+                        chamado.numeroChamado || 'N/A' 
                       )}
                     </td>
                     <td className="text-xs sm:text-sm p-2 align-top truncate hover:whitespace-normal" title={chamado.nome}>
-                      {chamado.nome} {/* Usa chamado.nome para o título */}
+                      {chamado.nome}
                     </td>
                     <td className="text-xs sm:text-sm p-2 align-top truncate">{chamado.loja || 'N/A'}</td>
                     <td className="p-2 align-top">
@@ -236,10 +243,9 @@ export default function Dashboard({ chamados }: DashboardProps) {
         )}
       </div>
       
-      {/* Seção de Gráficos (certifique-se que os campos como 'tipo', 'setor' existem em Projeto) */}
+      {/* Seção de Gráficos */}
+      {/* ... (código dos gráficos permanece o mesmo, mas certifique-se que os campos como 'tipo', 'setor' existem em Projeto) ... */}
       <div className="Graficos grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* ... gráficos ... */}
-        {/* Chamados por Status */}
         <div className="graphic-container bg-gray-800 p-4 rounded-lg shadow-lg">
           <h3 className="titulo2 text-lg font-semibold text-blue-400 mb-3">Chamados por Status</h3>
           {dadosPorStatus.length > 0 ? (
@@ -254,7 +260,6 @@ export default function Dashboard({ chamados }: DashboardProps) {
           ) : <p className="text-center text-gray-500 py-10">Sem dados de status.</p>}
         </div>
 
-        {/* Chamados por Tipo */}
         <div className="graphic-container bg-gray-800 p-4 rounded-lg shadow-lg">
           <h3 className="titulo2 text-lg font-semibold text-green-400 mb-3">Chamados por Tipo</h3>
           {dadosPorTipo.length > 0 ? (
@@ -269,7 +274,6 @@ export default function Dashboard({ chamados }: DashboardProps) {
           ) : <p className="text-center text-gray-500 py-10">Sem dados de tipo.</p>}
         </div>
 
-        {/* Chamados por Zona (Pie Chart) */}
         <div className="graphic-container bg-gray-800 p-4 rounded-lg shadow-lg">
           <h3 className="titulo2 text-lg font-semibold text-teal-400 mb-3">Chamados por Zona</h3>
           {dadosPorZona.length > 0 ? (
@@ -308,7 +312,6 @@ export default function Dashboard({ chamados }: DashboardProps) {
           )}
         </div>
 
-        {/* Chamados por Prioridade (Novo Gráfico) */}
         <div className="graphic-container bg-gray-800 p-4 rounded-lg shadow-lg">
           <h3 className="titulo2 text-lg font-semibold text-amber-400 mb-3">Chamados por Prioridade</h3>
           {dadosPorPrioridade.length > 0 ? (
