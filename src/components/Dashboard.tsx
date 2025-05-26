@@ -148,18 +148,18 @@ export default function Dashboard({ chamados }: DashboardProps) {
 
       <div className="table-container mb-8 bg-gray-800 p-2 sm:p-4 rounded-lg shadow-lg overflow-x-auto">
         {chamadosOrdenados.length > 0 ? (
-          <table className="tabela-chamados w-full mt-4">
+          <table className="tabela-chamados w-full mt-4 table-fixed">
             <thead>
               <tr>
-                {/* AQUI: Ajustes de classes. Usando `whitespace-nowrap` e `w-full` para Título */}
-                <th onClick={() => requestSort('notionId')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors whitespace-nowrap">ID Notion{renderSortArrow('notionId')}</th>
-                <th onClick={() => requestSort('titulo')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors w-full">Título{renderSortArrow('titulo')}</th>
-                <th onClick={() => requestSort('loja')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors whitespace-nowrap">Loja{renderSortArrow('loja')}</th>
-                <th onClick={() => requestSort('status')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors whitespace-nowrap">Status{renderSortArrow('status')}</th>
-                <th onClick={() => requestSort('tipo')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors whitespace-nowrap">Tipo{renderSortArrow('tipo')}</th>
-                <th onClick={() => requestSort('zona')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors whitespace-nowrap">Zona{renderSortArrow('zona')}</th>
-                <th onClick={() => requestSort('prioridade')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors whitespace-nowrap">Prioridade{renderSortArrow('prioridade')}</th>
-                <th onClick={() => requestSort('dataCriacao')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors whitespace-nowrap">Criado em{renderSortArrow('dataCriacao')}</th>
+                {/* AQUI: Ajuste final com larguras balanceadas */}
+                <th onClick={() => requestSort('notionId')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors w-28">ID Notion{renderSortArrow('notionId')}</th>
+                <th onClick={() => requestSort('titulo')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors w-2/5">Título{renderSortArrow('titulo')}</th>
+                <th onClick={() => requestSort('loja')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors w-24">Loja{renderSortArrow('loja')}</th>
+                <th onClick={() => requestSort('status')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors w-36">Status{renderSortArrow('status')}</th>
+                <th onClick={() => requestSort('tipo')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors w-48">Tipo{renderSortArrow('tipo')}</th>
+                <th onClick={() => requestSort('zona')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors w-32">Zona{renderSortArrow('zona')}</th>
+                <th onClick={() => requestSort('prioridade')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors w-28">Prioridade{renderSortArrow('prioridade')}</th>
+                <th onClick={() => requestSort('dataCriacao')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors w-32">Criado em{renderSortArrow('dataCriacao')}</th>
               </tr>
             </thead>
             <tbody>
@@ -167,7 +167,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
                 const notionLink = generateNotionPageLink(chamado.notionId);
                 return (
                   <tr key={chamado._id} className="hover:bg-gray-700/50 transition-colors duration-150">
-                    <td className="font-mono text-sm p-2">
+                    <td className="font-mono text-sm p-2 truncate">
                       {notionLink ? (
                         <a href={notionLink} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 hover:underline">
                           {chamado.notionId || 'N/A'}
@@ -176,9 +176,8 @@ export default function Dashboard({ chamados }: DashboardProps) {
                         chamado.notionId || 'N/A'
                       )}
                     </td>
-                    {/* AQUI: Removido `max-w-*` para permitir que a célula cresça */}
                     <td className="text-sm p-2 truncate" title={chamado.titulo}>{chamado.titulo}</td>
-                    <td className="text-sm p-2">{chamado.loja}</td>
+                    <td className="text-sm p-2 truncate">{chamado.loja}</td>
                     <td className="p-2">
                       <span
                         className="status-badge px-2.5 py-1 text-xs font-semibold rounded-full"
@@ -187,8 +186,8 @@ export default function Dashboard({ chamados }: DashboardProps) {
                         {chamado.status}
                       </span>
                     </td>
-                    <td className="text-sm p-2">{chamado.tipo}</td>
-                    <td className="text-sm p-2">{getZonaFromLoja(chamado.loja)}</td>
+                    <td className="text-sm p-2 truncate">{chamado.tipo}</td>
+                    <td className="text-sm p-2 truncate">{getZonaFromLoja(chamado.loja)}</td>
                     <td className="p-2">
                       <span
                         className="prioridade-badge px-2.5 py-1 text-xs font-semibold rounded-full"
@@ -197,7 +196,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
                         {chamado.prioridade || 'N/D'}
                       </span>
                     </td>
-                    <td className="text-sm p-2">{new Date(chamado.dataCriacao).toLocaleDateString('pt-BR')}</td>
+                    <td className="text-sm p-2 truncate">{new Date(chamado.dataCriacao).toLocaleDateString('pt-BR')}</td>
                   </tr>
                 );
               })}
@@ -210,7 +209,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
 
       {/* Seção de Gráficos (sem alterações) */}
       <div className="Graficos grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Gráficos aqui... */}
+          {/* ...Seus Gráficos... */}
       </div>
     </div>
   );
