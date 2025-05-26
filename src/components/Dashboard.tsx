@@ -16,8 +16,8 @@ import {
 import { useState, useMemo, useCallback } from 'react'; // ChangeEvent removido pois os filtros foram removidos
 
 type Chamado = {
-  _id: string;
-  notionId: string;
+  pageId: string;
+  ID: string;
   titulo: string;
   loja: string;
   status: string;
@@ -105,7 +105,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
 
   const agruparDadosParaGrafico = useCallback((
     data: Chamado[],
-    campo: keyof Omit<Chamado, '_id' | 'notionId' | 'titulo' | 'loja' | 'dataCriacao'> | 'zona'
+    campo: keyof Omit<Chamado, '_id' | 'ID' | 'titulo' | 'loja' | 'dataCriacao'> | 'zona'
   ): { nome: string; valor: number }[] => {
     const contagem: Record<string, number> = {};
     data.forEach(chamado => {
@@ -166,7 +166,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
             <thead>
               <tr>
                 {/* Cabeçalhos clicáveis para ordenação. Padding reduzido com p-2. */}
-                <th onClick={() => requestSort('notionId')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">ID Notion{renderSortArrow('notionId')}</th>
+                <th onClick={() => requestSort('ID')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">ID Notion{renderSortArrow('ID')}</th>
                 <th onClick={() => requestSort('titulo')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Título{renderSortArrow('titulo')}</th>
                 <th onClick={() => requestSort('loja')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Loja{renderSortArrow('loja')}</th>
                 <th onClick={() => requestSort('status')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Status{renderSortArrow('status')}</th>
@@ -178,17 +178,17 @@ export default function Dashboard({ chamados }: DashboardProps) {
             </thead>
             <tbody>
               {chamadosOrdenados.map((chamado) => {
-                const notionLink = generateNotionPageLink(chamado.notionId);
+                const notionLink = generateNotionPageLink(chamado.ID);
                 return (
-                  <tr key={chamado._id} className="hover:bg-gray-700/50 transition-colors duration-150">
+                  <tr key={chamado.ID} className="hover:bg-gray-700/50 transition-colors duration-150">
                     {/* Células com padding reduzido p-2 */}
                     <td className="font-mono text-sm p-2">
                       {notionLink ? (
                         <a href={notionLink} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 hover:underline">
-                          {chamado.notionId || 'N/A'}
+                          {chamado.ID || 'N/A'}
                         </a>
                       ) : (
-                        chamado.notionId || 'N/A'
+                        chamado.ID || 'N/A'
                       )}
                     </td>
                     <td className="truncate max-w-[150px] sm:max-w-[200px] text-sm p-2" title={chamado.titulo}>{chamado.titulo}</td>
