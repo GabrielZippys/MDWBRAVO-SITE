@@ -1,36 +1,60 @@
-import { Client } from '@notionhq/client';
-import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
+// lib/notion.ts
 
+import { Client } from '@notionhq/client';
+import {
+  PageObjectResponse,
+  PartialPageObjectResponse, // Para o tipo de resultado da query
+  PartialDatabaseObjectResponse, // Para o tipo de resultado da query
+  RichTextItemResponse,      // Para acessar plain_text
+  UserObjectResponse,        // Para proprietário/responsável
+  PartialUserObjectResponse  // Para proprietário/responsável
+} from '@notionhq/client/build/src/api-endpoints';
+
+// Tipo para um valor de propriedade individual de PageObjectResponse.properties
+type PagePropertyValue = PageObjectResponse['properties'][string];
+
+// Inicializa o cliente do Notion
 export const notion = new Client({ auth: process.env.NOTION_TOKEN! });
 
+// ID da sua base de dados de projetos no Notion
 const databaseId =
-  process.env.NOTION_PROJECTS_DATABASE_ID || 'a2982b0a81ff4378a8d6159012d6cfa6';
+  process.env.NOTION_PROJECTS_DATABASE_ID || 'SEU_DATABASE_ID_AQUI'; // << SUBSTITUA PELO SEU DATABASE ID REAL
 
-// Interface Projeto existente
+// --- Interface Projeto Atualizada ---
 export interface Projeto {
-  id: string;
+  pageId: string;
+  displayableIssueId?: string;
   nome: string;
-  resumo: string;
+  resumo?: string;
   status: string;
   setor: string;
   prioridade: string;
-  cliente: string;
+  cliente?: string;
   criadoEm: string;
   link?: string;
-proprietario: { nome: string } | null;
+  proprietario: { nome: string } | null;
+  loja?: string;
+  tipo?: string;
+  // Adicione outros campos conforme necessário
+  // descricao?: string;
+  // imagem?: string | null;
 }
 
-// Função para obter nome do usuário de forma segura
-function getUserName(user: any): string {
+// --- Funções Auxiliares Corrigidas ---
+
+function getUserName(user: UserObjectResponse | PartialUserObjectResponse | undefined): string {
   if (!user) return 'Sem responsável';
+  // UserObjectResponse tem 'name'. PartialUserObjectResponse normalmente só tem 'id'.
   if ('name' in user && user.name) {
     return user.name;
   }
-  return user.id ? `Usuário ${user.id}` : 'Sem responsável';
+  if (user.id) { // 'id' está presente em ambos
+    return `Usuário ${user.id}`;
+  }
+  return 'Sem responsável';
 }
 
-// Função para validar URLs
-function isValidUrl(url: string | null): boolean {
+function isValidUrl(url: string | null | undefined): boolean {
   if (!url) return false;
   try {
     new URL(url);
@@ -40,147 +64,138 @@ function isValidUrl(url: string | null): boolean {
   }
 }
 
-// Função utilitária para extrair texto de rich_text com segurança
-function getRichTextValue(prop: any): string {
-  return prop?.type === 'rich_text' && prop.rich_text?.[0]?.plain_text
-    ? prop.rich_text[0].plain_text
-    : '';
+function getRichTextValue(prop: PagePropertyValue | undefined): string {
+  // Verifica se 'prop' existe e se é do tipo 'rich_text'
+  if (prop && prop.type === 'rich_text') {
+    // 'prop.rich_text' é um array de RichTextItemResponse
+    if (prop.rich_text.length > 0) {
+      const firstRichTextItem = prop.rich_text[0];
+      // Acessa plain_text se o primeiro item existir e tiver plain_text
+      return firstRichTextItem?.plain_text?.trim() || '';
+    }
+  }
+  return '';
 }
 
-// Type guard para propriedades do tipo 'select'
-function isSelectProperty(prop: any): prop is { type: 'select'; select: { name: string } | null } {
-  return prop?.type === 'select';
+function getSelectValue(prop: PagePropertyValue | undefined): string | undefined {
+  if (prop && prop.type === 'select' && prop.select) {
+    return prop.select.name;
+  }
+  return undefined;
 }
 
-// Type guard para propriedades do tipo 'status'
-function isStatusProperty(prop: any): prop is { type: 'status'; status: { name: string } | null } {
-  return prop?.type === 'status';
+function getStatusValue(prop: PagePropertyValue | undefined): string | undefined {
+  if (prop && prop.type === 'status' && prop.status) {
+    return prop.status.name;
+  }
+  return undefined;
 }
 
+function getUniqueIdValue(prop: PagePropertyValue | undefined): string | undefined {
+  if (prop && prop.type === 'unique_id' && prop.unique_id) {
+    const { prefix, number } = prop.unique_id;
+    if (number === null) return undefined; // ID ainda não gerado pelo Notion
+    return prefix ? `${prefix}-${number}` : String(number);
+  }
+  return undefined;
+}
+
+function getUrlValue(prop: PagePropertyValue | undefined): string | undefined {
+  if (prop && prop.type === 'url' && prop.url && isValidUrl(prop.url)) {
+    return prop.url;
+  }
+  return undefined;
+}
+
+// --- Função Principal para Buscar Projetos ---
 export async function getProjetosFromNotion(): Promise<Projeto[]> {
+  if (!databaseId || databaseId === 'SEU_DATABASE_ID_AQUI') {
+    console.error("ERRO: NOTION_PROJECTS_DATABASE_ID não está configurado ou está com valor placeholder.");
+    return [];
+  }
+
   try {
-    console.log('Iniciando busca de projetos no Notion, database ID:', databaseId);
-
-    const response = await notion.databases.query({
-      database_id: databaseId,
-    });
-
-    console.log(`Encontrados ${response.results.length} resultados no Notion`);
+    console.log(`Iniciando busca de projetos no Notion, database ID: ${databaseId}`);
+    const response = await notion.databases.query({ database_id: databaseId });
+    console.log(`Encontrados ${response.results.length} resultados brutos do Notion.`);
 
     const pages = response.results.filter(
-      (page): page is PageObjectResponse => 'properties' in page
+      (page): page is PageObjectResponse => 'properties' in page && page.object === 'page'
     );
+    console.log(`Encontrados ${pages.length} PageObjectResponse válidos.`);
 
     if (pages.length > 0) {
-      const firstPage = pages[0];
+      const firstPageProperties = pages[0].properties;
       console.log(
-        'Exemplo de propriedades disponíveis:',
-        Object.keys(firstPage.properties).map((key) => ({
+        'Propriedades da primeira página (VERIFIQUE OS NOMES EXATOS AQUI):',
+        Object.keys(firstPageProperties).map((key) => ({
           key,
-          type: (firstPage.properties[key] as any).type,
+          type: (firstPageProperties[key] as PagePropertyValue).type, // Cast para o tipo correto
         }))
       );
+    } else {
+      console.warn("Nenhuma página válida encontrada na resposta do Notion.");
+      return [];
     }
 
-    const statusValidos = ['Planejamento', 'Em andamento', 'Em pausa'];
-    const setoresValidos = ['Infra', 'Infra & BI'];
-
     const projetos: Projeto[] = pages.map((page) => {
-      const titleProp = Object.values(page.properties).find(
-        (prop: any) => prop.type === 'title'
-      ) as any;
+      const properties = page.properties;
 
+      const titleProp = Object.values(properties).find(
+        (prop) => prop.type === 'title'
+      ) as Extract<PagePropertyValue, { type: 'title' }> | undefined; // Cast para o tipo específico
       const nome = titleProp?.title?.[0]?.plain_text?.trim() || 'Sem nome';
 
-      const descricao = getRichTextValue(page.properties.Descrição);
-      const resumo = getRichTextValue(page.properties.Resumo);
+      // IMPORTANTE: Use os nomes EXATOS das suas colunas do Notion aqui
+      const displayableIssueId = getUniqueIdValue(properties['Issue Id']);
+      const resumo = getRichTextValue(properties['Resumo']);
+      const status = getStatusValue(properties['Status']) || getSelectValue(properties['Status']) || 'Sem status'; // Tenta status, depois select
+      const setor = getSelectValue(properties['Setor']) || 'Indefinido';
+      const prioridade = getSelectValue(properties['Prioridade']) || 'Sem prioridade';
+      const cliente = getSelectValue(properties['Cliente']) || undefined;
+      const link = getUrlValue(properties['Link']);
+      const loja = getSelectValue(properties['Loja']) || getRichTextValue(properties['Loja']) || undefined;
+      const tipo = getSelectValue(properties['Tipo']) || getRichTextValue(properties['Tipo']) || undefined;
 
-      const imageProp =
-        page.properties['Arquivos e mídia'] || page.properties.Imagem;
-      let imagem: string | null = null;
 
-      if (imageProp?.type === 'files' && imageProp.files.length > 0) {
-        const file = imageProp.files[0];
-        if (file?.type === 'file') {
-  imagem = file.file.url;
-} else if (file?.type === 'external') {
-  imagem = file.external.url;
-}
-
+      let proprietario: { nome: string } | null = null;
+      const proprietarioProp = properties['Proprietário'];
+      if (proprietarioProp && proprietarioProp.type === 'people' && proprietarioProp.people.length > 0) {
+        // proprietarioProp.people[0] é UserObjectResponse | PartialUserObjectResponse
+        proprietario = { nome: getUserName(proprietarioProp.people[0]) };
       }
-
-      const linkProp = page.properties.Link as any;
-      const link = linkProp?.url && isValidUrl(linkProp.url) ? linkProp.url : null;
-
-      let status = 'Sem status';
-      const statusProp = page.properties.Status;
-      if (isStatusProperty(statusProp)) {
-        status = statusProp.status?.name || 'Sem status';
-      } else if (isSelectProperty(statusProp)) {
-        status = statusProp.select?.name || 'Sem status';
-      }
-
-      const setorProp = page.properties.Setor;
-      const setor =
-        isSelectProperty(setorProp) && setorProp.select?.name
-          ? setorProp.select.name
-          : 'Indefinido';
-
-let proprietario: { nome: string } | null = null;
-const proprietarioProp = page.properties.Proprietário;
-if (proprietarioProp?.type === 'people' && proprietarioProp.people.length > 0) {
-  proprietario = {
-    nome: getUserName(proprietarioProp.people[0]),
-  };
-}
-
-
-      const prioridadeProp = page.properties.Prioridade;
-      const prioridade =
-        isSelectProperty(prioridadeProp) && prioridadeProp.select?.name
-          ? prioridadeProp.select.name
-          : 'Sem prioridade';
-
-      const clienteProp = page.properties.Cliente;
-      const cliente =
-        isSelectProperty(clienteProp) && clienteProp.select?.name
-          ? clienteProp.select.name
-          : 'Sem cliente';
-
-let responsavel: string = 'Sem responsável';
-const responsavelProp = page.properties.Responsável;
-if (responsavelProp?.type === 'people' && responsavelProp.people.length > 0) {
-  responsavel = getUserName(responsavelProp.people[0]);
-}
-
-
-      const criadoEm = page.created_time || '';
 
       return {
-        id: page.id,
+        pageId: page.id,
+        displayableIssueId,
         nome,
-        descricao,
-        imagem,
-        link,
+        resumo,
         status,
         setor,
-        proprietario,
-        criadoEm,
-        resumo,
         prioridade,
         cliente,
-        responsavel,
+        criadoEm: page.created_time,
+        link,
+        proprietario,
+        loja,
+        tipo,
       };
     });
 
-    const projetosFiltrados = projetos.filter(
-      (p) => statusValidos.includes(p.status) && setoresValidos.includes(p.setor)
-    );
+    console.log(`Retornando ${projetos.length} projetos mapeados corretamente.`);
+    return projetos;
 
-    console.log(`Retornando ${projetosFiltrados.length} projetos filtrados`);
-    return projetosFiltrados;
   } catch (error) {
-    console.error('Erro ao buscar projetos do Notion:', error);
+    const e = error as any; // Simples cast para any para logar o erro
+    const notionErrorBody = e.body ? JSON.parse(e.body) : null;
+    console.error(
+        'Erro detalhado ao buscar projetos do Notion:',
+        notionErrorBody || e.message,
+        e.code ? `(Código: ${e.code})` : ''
+    );
+    if (notionErrorBody) {
+        console.error('Detalhes do erro Notion:', JSON.stringify(notionErrorBody, null, 2));
+    }
     return [];
   }
 }

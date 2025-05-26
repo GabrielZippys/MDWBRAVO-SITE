@@ -1,4 +1,4 @@
-import { Projeto } from '@/lib/notion'; // Assume que Projeto tem uma propriedade 'id'
+import { Projeto } from '@/lib/notion'; // Agora Projeto deve ter 'pageId'
 import styles from '@/styles/ProjetosSection.module.css';
 
 interface ProjetosSectionProps {
@@ -36,11 +36,12 @@ export default function ProjetosSection({ projetos = [] }: ProjetosSectionProps)
       ) : (
         <div className={styles.projetosGrid}>
           {projetosFiltrados.map((projeto) => {
-            // Gera o link do Notion para cada projeto
-            const notionPageUrl = generateNotionPageLink(projeto.id);
+            // MODIFICADO AQUI: Usar projeto.pageId
+            const notionPageUrl = generateNotionPageLink(projeto.pageId);
 
             return (
-              <div key={projeto.id} className={styles.projetoCard}>
+              // MODIFICADO AQUI: Usar projeto.pageId como chave
+              <div key={projeto.pageId} className={styles.projetoCard}>
                 <h3>{projeto.nome}</h3>
                 <p className={styles.resumo}>{projeto.resumo}</p>
 
@@ -70,19 +71,15 @@ export default function ProjetosSection({ projetos = [] }: ProjetosSectionProps)
                 </ul>
 
                 <div className={styles.linkArea}>
-                  {notionPageUrl ? ( // Verifica se a URL foi gerada com sucesso
+                  {notionPageUrl ? (
                     <a
                       href={notionPageUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      // O onClick para validação não é mais estritamente necessário
-                      // se estamos gerando um link https válido.
-                      // Você pode remover o onClick ou mantê-lo se quiser uma verificação extra.
                     >
                       Acessar Projeto
                     </a>
                   ) : (
-                    // Mensagem se não foi possível gerar o link (ex: ID ausente)
                     <span className={styles.semLink}>Link não pôde ser gerado</span>
                   )}
                 </div>
