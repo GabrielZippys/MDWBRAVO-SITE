@@ -18,7 +18,7 @@ export const getStaticProps: GetStaticProps<HomeProps> = async () => {
 }
 
 export type ChamadoType = {
-  _id: string;
+  // A propriedade '_id' foi removida daqui
   titulo: string;
   loja: string;
   status: 'em aberto' | 'realizando' | 'designado' | 'resolvido' | 'feito' | 'outros';
@@ -28,7 +28,7 @@ export type ChamadoType = {
   prioridade: string;
 };
 
- interface HomeProps {
+interface HomeProps {
   projetos: {
     id: string;
     nome: string; 
@@ -198,8 +198,8 @@ export default function Home({ projetos }: HomeProps) {
         <MapaDeChamados chamados={chamadosFiltrados} />
       </div>
 
-     {/* Sessão de Projetos */}
-     <ProjetosSection projetos={projetos} />
+      {/* Sessão de Projetos */}
+      <ProjetosSection projetos={projetos} />
     </main>
   );
 }
