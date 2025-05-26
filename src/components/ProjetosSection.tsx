@@ -1,4 +1,4 @@
-import { Projeto } from '@/lib/notion'; // Projeto agora deve ter 'pageId', e não 'ID'
+import { Projeto } from '@/lib/notion'; // Assume que Projeto tem uma propriedade 'id'
 import styles from '@/styles/ProjetosSection.module.css';
 
 interface ProjetosSectionProps {
@@ -15,15 +15,15 @@ export default function ProjetosSection({ projetos = [] }: ProjetosSectionProps)
 
   /**
    * Gera um link para uma página do Notion usando o ID da página.
-   * @param pageId O ID da página do Notion (pode conter hifens). // Parâmetro renomeado para pageId
+   * @param pageId O ID da página do Notion (pode conter hifens).
    * @returns A URL completa para a página do Notion, ou null se o ID não for fornecido.
    */
-  const generateNotionPageLink = (pageId: string | undefined | null): string | null => { // Parâmetro renomeado para pageId
+  const generateNotionPageLink = (pageId: string | undefined | null): string | null => {
     if (!pageId) {
       return null;
     }
     // Remove hifens do ID para o formato de URL do Notion
-    const cleanId = pageId.replace(/-/g, ''); // Usa pageId aqui
+    const cleanId = pageId.replace(/-/g, '');
     return `https://www.notion.so/${cleanId}`;
   };
 
@@ -36,12 +36,11 @@ export default function ProjetosSection({ projetos = [] }: ProjetosSectionProps)
       ) : (
         <div className={styles.projetosGrid}>
           {projetosFiltrados.map((projeto) => {
-            // CORRIGIDO AQUI: Usar projeto.pageId
-            const notionPageUrl = generateNotionPageLink(projeto.pageId);
+            // Gera o link do Notion para cada projeto
+            const notionPageUrl = generateNotionPageLink(projeto.id);
 
             return (
-              // CORRIGIDO AQUI: Usar projeto.pageId como chave
-              <div key={projeto.pageId} className={styles.projetoCard}>
+              <div key={projeto.id} className={styles.projetoCard}>
                 <h3>{projeto.nome}</h3>
                 <p className={styles.resumo}>{projeto.resumo}</p>
 
@@ -71,15 +70,19 @@ export default function ProjetosSection({ projetos = [] }: ProjetosSectionProps)
                 </ul>
 
                 <div className={styles.linkArea}>
-                  {notionPageUrl ? (
+                  {notionPageUrl ? ( // Verifica se a URL foi gerada com sucesso
                     <a
                       href={notionPageUrl}
                       target="_blank"
                       rel="noopener noreferrer"
+                      // O onClick para validação não é mais estritamente necessário
+                      // se estamos gerando um link https válido.
+                      // Você pode remover o onClick ou mantê-lo se quiser uma verificação extra.
                     >
                       Acessar Projeto
                     </a>
                   ) : (
+                    // Mensagem se não foi possível gerar o link (ex: ID ausente)
                     <span className={styles.semLink}>Link não pôde ser gerado</span>
                   )}
                 </div>
