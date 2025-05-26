@@ -12,7 +12,7 @@ import {
 type PagePropertyValue = PageObjectResponse['properties'][string];
 
 
-export const notion = new Client({ auth: process.env.NOTION_TOKEN! });
+export const notion = new Client({ auth: process.env.NOTION_DATABASE_ID! });
 
 const databaseId =
   process.env.NOTION_PROJECTS_DATABASE_ID || '1733f3feb9bb808794e9eb6681ecec06';
