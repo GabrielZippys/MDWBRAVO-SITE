@@ -13,7 +13,7 @@ import {
   Cell,
   Legend,
 } from 'recharts';
-import { useState, useMemo, useCallback } from 'react'; // ChangeEvent removido pois os filtros foram removidos
+import { useState, useMemo, useCallback } from 'react';
 
 type Chamado = {
   _id: string;
@@ -44,22 +44,15 @@ const generateNotionPageLink = (notionPageId: string | undefined | null): string
   return `https://www.notion.so/${cleanId}`;
 };
 
-// Definindo as chaves pelas quais podemos ordenar
 type SortableChamadoKey = keyof Chamado | 'zona';
 
 export default function Dashboard({ chamados }: DashboardProps) {
-  // Estado para configuração da ordenação
   const [sortConfig, setSortConfig] = useState<{ key: SortableChamadoKey; direction: 'asc' | 'desc' } | null>(null);
 
-  // Seus useMemo para filtros foram removidos conforme sua modificação
-  // Agora `chamadosFiltrados` será apenas `chamados` se não houver mais filtros no estado.
-  // Se você ainda tiver filtros em algum lugar, use `chamadosFiltrados` aqui.
-  // Para este exemplo, vou assumir que `chamados` é a lista a ser ordenada.
-  // Se você reintroduzir filtros, substitua `chamados` por `chamadosFiltrados` na linha abaixo.
-  const chamadosParaExibir = chamados; // Ou chamadosFiltrados se você tiver filtros
+  const chamadosParaExibir = chamados;
 
   const chamadosOrdenados = useMemo(() => {
-    let sortableItems = [...chamadosParaExibir]; // Use a lista de chamados (filtrada ou não)
+    let sortableItems = [...chamadosParaExibir];
     if (sortConfig !== null) {
       sortableItems.sort((a, b) => {
         let valA: string | number | undefined | null;
@@ -73,24 +66,20 @@ export default function Dashboard({ chamados }: DashboardProps) {
           valB = b[sortConfig.key as keyof Chamado];
         }
 
-        // Tratamento para valores nulos/undefined, especialmente para prioridade
         if (valA === undefined || valA === null) valA = '';
         if (valB === undefined || valB === null) valB = '';
 
         if (sortConfig.key === 'dataCriacao') {
-          // Comparar como datas
           const dateA = new Date(valA as string).getTime();
           const dateB = new Date(valB as string).getTime();
           if (dateA < dateB) return sortConfig.direction === 'asc' ? -1 : 1;
           if (dateA > dateB) return sortConfig.direction === 'asc' ? 1 : -1;
           return 0;
         } else if (typeof valA === 'number' && typeof valB === 'number') {
-          // Comparar como números se aplicável
           if (valA < valB) return sortConfig.direction === 'asc' ? -1 : 1;
           if (valA > valB) return sortConfig.direction === 'asc' ? 1 : -1;
           return 0;
         } else {
-          // Comparar como strings (case-insensitive)
           const strA = String(valA).toLowerCase();
           const strB = String(valB).toLowerCase();
           if (strA < strB) return sortConfig.direction === 'asc' ? -1 : 1;
@@ -116,7 +105,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
         const valorDoCampo = chamado[campo as keyof Chamado];
         chave = typeof valorDoCampo === 'string' ? valorDoCampo : String(valorDoCampo) || 'Não Definido';
       }
-      if (chave) { // Garante que chaves vazias ou nulas não sejam contadas como 'Não Definido' a menos que explicitamente
+      if (chave) {
         contagem[chave] = (contagem[chave] || 0) + 1;
       } else {
         contagem['Não Definido'] = (contagem['Não Definido'] || 0) + 1;
@@ -127,8 +116,6 @@ export default function Dashboard({ chamados }: DashboardProps) {
       .sort((a, b) => b.valor - a.valor);
   }, []);
 
-  // Usar chamadosOrdenados para os gráficos também, se fizer sentido após a filtragem
-  // ou manter chamadosParaExibir (que seriam os filtrados antes da ordenação da tabela)
   const dadosPorStatus = useMemo(() => agruparDadosParaGrafico(chamadosParaExibir, 'status'), [chamadosParaExibir, agruparDadosParaGrafico]);
   const dadosPorTipo = useMemo(() => agruparDadosParaGrafico(chamadosParaExibir, 'tipo'), [chamadosParaExibir, agruparDadosParaGrafico]);
   const dadosPorZona = useMemo(() => agruparDadosParaGrafico(chamadosParaExibir, 'zona'), [chamadosParaExibir, agruparDadosParaGrafico]);
@@ -142,10 +129,9 @@ export default function Dashboard({ chamados }: DashboardProps) {
     setSortConfig({ key, direction });
   };
 
-  // Função para renderizar o ícone de ordenação
   const renderSortArrow = (columnKey: SortableChamadoKey) => {
     if (!sortConfig || sortConfig.key !== columnKey) {
-      return <span className="ml-1 opacity-0 group-hover:opacity-50">↕️</span>; // Neutro, aparece no hover
+      return <span className="ml-1 opacity-0 group-hover:opacity-50">↕️</span>;
     }
     return sortConfig.direction === 'asc' ? <span className="ml-1">🔼</span> : <span className="ml-1">🔽</span>;
   };
@@ -165,15 +151,16 @@ export default function Dashboard({ chamados }: DashboardProps) {
           <table className="tabela-chamados w-full mt-4">
             <thead>
               <tr>
-                {/* Cabeçalhos clicáveis para ordenação. Padding reduzido com p-2. */}
-                <th onClick={() => requestSort('notionId')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">ID Notion{renderSortArrow('notionId')}</th>
+                {/* Alterações aqui: Adicionando classes de largura (w-*) */}
+                <th onClick={() => requestSort('notionId')} className="w-24 cursor-pointer group p-2 hover:bg-gray-700 transition-colors">ID Notion{renderSortArrow('notionId')}</th>
                 <th onClick={() => requestSort('titulo')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Título{renderSortArrow('titulo')}</th>
-                <th onClick={() => requestSort('loja')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Loja{renderSortArrow('loja')}</th>
-                <th onClick={() => requestSort('status')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Status{renderSortArrow('status')}</th>
-                <th onClick={() => requestSort('tipo')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Tipo{renderSortArrow('tipo')}</th>
-                <th onClick={() => requestSort('zona')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Zona{renderSortArrow('zona')}</th>
-                <th onClick={() => requestSort('prioridade')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Prioridade{renderSortArrow('prioridade')}</th>
-                <th onClick={() => requestSort('dataCriacao')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Criado em{renderSortArrow('dataCriacao')}</th>
+                <th onClick={() => requestSort('loja')} className="w-32 cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Loja{renderSortArrow('loja')}</th>
+                <th onClick={() => requestSort('status')} className="w-36 cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Status{renderSortArrow('status')}</th>
+                {/* AQUI: Coluna "Tipo" com largura definida */}
+                <th onClick={() => requestSort('tipo')} className="w-40 cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Tipo{renderSortArrow('tipo')}</th>
+                <th onClick={() => requestSort('zona')} className="w-32 cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Zona{renderSortArrow('zona')}</th>
+                <th onClick={() => requestSort('prioridade')} className="w-32 cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Prioridade{renderSortArrow('prioridade')}</th>
+                <th onClick={() => requestSort('dataCriacao')} className="w-36 cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Criado em{renderSortArrow('dataCriacao')}</th>
               </tr>
             </thead>
             <tbody>
@@ -181,7 +168,6 @@ export default function Dashboard({ chamados }: DashboardProps) {
                 const notionLink = generateNotionPageLink(chamado.notionId);
                 return (
                   <tr key={chamado._id} className="hover:bg-gray-700/50 transition-colors duration-150">
-                    {/* Células com padding reduzido p-2 */}
                     <td className="font-mono text-sm p-2">
                       {notionLink ? (
                         <a href={notionLink} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 hover:underline">
@@ -218,11 +204,11 @@ export default function Dashboard({ chamados }: DashboardProps) {
             </tbody>
           </table>
         ) : (
-          <p className="text-center text-gray-500 py-8">Nenhum chamado encontrado.</p> // Mensagem simplificada
+          <p className="text-center text-gray-500 py-8">Nenhum chamado encontrado.</p>
         )}
       </div>
 
-      {/* Seção de Gráficos (permanece a mesma, mas agora usa dados não ordenados pela tabela) */}
+      {/* Seção de Gráficos (sem alterações) */}
       <div className="Graficos grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Chamados por Status */}
         <div className="graphic-container bg-gray-800 p-4 rounded-lg shadow-lg">
@@ -298,15 +284,15 @@ export default function Dashboard({ chamados }: DashboardProps) {
           <h3 className="titulo2 text-lg font-semibold text-amber-400 mb-3">Chamados por Prioridade</h3>
           {dadosPorPrioridade.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
-               <BarChart data={dadosPorPrioridade} layout="vertical" margin={{ top: 5, right: 20, left: 20, bottom: 5 }}>
+                <BarChart data={dadosPorPrioridade} layout="vertical" margin={{ top: 5, right: 20, left: 20, bottom: 5 }}>
                 <XAxis type="number" stroke="#9ca3af" fontSize={12} />
                 <YAxis dataKey="nome" type="category" stroke="#9ca3af" fontSize={12} width={100} />
                 <Tooltip wrapperClassName="tooltip-recharts" />
                 <Legend wrapperStyle={{fontSize: "12px"}}/>
                 <Bar dataKey="valor" fill="#f59e0b" radius={[0, 4, 4, 0]} barSize={20}>
-                   {dadosPorPrioridade.map((_entry, index) => (
-                    <Cell key={`cell-${index}`} fill={CORES_GRAFICOS[index % CORES_GRAFICOS.length]} />
-                  ))}
+                    {dadosPorPrioridade.map((_entry, index) => (
+                      <Cell key={`cell-${index}`} fill={CORES_GRAFICOS[index % CORES_GRAFICOS.length]} />
+                    ))}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
