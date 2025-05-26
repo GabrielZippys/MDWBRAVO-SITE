@@ -54,7 +54,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const status = statusMap[rawStatus] || 'outros';
 
         return {
-          _id: page.id,
+          ID: page.id,
           titulo: props['Descrição do Problema']?.title?.[0]?.plain_text || '',
           loja: rawLoja,
           status,
