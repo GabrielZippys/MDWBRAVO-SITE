@@ -2,32 +2,18 @@
 'use client';
 import { getZona } from '@/utils/classifyZone';
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  Legend,
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell, Legend,
 } from 'recharts';
-import { useState, useMemo, useCallback } from 'react'; // ChangeEvent removido pois os filtros foram removidos
+import { useState, useMemo, useCallback } from 'react';
+import type { Projeto } from '@/lib/notion'; // Importa a interface Projeto atualizada
 
-type Chamado = {
-  pageId: string;
-  ID: string;
-  titulo: string;
-  loja: string;
-  status: string;
-  tipo: string;
-  dataCriacao: string;
-  prioridade?: string;
-};
+// A interface Chamado agora reflete a interface Projeto sem displayableIssueId/ID
+// e inclui pageId para o link.
+type Chamado = Projeto; // Simplesmente usando a interface Projeto diretamente
 
 type DashboardProps = {
-  chamados: Chamado[];
+  chamados: Chamado[]; // Agora usa o tipo Chamado (que é Projeto)
 };
 
 const CORES_GRAFICOS = [
@@ -36,61 +22,57 @@ const CORES_GRAFICOS = [
   '#264653', '#fca311'
 ];
 
-const getZonaFromLoja = (loja: string): string => getZona(loja);
+const getZonaFromLoja = (loja: string | null | undefined): string => {
+    if (!loja) return 'Zona Desconhecida';
+    return getZona(loja);
+};
 
-const generateNotionPageLink = (notionPageId: string | undefined | null): string | null => {
-  if (!notionPageId) return null;
-  const cleanId = notionPageId.replace(/-/g, '');
+const generateNotionPageLink = (pageId: string | undefined | null): string | null => {
+  if (!pageId) return null;
+  const cleanId = pageId.replace(/-/g, '');
   return `https://www.notion.so/${cleanId}`;
 };
 
-// Definindo as chaves pelas quais podemos ordenar
-type SortableChamadoKey = keyof Chamado | 'zona';
+// Ajustando SortableChamadoKey para refletir os campos de Chamado (que é Projeto)
+// Removido 'ID' ou 'displayableIssueId' daqui. Adicione 'pageId' se quiser ordenar por ele.
+type SortableChamadoKey = keyof Omit<Chamado, 'pageId' | 'proprietario' | 'link' | 'resumo' | 'cliente'> | 'zona';
+
 
 export default function Dashboard({ chamados }: DashboardProps) {
-  // Estado para configuração da ordenação
   const [sortConfig, setSortConfig] = useState<{ key: SortableChamadoKey; direction: 'asc' | 'desc' } | null>(null);
 
-  // Seus useMemo para filtros foram removidos conforme sua modificação
-  // Agora `chamadosFiltrados` será apenas `chamados` se não houver mais filtros no estado.
-  // Se você ainda tiver filtros em algum lugar, use `chamadosFiltrados` aqui.
-  // Para este exemplo, vou assumir que `chamados` é a lista a ser ordenada.
-  // Se você reintroduzir filtros, substitua `chamados` por `chamadosFiltrados` na linha abaixo.
-  const chamadosParaExibir = chamados; // Ou chamadosFiltrados se você tiver filtros
+  const chamadosParaExibir = chamados;
 
   const chamadosOrdenados = useMemo(() => {
-    let sortableItems = [...chamadosParaExibir]; // Use a lista de chamados (filtrada ou não)
+    let sortableItems = [...chamadosParaExibir];
     if (sortConfig !== null) {
       sortableItems.sort((a, b) => {
-        let valA: string | number | undefined | null;
-        let valB: string | number | undefined | null;
+        let valA: any;
+        let valB: any;
 
         if (sortConfig.key === 'zona') {
           valA = getZonaFromLoja(a.loja);
           valB = getZonaFromLoja(b.loja);
         } else {
+          // Acessa diretamente as propriedades de Chamado (que é Projeto)
           valA = a[sortConfig.key as keyof Chamado];
           valB = b[sortConfig.key as keyof Chamado];
         }
 
-        // Tratamento para valores nulos/undefined, especialmente para prioridade
         if (valA === undefined || valA === null) valA = '';
         if (valB === undefined || valB === null) valB = '';
 
-        if (sortConfig.key === 'dataCriacao') {
-          // Comparar como datas
+        if (sortConfig.key === 'criadoEm') {
           const dateA = new Date(valA as string).getTime();
           const dateB = new Date(valB as string).getTime();
           if (dateA < dateB) return sortConfig.direction === 'asc' ? -1 : 1;
           if (dateA > dateB) return sortConfig.direction === 'asc' ? 1 : -1;
           return 0;
         } else if (typeof valA === 'number' && typeof valB === 'number') {
-          // Comparar como números se aplicável
           if (valA < valB) return sortConfig.direction === 'asc' ? -1 : 1;
           if (valA > valB) return sortConfig.direction === 'asc' ? 1 : -1;
           return 0;
         } else {
-          // Comparar como strings (case-insensitive)
           const strA = String(valA).toLowerCase();
           const strB = String(valB).toLowerCase();
           if (strA < strB) return sortConfig.direction === 'asc' ? -1 : 1;
@@ -102,10 +84,11 @@ export default function Dashboard({ chamados }: DashboardProps) {
     return sortableItems;
   }, [chamadosParaExibir, sortConfig]);
 
-
   const agruparDadosParaGrafico = useCallback((
     data: Chamado[],
-    campo: keyof Omit<Chamado, '_id' | 'ID' | 'titulo' | 'loja' | 'dataCriacao'> | 'zona'
+    // Ajuste os campos agrupáveis para corresponderem a Chamado (Projeto)
+    // Removido '_id' e 'ID' do Omit, pois não existem mais em Chamado dessa forma
+    campo: keyof Omit<Chamado, 'pageId' | 'nome' | 'loja' | 'dataCriacao' | 'resumo' | 'link' | 'proprietario' | 'cliente'> | 'zona'
   ): { nome: string; valor: number }[] => {
     const contagem: Record<string, number> = {};
     data.forEach(chamado => {
@@ -116,7 +99,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
         const valorDoCampo = chamado[campo as keyof Chamado];
         chave = typeof valorDoCampo === 'string' ? valorDoCampo : String(valorDoCampo) || 'Não Definido';
       }
-      if (chave) { // Garante que chaves vazias ou nulas não sejam contadas como 'Não Definido' a menos que explicitamente
+      if (chave) {
         contagem[chave] = (contagem[chave] || 0) + 1;
       } else {
         contagem['Não Definido'] = (contagem['Não Definido'] || 0) + 1;
@@ -126,9 +109,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
       .map(([nome, valor]) => ({ nome, valor }))
       .sort((a, b) => b.valor - a.valor);
   }, []);
-
-  // Usar chamadosOrdenados para os gráficos também, se fizer sentido após a filtragem
-  // ou manter chamadosParaExibir (que seriam os filtrados antes da ordenação da tabela)
+  
   const dadosPorStatus = useMemo(() => agruparDadosParaGrafico(chamadosParaExibir, 'status'), [chamadosParaExibir, agruparDadosParaGrafico]);
   const dadosPorTipo = useMemo(() => agruparDadosParaGrafico(chamadosParaExibir, 'tipo'), [chamadosParaExibir, agruparDadosParaGrafico]);
   const dadosPorZona = useMemo(() => agruparDadosParaGrafico(chamadosParaExibir, 'zona'), [chamadosParaExibir, agruparDadosParaGrafico]);
@@ -142,14 +123,12 @@ export default function Dashboard({ chamados }: DashboardProps) {
     setSortConfig({ key, direction });
   };
 
-  // Função para renderizar o ícone de ordenação
   const renderSortArrow = (columnKey: SortableChamadoKey) => {
     if (!sortConfig || sortConfig.key !== columnKey) {
-      return <span className="ml-1 opacity-0 group-hover:opacity-50">↕️</span>; // Neutro, aparece no hover
+      return <span className="ml-1 opacity-0 group-hover:opacity-50">↕️</span>;
     }
     return sortConfig.direction === 'asc' ? <span className="ml-1">🔼</span> : <span className="ml-1">🔽</span>;
   };
-
 
   return (
     <div className="dashboardContainer p-4 md:p-6 lg:p-8 bg-gray-900 text-white min-h-screen">
@@ -165,34 +144,31 @@ export default function Dashboard({ chamados }: DashboardProps) {
           <table className="tabela-chamados w-full mt-4">
             <thead>
               <tr>
-                {/* Cabeçalhos clicáveis para ordenação. Padding reduzido com p-2. */}
-                <th onClick={() => requestSort('ID')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">ID Notion{renderSortArrow('ID')}</th>
-                <th onClick={() => requestSort('titulo')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Título{renderSortArrow('titulo')}</th>
+                {/* Coluna "ID Notion" foi removida. O Título agora pode ser o link. */}
+                <th onClick={() => requestSort('nome')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Título{renderSortArrow('nome')}</th>
                 <th onClick={() => requestSort('loja')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Loja{renderSortArrow('loja')}</th>
                 <th onClick={() => requestSort('status')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Status{renderSortArrow('status')}</th>
                 <th onClick={() => requestSort('tipo')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Tipo{renderSortArrow('tipo')}</th>
                 <th onClick={() => requestSort('zona')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Zona{renderSortArrow('zona')}</th>
                 <th onClick={() => requestSort('prioridade')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Prioridade{renderSortArrow('prioridade')}</th>
-                <th onClick={() => requestSort('dataCriacao')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Criado em{renderSortArrow('dataCriacao')}</th>
+                <th onClick={() => requestSort('criadoEm')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Criado em{renderSortArrow('criadoEm')}</th>
               </tr>
             </thead>
             <tbody>
               {chamadosOrdenados.map((chamado) => {
-                const notionLink = generateNotionPageLink(chamado.ID);
+                const notionLink = generateNotionPageLink(chamado.pageId); // Link usa pageId
                 return (
-                  <tr key={chamado.ID} className="hover:bg-gray-700/50 transition-colors duration-150">
-                    {/* Células com padding reduzido p-2 */}
-                    <td className="font-mono text-sm p-2">
+                  <tr key={chamado.pageId} className="hover:bg-gray-700/50 transition-colors duration-150">
+                    <td className="truncate max-w-[150px] sm:max-w-[200px] text-sm p-2" title={chamado.nome}>
                       {notionLink ? (
                         <a href={notionLink} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 hover:underline">
-                          {chamado.ID || 'N/A'}
+                          {chamado.nome} {/* Exibe o nome do projeto como link */}
                         </a>
                       ) : (
-                        chamado.ID || 'N/A'
+                        chamado.nome // Exibe o nome se não houver link (pageId ausente)
                       )}
                     </td>
-                    <td className="truncate max-w-[150px] sm:max-w-[200px] text-sm p-2" title={chamado.titulo}>{chamado.titulo}</td>
-                    <td className="text-sm p-2">{chamado.loja}</td>
+                    <td className="text-sm p-2">{chamado.loja || 'N/A'}</td>
                     <td className="p-2">
                       <span
                         className="status-badge px-2.5 py-1 text-xs font-semibold rounded-full"
@@ -201,7 +177,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
                         {chamado.status}
                       </span>
                     </td>
-                    <td className="text-sm p-2">{chamado.tipo}</td>
+                    <td className="text-sm p-2">{chamado.tipo || 'N/A'}</td>
                     <td className="text-sm p-2">{getZonaFromLoja(chamado.loja)}</td>
                     <td className="p-2">
                       <span
@@ -211,18 +187,18 @@ export default function Dashboard({ chamados }: DashboardProps) {
                         {chamado.prioridade || 'N/D'}
                       </span>
                     </td>
-                    <td className="text-sm p-2">{new Date(chamado.dataCriacao).toLocaleDateString('pt-BR')}</td>
+                    <td className="text-sm p-2">{new Date(chamado.criadoEm).toLocaleDateString('pt-BR')}</td>
                   </tr>
                 );
               })}
             </tbody>
           </table>
         ) : (
-          <p className="text-center text-gray-500 py-8">Nenhum chamado encontrado.</p> // Mensagem simplificada
+          <p className="text-center text-gray-500 py-8">Nenhum chamado encontrado.</p>
         )}
       </div>
 
-      {/* Seção de Gráficos (permanece a mesma, mas agora usa dados não ordenados pela tabela) */}
+      {/* Seção de Gráficos */}
       <div className="Graficos grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Chamados por Status */}
         <div className="graphic-container bg-gray-800 p-4 rounded-lg shadow-lg">
@@ -281,7 +257,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
                   }}
                 >
                   {dadosPorZona.map((_entry, index) => (
-                    <Cell key={`cell-${index}`} fill={CORES_GRAFICOS[index % CORES_GRAFICOS.length]} />
+                    <Cell key={`cell-pie-${index}`} fill={CORES_GRAFICOS[index % CORES_GRAFICOS.length]} />
                   ))}
                 </Pie>
                 <Legend wrapperStyle={{fontSize: "12px"}} />
@@ -305,7 +281,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
                 <Legend wrapperStyle={{fontSize: "12px"}}/>
                 <Bar dataKey="valor" fill="#f59e0b" radius={[0, 4, 4, 0]} barSize={20}>
                    {dadosPorPrioridade.map((_entry, index) => (
-                    <Cell key={`cell-${index}`} fill={CORES_GRAFICOS[index % CORES_GRAFICOS.length]} />
+                    <Cell key={`cell-bar-${index}`} fill={CORES_GRAFICOS[index % CORES_GRAFICOS.length]} />
                   ))}
                 </Bar>
               </BarChart>

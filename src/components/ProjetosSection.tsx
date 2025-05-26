@@ -1,4 +1,4 @@
-import { Projeto } from '@/lib/notion'; // Agora Projeto deve ter 'ID'
+import { Projeto } from '@/lib/notion'; // Projeto agora deve ter 'pageId', e não 'ID'
 import styles from '@/styles/ProjetosSection.module.css';
 
 interface ProjetosSectionProps {
@@ -15,15 +15,15 @@ export default function ProjetosSection({ projetos = [] }: ProjetosSectionProps)
 
   /**
    * Gera um link para uma página do Notion usando o ID da página.
-   * @param ID O ID da página do Notion (pode conter hifens).
+   * @param pageId O ID da página do Notion (pode conter hifens). // Parâmetro renomeado para pageId
    * @returns A URL completa para a página do Notion, ou null se o ID não for fornecido.
    */
-  const generateNotionPageLink = (ID: string | undefined | null): string | null => {
-    if (!ID) {
+  const generateNotionPageLink = (pageId: string | undefined | null): string | null => { // Parâmetro renomeado para pageId
+    if (!pageId) {
       return null;
     }
     // Remove hifens do ID para o formato de URL do Notion
-    const cleanId = ID.replace(/-/g, '');
+    const cleanId = pageId.replace(/-/g, ''); // Usa pageId aqui
     return `https://www.notion.so/${cleanId}`;
   };
 
@@ -36,12 +36,12 @@ export default function ProjetosSection({ projetos = [] }: ProjetosSectionProps)
       ) : (
         <div className={styles.projetosGrid}>
           {projetosFiltrados.map((projeto) => {
-            // MODIFICADO AQUI: Usar projeto.ID
-            const notionPageUrl = generateNotionPageLink(projeto.ID);
+            // CORRIGIDO AQUI: Usar projeto.pageId
+            const notionPageUrl = generateNotionPageLink(projeto.pageId);
 
             return (
-              // MODIFICADO AQUI: Usar projeto.ID como chave
-              <div key={projeto.ID} className={styles.projetoCard}>
+              // CORRIGIDO AQUI: Usar projeto.pageId como chave
+              <div key={projeto.pageId} className={styles.projetoCard}>
                 <h3>{projeto.nome}</h3>
                 <p className={styles.resumo}>{projeto.resumo}</p>
 
