@@ -166,7 +166,6 @@ export default function Dashboard({ chamados }: DashboardProps) {
             <thead>
               <tr>
                 {/* Cabeçalhos clicáveis para ordenação. Padding reduzido com p-2. */}
-                <th onClick={() => requestSort('notionId')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">ID Notion{renderSortArrow('notionId')}</th>
                 <th onClick={() => requestSort('titulo')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Título{renderSortArrow('titulo')}</th>
                 <th onClick={() => requestSort('loja')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Loja{renderSortArrow('loja')}</th>
                 <th onClick={() => requestSort('status')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Status{renderSortArrow('status')}</th>
