@@ -2,17 +2,32 @@
 'use client';
 import { getZona } from '@/utils/classifyZone';
 import {
-  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, Legend,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
 } from 'recharts';
-import { useState, useMemo, useCallback } from 'react';
-import type { Projeto } from '@/lib/notion'; // Importa a interface Projeto correta
+import { useState, useMemo, useCallback } from 'react'; // ChangeEvent removido pois os filtros foram removidos
 
-// Usar Projeto diretamente ou criar um alias consistente
-type Chamado = Projeto;
+type Chamado = {
+  _id: string;
+  notionId: string;
+  titulo: string;
+  loja: string;
+  status: string;
+  tipo: string;
+  dataCriacao: string;
+  prioridade?: string;
+};
 
 type DashboardProps = {
-  chamados: Chamado[]; // Agora 'chamados' será do tipo Projeto[]
+  chamados: Chamado[];
 };
 
 const CORES_GRAFICOS = [
@@ -21,57 +36,61 @@ const CORES_GRAFICOS = [
   '#264653', '#fca311'
 ];
 
-const getZonaFromLoja = (loja: string | null | undefined): string => {
-    if (!loja) return 'Zona Desconhecida';
-    return getZona(loja);
-};
+const getZonaFromLoja = (loja: string): string => getZona(loja);
 
-const generateNotionPageLink = (pageId: string | undefined | null): string | null => {
-  if (!pageId) return null;
-  const cleanId = pageId.replace(/-/g, '');
+const generateNotionPageLink = (notionPageId: string | undefined | null): string | null => {
+  if (!notionPageId) return null;
+  const cleanId = notionPageId.replace(/-/g, '');
   return `https://www.notion.so/${cleanId}`;
 };
 
-// Ajustado para refletir os campos de Projeto (sem displayableIssueId/ID, e usando 'nome' em vez de 'titulo')
-type SortableChamadoKey = 
-  | keyof Pick<Chamado, 'nome' | 'loja' | 'status' | 'tipo' | 'prioridade' | 'criadoEm' | 'setor' | 'cliente'> 
-  | 'zona';
+// Definindo as chaves pelas quais podemos ordenar
+type SortableChamadoKey = keyof Chamado | 'zona';
 
 export default function Dashboard({ chamados }: DashboardProps) {
+  // Estado para configuração da ordenação
   const [sortConfig, setSortConfig] = useState<{ key: SortableChamadoKey; direction: 'asc' | 'desc' } | null>(null);
 
-  const chamadosParaExibir = chamados;
+  // Seus useMemo para filtros foram removidos conforme sua modificação
+  // Agora `chamadosFiltrados` será apenas `chamados` se não houver mais filtros no estado.
+  // Se você ainda tiver filtros em algum lugar, use `chamadosFiltrados` aqui.
+  // Para este exemplo, vou assumir que `chamados` é a lista a ser ordenada.
+  // Se você reintroduzir filtros, substitua `chamados` por `chamadosFiltrados` na linha abaixo.
+  const chamadosParaExibir = chamados; // Ou chamadosFiltrados se você tiver filtros
 
   const chamadosOrdenados = useMemo(() => {
-    let sortableItems = [...chamadosParaExibir];
+    let sortableItems = [...chamadosParaExibir]; // Use a lista de chamados (filtrada ou não)
     if (sortConfig !== null) {
       sortableItems.sort((a, b) => {
-        let valA: any;
-        let valB: any;
+        let valA: string | number | undefined | null;
+        let valB: string | number | undefined | null;
 
         if (sortConfig.key === 'zona') {
           valA = getZonaFromLoja(a.loja);
           valB = getZonaFromLoja(b.loja);
         } else {
-          // Acessa diretamente as propriedades de Chamado (que é Projeto)
           valA = a[sortConfig.key as keyof Chamado];
           valB = b[sortConfig.key as keyof Chamado];
         }
 
+        // Tratamento para valores nulos/undefined, especialmente para prioridade
         if (valA === undefined || valA === null) valA = '';
         if (valB === undefined || valB === null) valB = '';
 
-        if (sortConfig.key === 'criadoEm') {
+        if (sortConfig.key === 'dataCriacao') {
+          // Comparar como datas
           const dateA = new Date(valA as string).getTime();
           const dateB = new Date(valB as string).getTime();
           if (dateA < dateB) return sortConfig.direction === 'asc' ? -1 : 1;
           if (dateA > dateB) return sortConfig.direction === 'asc' ? 1 : -1;
           return 0;
         } else if (typeof valA === 'number' && typeof valB === 'number') {
+          // Comparar como números se aplicável
           if (valA < valB) return sortConfig.direction === 'asc' ? -1 : 1;
           if (valA > valB) return sortConfig.direction === 'asc' ? 1 : -1;
           return 0;
         } else {
+          // Comparar como strings (case-insensitive)
           const strA = String(valA).toLowerCase();
           const strB = String(valB).toLowerCase();
           if (strA < strB) return sortConfig.direction === 'asc' ? -1 : 1;
@@ -82,11 +101,11 @@ export default function Dashboard({ chamados }: DashboardProps) {
     }
     return sortableItems;
   }, [chamadosParaExibir, sortConfig]);
-  
+
+
   const agruparDadosParaGrafico = useCallback((
     data: Chamado[],
-    // Ajustado para campos de Chamado (Projeto)
-    campo: keyof Pick<Chamado, 'status' | 'tipo' | 'prioridade' | 'setor'> | 'zona'
+    campo: keyof Omit<Chamado, '_id' | 'notionId' | 'titulo' | 'loja' | 'dataCriacao'> | 'zona'
   ): { nome: string; valor: number }[] => {
     const contagem: Record<string, number> = {};
     data.forEach(chamado => {
@@ -97,7 +116,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
         const valorDoCampo = chamado[campo as keyof Chamado];
         chave = typeof valorDoCampo === 'string' ? valorDoCampo : String(valorDoCampo) || 'Não Definido';
       }
-      if (chave) { 
+      if (chave) { // Garante que chaves vazias ou nulas não sejam contadas como 'Não Definido' a menos que explicitamente
         contagem[chave] = (contagem[chave] || 0) + 1;
       } else {
         contagem['Não Definido'] = (contagem['Não Definido'] || 0) + 1;
@@ -107,7 +126,9 @@ export default function Dashboard({ chamados }: DashboardProps) {
       .map(([nome, valor]) => ({ nome, valor }))
       .sort((a, b) => b.valor - a.valor);
   }, []);
-  
+
+  // Usar chamadosOrdenados para os gráficos também, se fizer sentido após a filtragem
+  // ou manter chamadosParaExibir (que seriam os filtrados antes da ordenação da tabela)
   const dadosPorStatus = useMemo(() => agruparDadosParaGrafico(chamadosParaExibir, 'status'), [chamadosParaExibir, agruparDadosParaGrafico]);
   const dadosPorTipo = useMemo(() => agruparDadosParaGrafico(chamadosParaExibir, 'tipo'), [chamadosParaExibir, agruparDadosParaGrafico]);
   const dadosPorZona = useMemo(() => agruparDadosParaGrafico(chamadosParaExibir, 'zona'), [chamadosParaExibir, agruparDadosParaGrafico]);
@@ -121,12 +142,14 @@ export default function Dashboard({ chamados }: DashboardProps) {
     setSortConfig({ key, direction });
   };
 
+  // Função para renderizar o ícone de ordenação
   const renderSortArrow = (columnKey: SortableChamadoKey) => {
     if (!sortConfig || sortConfig.key !== columnKey) {
-      return <span className="ml-1 opacity-0 group-hover:opacity-50">↕️</span>;
+      return <span className="ml-1 opacity-0 group-hover:opacity-50">↕️</span>; // Neutro, aparece no hover
     }
     return sortConfig.direction === 'asc' ? <span className="ml-1">🔼</span> : <span className="ml-1">🔽</span>;
   };
+
 
   return (
     <div className="dashboardContainer p-4 md:p-6 lg:p-8 bg-gray-900 text-white min-h-screen">
@@ -137,68 +160,69 @@ export default function Dashboard({ chamados }: DashboardProps) {
         </p>
       </div>
 
-      <div className="table-container mb-8 bg-gray-800 p-1 sm:p-2 rounded-lg shadow-lg overflow-x-auto">
+      <div className="table-container mb-8 bg-gray-800 p-2 sm:p-4 rounded-lg shadow-lg overflow-x-auto">
         {chamadosOrdenados.length > 0 ? (
-          <table className="tabela-chamados w-full mt-4 table-auto">
+          <table className="tabela-chamados w-full mt-4">
             <thead>
               <tr>
-                {/* Coluna "ID Notion" REMOVIDA */}
-                {/* Coluna Título: usa 'nome' para ordenação */}
-                <th onClick={() => requestSort('nome')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors w-[250px] sm:w-[350px] md:w-[400px]">Título{renderSortArrow('nome')}</th>
-                <th onClick={() => requestSort('loja')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors w-[80px] sm:w-[100px]">Loja{renderSortArrow('loja')}</th>
-                <th onClick={() => requestSort('status')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors w-[130px] sm:w-[150px]">Status{renderSortArrow('status')}</th>
-                <th onClick={() => requestSort('tipo')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors w-[150px] sm:w-[180px] md:w-[120px]">Tipo{renderSortArrow('tipo')}</th>
+                {/* Cabeçalhos clicáveis para ordenação. Padding reduzido com p-2. */}
+                <th onClick={() => requestSort('notionId')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">ID Notion{renderSortArrow('notionId')}</th>
+                <th onClick={() => requestSort('titulo')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Título{renderSortArrow('titulo')}</th>
+                <th onClick={() => requestSort('loja')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Loja{renderSortArrow('loja')}</th>
+                <th onClick={() => requestSort('status')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Status{renderSortArrow('status')}</th>
+                <th onClick={() => requestSort('tipo')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Tipo{renderSortArrow('tipo')}</th>
                 <th onClick={() => requestSort('zona')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Zona{renderSortArrow('zona')}</th>
                 <th onClick={() => requestSort('prioridade')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Prioridade{renderSortArrow('prioridade')}</th>
-                <th onClick={() => requestSort('criadoEm')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Criado em{renderSortArrow('criadoEm')}</th>
+                <th onClick={() => requestSort('dataCriacao')} className="cursor-pointer group p-2 hover:bg-gray-700 transition-colors">Criado em{renderSortArrow('dataCriacao')}</th>
               </tr>
             </thead>
             <tbody>
-              {chamadosOrdenados.map((chamado) => { // 'chamado' agora é do tipo Projeto
-                const notionLink = generateNotionPageLink(chamado.pageId);
+              {chamadosOrdenados.map((chamado) => {
+                const notionLink = generateNotionPageLink(chamado.notionId);
                 return (
-                  <tr key={chamado.pageId} className="hover:bg-gray-700/50 transition-colors duration-150">
-                    {/* Célula Título: usa chamado.nome */}
-                    <td className="text-xs sm:text-sm p-2 align-top truncate hover:whitespace-normal" title={chamado.nome} style={{maxWidth: '350px'}}>
+                  <tr key={chamado._id} className="hover:bg-gray-700/50 transition-colors duration-150">
+                    {/* Células com padding reduzido p-2 */}
+                    <td className="font-mono text-sm p-2">
                       {notionLink ? (
                         <a href={notionLink} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 hover:underline">
-                          {chamado.nome}
+                          {chamado.notionId || 'N/A'}
                         </a>
                       ) : (
-                        chamado.nome
+                        chamado.notionId || 'N/A'
                       )}
                     </td>
-                    <td className="text-xs sm:text-sm p-2 align-top">{chamado.loja || 'N/A'}</td>
-                    <td className="p-2 align-top">
+                    <td className="truncate max-w-[150px] sm:max-w-[200px] text-sm p-2" title={chamado.titulo}>{chamado.titulo}</td>
+                    <td className="text-sm p-2">{chamado.loja}</td>
+                    <td className="p-2">
                       <span
-                        className="status-badge px-2 py-0.5 text-xs font-semibold rounded-full"
+                        className="status-badge px-2.5 py-1 text-xs font-semibold rounded-full"
                         data-status={chamado.status.toLowerCase().replace(/\s+/g, '-')}
                       >
                         {chamado.status}
                       </span>
                     </td>
-                    <td className="text-xs sm:text-sm p-2 align-top">{chamado.tipo || 'N/A'}</td>
-                    <td className="text-xs sm:text-sm p-2 align-top">{getZonaFromLoja(chamado.loja)}</td>
-                    <td className="p-2 align-top">
+                    <td className="text-sm p-2">{chamado.tipo}</td>
+                    <td className="text-sm p-2">{getZonaFromLoja(chamado.loja)}</td>
+                    <td className="p-2">
                       <span
-                        className="prioridade-badge px-2 py-0.5 text-xs font-semibold rounded-full"
+                        className="prioridade-badge px-2.5 py-1 text-xs font-semibold rounded-full"
                         data-prioridade={chamado.prioridade?.toLowerCase().replace(/\s+/g, '-') || 'nao-definida'}
                       >
                         {chamado.prioridade || 'N/D'}
                       </span>
                     </td>
-                    <td className="text-xs sm:text-sm p-2 align-top">{new Date(chamado.criadoEm).toLocaleDateString('pt-BR')}</td>
+                    <td className="text-sm p-2">{new Date(chamado.dataCriacao).toLocaleDateString('pt-BR')}</td>
                   </tr>
                 );
               })}
             </tbody>
           </table>
         ) : (
-          <p className="text-center text-gray-500 py-8">Nenhum chamado encontrado.</p>
+          <p className="text-center text-gray-500 py-8">Nenhum chamado encontrado.</p> // Mensagem simplificada
         )}
       </div>
 
-      {/* Seção de Gráficos ... (sem alterações aqui, mas certifique-se que os campos em agruparDadosParaGrafico correspondem a Projeto) */}
+      {/* Seção de Gráficos (permanece a mesma, mas agora usa dados não ordenados pela tabela) */}
       <div className="Graficos grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Chamados por Status */}
         <div className="graphic-container bg-gray-800 p-4 rounded-lg shadow-lg">
@@ -257,7 +281,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
                   }}
                 >
                   {dadosPorZona.map((_entry, index) => (
-                    <Cell key={`cell-pie-${index}`} fill={CORES_GRAFICOS[index % CORES_GRAFICOS.length]} />
+                    <Cell key={`cell-${index}`} fill={CORES_GRAFICOS[index % CORES_GRAFICOS.length]} />
                   ))}
                 </Pie>
                 <Legend wrapperStyle={{fontSize: "12px"}} />
@@ -281,7 +305,7 @@ export default function Dashboard({ chamados }: DashboardProps) {
                 <Legend wrapperStyle={{fontSize: "12px"}}/>
                 <Bar dataKey="valor" fill="#f59e0b" radius={[0, 4, 4, 0]} barSize={20}>
                    {dadosPorPrioridade.map((_entry, index) => (
-                    <Cell key={`cell-bar-${index}`} fill={CORES_GRAFICOS[index % CORES_GRAFICOS.length]} />
+                    <Cell key={`cell-${index}`} fill={CORES_GRAFICOS[index % CORES_GRAFICOS.length]} />
                   ))}
                 </Bar>
               </BarChart>
